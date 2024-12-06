@@ -9,14 +9,26 @@ const Region = () => {
   const { provinces = [], regencies = [] } = useSelector(
     (state) => state.region
   );
+
+  // Log untuk melihat data regencies
+  console.log("Regencies:", regencies); // Periksa apakah regencies ada atau tidak
+
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null); // Track the selected provinceId
 
   useEffect(() => {
     dispatch(fetchProvinces());
   }, [dispatch]);
+
+  // Mengambil regencies hanya jika provinceId dipilih
+  useEffect(() => {
+    if (selectedProvinceId) {
+      dispatch(fetchRegencies(selectedProvinceId)); // Fetch regencies based on selected provinceId
+    }
+  }, [dispatch, selectedProvinceId]);
 
   const filteredProvinces = useMemo(() => {
     if (!Array.isArray(provinces?.data)) return []; // Mengakses provinces.data
@@ -51,7 +63,7 @@ const Region = () => {
     }
 
     console.log("Fetching regencies for province ID:", provinceId); // Log untuk ID provinsi yang valid
-    dispatch(fetchRegencies(provinceId)); // Ambil kabupaten berdasarkan provinsi
+    setSelectedProvinceId(provinceId); // Set selected provinceId to trigger fetching regencies
   };
 
   return (

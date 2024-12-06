@@ -15,10 +15,11 @@ export const fetchProvinces = createAsyncThunk(
 export const fetchRegencies = createAsyncThunk(
   "region/fetchRegencies",
   async (provinceId) => {
-    const response = await axios.get(`region/regencies`, {
-      params: { province: provinceId },
+    // Jika provinceId tidak ada, kita buat request tanpa parameter province
+    const response = await axios.get("region/regencies", {
+      params: provinceId ? { province: provinceId } : {}, // Jika ada provinceId, kirimkan sebagai parameter
     });
-    return response.data; // Mengembalikan data regencies
+    return response.data; // Mengembalikan daftar regencies
   }
 );
 
