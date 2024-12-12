@@ -63,7 +63,7 @@ const regionSlice = createSlice({
       .addCase(fetchRegencies.fulfilled, (state, action) => {
         state.loading = false;
         state.regencies = action.payload; // Menyimpan regencies
-        console.log("Fetched Regencies:", action.payload); // Memastikan data diterima
+        // console.log("Fetched Regencies:", action.payload); // Memastikan data diterima
       })
       .addCase(fetchRegencies.rejected, (state, action) => {
         state.loading = false;

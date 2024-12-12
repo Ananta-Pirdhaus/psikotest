@@ -9,6 +9,7 @@ import MasterRegion from "../features/master/MasteRegion/regionSlice"; // Tambah
 import MasterProfesi from "../features/master/MasterProfesi/profesiSlice";
 import MasterSuccess from "../features/master/MasterSuccess/succesSlice";
 import MasterBakat from "../features/master/MasterBakat/bakatSlice";
+import MasterKelas from "../features/master/MasterKelas/kelasSlice";
 
 const combinedReducer = {
   header: headerSlice,
@@ -21,6 +22,7 @@ const combinedReducer = {
   professions: MasterProfesi, // Tambahkan reducer ini
   orangSukses: MasterSuccess, // Tambahkan reducer ini
   bakat: MasterBakat, // Tambahkan reducer ini
+  kelas: MasterKelas, // Tambahkan reducer ini
 };
 
 export default configureStore({

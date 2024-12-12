@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
@@ -10,28 +10,67 @@ const Region = () => {
     (state) => state.region
   );
 
-  // Log untuk melihat data regencies
-  console.log("Regencies:", regencies); // Periksa apakah regencies ada atau tidak
+  // Log for debugging regencies data
+  console.log("Regencies:", regencies); // Check if regencies are available
 
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProvinceId, setSelectedProvinceId] = useState(null); // Track the selected provinceId
+  const [provinceIds, setProvinceIds] = useState([]);
+  const previousProvinceIdsRef = useRef();
 
   useEffect(() => {
     dispatch(fetchProvinces());
   }, [dispatch]);
 
-  // Mengambil regencies hanya jika provinceId dipilih
   useEffect(() => {
-    if (selectedProvinceId) {
-      dispatch(fetchRegencies(selectedProvinceId)); // Fetch regencies based on selected provinceId
+    console.log("Provinces:", provinces);
+  }, [provinces]);
+  useEffect(() => {
+    const provinceIds = provinces?.data?.map((province) => province.id);
+    console.log("Province IDs:", provinceIds);
+    setProvinceIds(provinceIds);
+  }, [provinces]);
+
+  useEffect(() => {
+    if (Array.isArray(provinceIds) && provinceIds.length > 0) {
+      // Hanya jalankan jika provinceIds baru berbeda dengan sebelumnya
+      if (
+        JSON.stringify(provinceIds) !==
+        JSON.stringify(previousProvinceIdsRef.current)
+      ) {
+        console.log(
+          "Starting to fetch regencies for province IDs:",
+          provinceIds
+        );
+        provinceIds.forEach((provinceId) => {
+          console.log(`Fetching regencies for province ID: ${provinceId}`);
+          dispatch(fetchRegencies(provinceId));
+        });
+
+        // Update reference untuk provinceIds yang telah diproses
+        previousProvinceIdsRef.current = provinceIds;
+      }
+    } else {
+      console.log("No valid province IDs available to fetch regencies.");
     }
-  }, [dispatch, selectedProvinceId]);
+  }, [dispatch, provinceIds]); // This effect runs when 'provinceIds' changes
+
+  const handleFetchRegencies = (provinceId) => {
+    // Ensure that the provinceId is valid before proceeding
+    if (!provinceId) {
+      console.error("Province ID is missing or invalid");
+      return;
+    }
+
+    console.log("Fetching regencies for province ID:", provinceId);
+    setSelectedProvinceId(provinceId); // Trigger fetching regencies by setting the state
+  };
 
   const filteredProvinces = useMemo(() => {
-    if (!Array.isArray(provinces?.data)) return []; // Mengakses provinces.data
+    if (!Array.isArray(provinces?.data)) return []; // Access provinces.data
     return provinces.data.filter((p) => {
       const namaRegion = String(p.NamaRegion || "").toLowerCase();
       return namaRegion.includes(searchQuery.toLowerCase());
@@ -54,16 +93,6 @@ const Region = () => {
     if (window.confirm("Are you sure you want to delete this region?")) {
       dispatch(deleteRegion(id));
     }
-  };
-
-  const handleFetchRegencies = (provinceId) => {
-    if (!provinceId) {
-      console.error("Province ID is missing or invalid"); // Log error jika provinceId tidak valid
-      return;
-    }
-
-    console.log("Fetching regencies for province ID:", provinceId); // Log untuk ID provinsi yang valid
-    setSelectedProvinceId(provinceId); // Set selected provinceId to trigger fetching regencies
   };
 
   return (
@@ -94,11 +123,20 @@ const Region = () => {
                 <tr
                   key={province.ID || index} // Ensure unique key
                   className="border-b hover:bg-gray-50 transition duration-200"
-                  onClick={() => handleFetchRegencies(province.ID)} // Add onClick event to fetch regencies
+                  onClick={() => {
+                    if (province.ID) {
+                      handleFetchRegencies(province.ID); // Only call if province.ID is valid
+                    } else {
+                      console.error(
+                        "Invalid Province ID clicked:",
+                        province.ID
+                      );
+                    }
+                  }}
                 >
                   <td className="px-4 py-2">{province.name}</td>
                   <td className="px-4 py-2">
-                    {/* Display kabupaten for the selected province */}
+                    {/* Display regencies for the selected province */}
                     {Array.isArray(regencies) && regencies.length > 0 ? (
                       regencies
                         .filter(

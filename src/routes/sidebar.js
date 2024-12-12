@@ -20,6 +20,8 @@ import KeyIcon from "@heroicons/react/24/outline/KeyIcon";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
 import BuildingIcon from "@heroicons/react/24/outline/BuildingLibraryIcon"; // Tambahkan import
 import MapIcon from "@heroicons/react/24/outline/MapIcon"; // Tambahkan import
+import { AcademicCapIcon } from "@heroicons/react/24/outline";
+
 
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
@@ -44,6 +46,11 @@ const routes = [
         path: "/app/master-pendidikan",
         icon: <DocumentTextIcon className={submenuIconClasses} />,
         name: "Master Pendidikan",
+      },
+      {
+        path: "/app/master-kelas",
+        icon: <AcademicCapIcon className={submenuIconClasses} />,
+        name: "Master Kelas",
       },
       {
         path: "/app/master-bakat",

@@ -1,5 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import axios from "axios";
+
+// Set base URL dari environment variable
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
+// Menambahkan header Authorization dengan token dari localStorage
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
+
 const initialState = {
   jurusan: [], // Rename 'education' to 'jurusan'
 };
