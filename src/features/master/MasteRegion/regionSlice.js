@@ -12,16 +12,27 @@ export const fetchProvinces = createAsyncThunk(
 );
 
 // Fungsi untuk mengambil daftar regencies berdasarkan province ID
+// Fungsi untuk mengambil daftar regencies berdasarkan province ID
 export const fetchRegencies = createAsyncThunk(
   "region/fetchRegencies",
   async (provinceId) => {
-    // Jika provinceId tidak ada, kita buat request tanpa parameter province
     const response = await axios.get("region/regencies", {
       params: provinceId ? { province: provinceId } : {}, // Jika ada provinceId, kirimkan sebagai parameter
     });
-    return response.data; // Mengembalikan daftar regencies
+
+    // Memodifikasi data yang diterima untuk menambahkan provinceId pada setiap regency
+    const regenciesWithProvinceId = response.data.data.map((regency) => ({
+      ...regency,      // Menyalin data regency
+      provinceId: provinceId, // Menambahkan provinceId ke setiap regency
+    }));
+
+    return { 
+      provinceId,       // Kembalikan provinceId agar bisa digunakan
+      regencies: regenciesWithProvinceId, // Kembalikan daftar regencies yang sudah dimodifikasi
+    };
   }
 );
+
 
 // Fungsi untuk menghapus region berdasarkan ID
 export const deleteRegion = createAsyncThunk(
@@ -62,8 +73,10 @@ const regionSlice = createSlice({
       })
       .addCase(fetchRegencies.fulfilled, (state, action) => {
         state.loading = false;
-        state.regencies = action.payload; // Menyimpan regencies
-        // console.log("Fetched Regencies:", action.payload); // Memastikan data diterima
+        // Menyimpan regencies yang sudah dimodifikasi dengan provinceId
+        state.regencies = action.payload.regencies;
+        state.provinceId = action.payload.provinceId; // Menyimpan provinceId
+        console.log("Fetched Regencies:", action.payload.regencies); // Memastikan data diterima
       })
       .addCase(fetchRegencies.rejected, (state, action) => {
         state.loading = false;
@@ -87,6 +100,7 @@ const regionSlice = createSlice({
       });
   },
 });
+
 
 export default regionSlice.reducer;
 export const { actions: regionActions } = regionSlice; // Export the actions

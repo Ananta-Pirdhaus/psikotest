@@ -1,199 +1,136 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchProvinces, fetchRegencies } from "./regionSlice";
 import TitleCard from "../../../components/Cards/TitleCard";
-import { openModal } from "../../common/modalSlice";
-import { deleteRegion, fetchProvinces, fetchRegencies } from "./regionSlice";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 
 const Region = () => {
-  const { provinces = [], regencies = [] } = useSelector(
-    (state) => state.region
-  );
-
-  // Log for debugging regencies data
-  console.log("Regencies:", regencies); // Check if regencies are available
-
   const dispatch = useDispatch();
+
+  // State lokal untuk melacak provinsi terpilih dan regencies yang diambil
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+  const [regenciesData, setRegenciesData] = useState([]);
+
+  // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProvinceId, setSelectedProvinceId] = useState(null); // Track the selected provinceId
-  const [provinceIds, setProvinceIds] = useState([]);
-  const previousProvinceIdsRef = useRef();
 
+  // Fetch provinces and regencies
+  const provinces = useSelector((state) => state.region.provinces);
+
+  // Fetch provinces saat komponen pertama kali dimuat
   useEffect(() => {
     dispatch(fetchProvinces());
   }, [dispatch]);
 
+  // Fetch regencies saat provinsi dipilih
   useEffect(() => {
-    console.log("Provinces:", provinces);
-  }, [provinces]);
-  useEffect(() => {
-    const provinceIds = provinces?.data?.map((province) => province.id);
-    console.log("Province IDs:", provinceIds);
-    setProvinceIds(provinceIds);
-  }, [provinces]);
-
-  useEffect(() => {
-    if (Array.isArray(provinceIds) && provinceIds.length > 0) {
-      // Hanya jalankan jika provinceIds baru berbeda dengan sebelumnya
-      if (
-        JSON.stringify(provinceIds) !==
-        JSON.stringify(previousProvinceIdsRef.current)
-      ) {
-        console.log(
-          "Starting to fetch regencies for province IDs:",
-          provinceIds
-        );
-        provinceIds.forEach((provinceId) => {
-          console.log(`Fetching regencies for province ID: ${provinceId}`);
-          dispatch(fetchRegencies(provinceId));
-        });
-
-        // Update reference untuk provinceIds yang telah diproses
-        previousProvinceIdsRef.current = provinceIds;
-      }
+    if (selectedProvinceId) {
+      dispatch(fetchRegencies(selectedProvinceId)).then((response) => {
+        const { payload } = response; // Ambil payload dari respons
+        if (payload && payload.regencies) {
+          setRegenciesData(payload.regencies); // Update regenciesData
+        }
+      });
     } else {
-      console.log("No valid province IDs available to fetch regencies.");
+      setRegenciesData([]); // Reset data jika tidak ada provinsi yang dipilih
     }
-  }, [dispatch, provinceIds]); // This effect runs when 'provinceIds' changes
+  }, [dispatch, selectedProvinceId]);
 
-  const handleFetchRegencies = (provinceId) => {
-    // Ensure that the provinceId is valid before proceeding
-    if (!provinceId) {
-      console.error("Province ID is missing or invalid");
-      return;
-    }
+  // Paginate the data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentRegencies = regenciesData.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
-    console.log("Fetching regencies for province ID:", provinceId);
-    setSelectedProvinceId(provinceId); // Trigger fetching regencies by setting the state
-  };
+  // Total pages calculation
+  const totalPages = Math.ceil(regenciesData.length / itemsPerPage);
 
-  const filteredProvinces = useMemo(() => {
-    if (!Array.isArray(provinces?.data)) return []; // Access provinces.data
-    return provinces.data.filter((p) => {
-      const namaRegion = String(p.NamaRegion || "").toLowerCase();
-      return namaRegion.includes(searchQuery.toLowerCase());
-    });
-  }, [provinces?.data, searchQuery]);
-
-  // Memoized currentProvinces for pagination based on filtered provinces
-  const currentProvinces = useMemo(() => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const result = filteredProvinces.slice(indexOfFirstItem, indexOfLastItem);
-    return result;
-  }, [filteredProvinces, currentPage, itemsPerPage]);
-
-  const totalPages = Math.ceil(filteredProvinces.length / itemsPerPage);
-
+  // Change page function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDeleteRegion = (id) => {
-    if (window.confirm("Are you sure you want to delete this region?")) {
-      dispatch(deleteRegion(id));
-    }
-  };
-
   return (
-    <TitleCard title="Master Region" topMargin="mt-2">
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by Region Name"
-          className="input input-bordered w-full max-w-xs"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          aria-label="Search Region"
-        />
-      </div>
+    <>
+      <TitleCard title="Master Region" topMargin="mt-2">
+        {/* Dropdown for selecting Province */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Pilih Provinsi:
+          </label>
+          <select
+            className="border rounded px-4 py-2 w-full"
+            value={selectedProvinceId || ""}
+            onChange={(e) => setSelectedProvinceId(e.target.value || null)}
+          >
+            <option value="">-- Pilih Provinsi --</option>
+            {(provinces.data || []).map((province) => (
+              <option key={province.id} value={province.id}>
+                {province.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div className="overflow-x-auto w-full mt-4">
-        <table className="table-auto w-full text-sm text-gray-700">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <th className="px-4 py-2 text-left">Nama Provinsi</th>
-              <th className="px-4 py-2 text-left">Nama Kabupaten</th>
-              <th className="px-4 py-2 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentProvinces.length > 0 ? (
-              currentProvinces.map((province, index) => (
-                <tr
-                  key={province.ID || index} // Ensure unique key
-                  className="border-b hover:bg-gray-50 transition duration-200"
-                  onClick={() => {
-                    if (province.ID) {
-                      handleFetchRegencies(province.ID); // Only call if province.ID is valid
-                    } else {
-                      console.error(
-                        "Invalid Province ID clicked:",
-                        province.ID
-                      );
-                    }
-                  }}
-                >
-                  <td className="px-4 py-2">{province.name}</td>
-                  <td className="px-4 py-2">
-                    {/* Display regencies for the selected province */}
-                    {Array.isArray(regencies) && regencies.length > 0 ? (
-                      regencies
-                        .filter(
-                          (regency) => regency.province_id === province.ID
-                        )
-                        .map((regency) => (
-                          <span key={regency.ID} className="mr-4">
-                            {regency.name}
-                          </span>
-                        ))
-                    ) : (
-                      <p>No regencies available</p>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => handleDeleteRegion(province.ID)}
-                    >
-                      <TrashIcon className="w-5 text-red-500" />
-                    </button>
+        {/* Regencies List Table */}
+        <div className="overflow-x-auto w-full mt-4">
+          <table className="table-auto w-full text-sm text-gray-700">
+            <thead className="bg-gray-100 border-b">
+              <tr>
+                <th className="px-4 py-2 text-left">No</th>
+                <th className="px-4 py-2 text-left">Nama Kabupaten/Kota</th>
+                <th className="px-4 py-2 text-left">No Provinsi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRegencies.length > 0 ? (
+                currentRegencies.map((regency, k) => (
+                  <tr
+                    key={k}
+                    className="border-b hover:bg-gray-50 transition duration-200"
+                  >
+                    <td className="px-4 py-2">{regency.id}</td>
+                    <td className="px-4 py-2">{regency.name}</td>
+                    <td className="px-4 py-2">{regency.provinceId}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="text-center py-4">
+                    Tidak ada data kabupaten/kota.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3" className="text-center py-4">
-                  No data available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <div className="btn-group space-x-2">
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span className="btn btn-sm">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+              )}
+            </tbody>
+          </table>
         </div>
-      </div>
-    </TitleCard>
+
+        {/* DaisyUI Pagination */}
+        <div className="flex justify-center mt-4">
+          <div className="btn-group space-x-2">
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              aria-label="Previous Page"
+            >
+              Previous
+            </button>
+            <span className="btn btn-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              aria-label="Next Page"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </TitleCard>
+    </>
   );
 };
 
