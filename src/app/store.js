@@ -19,7 +19,7 @@ const combinedReducer = {
   education: educationSlice, // Tambahkan reducer ini
   jurusan: MasterJurusanSlice, // Tambahkan reducer ini
   region: MasterRegion, // Tambahkan reducer ini
-  professions: MasterProfesi, // Tambahkan reducer ini
+  profesi: MasterProfesi, // Tambahkan reducer ini
   orangSukses: MasterSuccess, // Tambahkan reducer ini
   bakat: MasterBakat, // Tambahkan reducer ini
   kelas: MasterKelas, // Tambahkan reducer ini

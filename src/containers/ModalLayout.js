@@ -7,6 +7,7 @@ import AddCampusModalBody from "../features/master/MasterKampus/components/AddCa
 import AddBakatModalBody from "../features/master/MasterBakat/components/AddBakatModalBody";
 import UpdateBakatModalBody from "../features/master/MasterBakat/components/updateBakatModalBody";
 import ViewBakatModalBody from "../features/master/MasterBakat/components/viewBakatModalBody";
+import AddProfesiModalBody from "../features/master/MasterProfesi/components/AddProfesiModalBody";
 import ConfirmationModalBody from "../features/common/components/ConfirmationModalBody";
 
 function ModalLayout() {
@@ -47,6 +48,9 @@ function ModalLayout() {
             {
               [MODAL_BODY_TYPES.LEAD_ADD_NEW]: (
                 <AddLeadModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.PROFESI_ADD_NEW]: (
+                <AddProfesiModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.SKILL_ADD_NEW]: (
                 <AddBakatModalBody {...modalBodyProps} />
