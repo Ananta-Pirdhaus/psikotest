@@ -1,34 +1,27 @@
 import axios from "axios";
 
-// Fungsi untuk mendecode JWT
-const parseJWT = (token) => {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace("-", "+").replace("_", "/");
-  const decoded = JSON.parse(window.atob(base64));
-  return decoded;
-};
-
 const checkAuth = () => {
   // Setting base URL for all API requests via Axios
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
   // Fetching the token value stored in localStorage
-  let TOKEN = localStorage.getItem("token");
+  let TOKEN = localStorage.getItem("expired_token");
 
-  if (TOKEN) {
-    // Decode token and check the expiration time
-    const decodedToken = parseJWT(TOKEN);
-    const expirationTime = decodedToken.exp * 1000; // Convert exp to milliseconds
-    const currentTime = Date.now(); // Current time in milliseconds
+  const PUBLIC_ROUTES = [
+    "login",
+    "forgot-password",
+    "register",
+    "documentation",
+  ];
 
-    // Check if the token is expired
-    if (currentTime >= expirationTime) {
-      // Token expired, redirect to login page
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-      return;
-    }
+  const isPublicPage = PUBLIC_ROUTES.some((r) =>
+    window.location.href.includes(r)
+  );
 
+  if (!TOKEN && !isPublicPage) {
+    window.location.href = "/login";
+    return;
+  } else {
     // Set Authorization header for all Axios requests
     axios.defaults.headers.common["Authorization"] = `Bearer ${TOKEN}`;
 
@@ -60,10 +53,6 @@ const checkAuth = () => {
     );
 
     return TOKEN;
-  } else {
-    // If no token exists, redirect to login
-    window.location.href = "/login";
-    return;
   }
 };
 

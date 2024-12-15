@@ -10,17 +10,18 @@ if (token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-// Async thunk to add a new jurusan
+// Async thunk to add a new jurusan with bakat
 export const addJurusan = createAsyncThunk(
   "jurusan/addJurusan",
   async (newJurusan, { rejectWithValue }) => {
     try {
       const response = await axios.post("jurusan", {
-        name: newJurusan.name,
-        description: newJurusan.description,
+        name: newJurusan.name, // Nama jurusan
+        bakat: newJurusan.bakat, // Array bakat yang berisi ID-ID bakat
       });
-      return response.data;
+      return response.data; // Mengembalikan response.data sebagai hasil sukses
     } catch (error) {
+      // Jika terjadi error, mengembalikan pesan error
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
@@ -65,9 +66,11 @@ export const deleteJurusan = createAsyncThunk(
   }
 );
 
-// Initial state for jurusan
+// Initial state for jurusan and bakat
 const initialState = {
   jurusan: [], // Data jurusan
+  bakat: [], // Data bakat
+  selectBakatOptions: [], // Data untuk select options
   status: "idle", // Loading status
   error: null, // Error state
 };
@@ -77,15 +80,23 @@ const jurusanSlice = createSlice({
   initialState,
   reducers: {
     getJurusanContent(state, action) {
-      // Ensure action payload is an array, else set to empty array
       state.jurusan = Array.isArray(action.payload) ? action.payload : [];
     },
     importJurusanData(state, action) {
-      // Append new jurusan data
       state.jurusan = [
         ...state.jurusan,
         ...(Array.isArray(action.payload) ? action.payload : []),
       ];
+    },
+    setBakatData(state, action) {
+      state.bakat = action.payload; // Set bakat data
+    },
+    setSelectBakatOptions(state, action) {
+      // Map bakat data to select options
+      state.selectBakatOptions = action.payload.map((bakat) => ({
+        value: bakat.id, // ID bakat sebagai value
+        label: bakat.name, // Name bakat sebagai label
+      }));
     },
   },
   extraReducers: (builder) => {
@@ -95,7 +106,6 @@ const jurusanSlice = createSlice({
       })
       .addCase(getJurusan.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Ensure jurusan data is an array
         state.jurusan = Array.isArray(action.payload?.data)
           ? action.payload?.data
           : [];
@@ -104,12 +114,29 @@ const jurusanSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Failed to fetch jurusan data.";
       })
+      .addCase(getBakat.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getBakat.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.bakat = Array.isArray(action.payload?.data)
+          ? action.payload?.data
+          : [];
+        // After fetching bakat, update selectBakatOptions
+        state.selectBakatOptions = action.payload?.data.map((bakat) => ({
+          value: bakat.id,
+          label: bakat.name,
+        }));
+      })
+      .addCase(getBakat.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Failed to fetch bakat data.";
+      })
       .addCase(addJurusan.pending, (state) => {
         state.status = "loading";
       })
       .addCase(addJurusan.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Add the new jurusan to the list
         state.jurusan.push(action.payload);
       })
       .addCase(addJurusan.rejected, (state, action) => {
@@ -121,7 +148,6 @@ const jurusanSlice = createSlice({
       })
       .addCase(deleteJurusan.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Filter out the deleted jurusan
         state.jurusan = state.jurusan.filter(
           (jurusan) => jurusan.id !== action.payload
         );
@@ -134,7 +160,12 @@ const jurusanSlice = createSlice({
 });
 
 // Export actions
-export const { getJurusanContent, importJurusanData } = jurusanSlice.actions;
+export const {
+  getJurusanContent,
+  importJurusanData,
+  setBakatData,
+  setSelectBakatOptions,
+} = jurusanSlice.actions;
 
 // Export reducer
 export default jurusanSlice.reducer;

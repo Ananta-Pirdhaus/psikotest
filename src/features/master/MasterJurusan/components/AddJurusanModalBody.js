@@ -1,92 +1,128 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
-import { addJurusan } from "../jurusanSlice"; // Menggunakan thunk yang sudah dibuat
+import { addJurusan, getBakat } from "../jurusanSlice";
+import Select from "react-select"; // Import react-select
 
 const INITIAL_JURUSAN_OBJ = {
   name: "",
-  bakat: [], // Array untuk bakat yang dipilih
+  bakat: [], // Array for selected "bakat"
 };
 
 function AddJurusansModalBody({ closeModal }) {
   const dispatch = useDispatch();
+
+  // Get "bakatOptions" from Redux store
+  const bakatOptions = useSelector((state) => state.jurusan.selectBakatOptions);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [jurusanObj, setJurusanObj] = useState(INITIAL_JURUSAN_OBJ);
 
+  // Fetch "bakat" options if not available in Redux store
+  useEffect(() => {
+    if (!bakatOptions || bakatOptions.length === 0) {
+      dispatch(getBakat());
+    }
+  }, [bakatOptions, dispatch]);
+
   const saveNewJurusan = () => {
-    if (jurusanObj.name.trim() === "")
-      return setErrorMessage("Name is required!");
-    else if (jurusanObj.bakat.length === 0)
-      return setErrorMessage("At least one Bakat is required!");
+    // Log tracking nilai jurusanObj sebelum penyimpanan
+    console.log("Jurusan Object before save:", jurusanObj);
 
-    // Membuat FormData untuk mengirimkan data
-    let formData = new FormData();
-    formData.append("name", jurusanObj.name);
-    formData.append("bakat", JSON.stringify(jurusanObj.bakat)); // Mengirimkan array bakat sebagai JSON
+    if (jurusanObj.name.trim() === "") {
+      setErrorMessage("Name is required!");
+      return;
+    } else if (jurusanObj.bakat.length === 0) {
+      setErrorMessage("At least one Bakat is required!");
+      return;
+    }
 
-    // Mengaktifkan status loading saat permintaan dilakukan
+    // Membuat objek data JSON
+    const payload = {
+      name: jurusanObj.name,
+      bakat: jurusanObj.bakat, // Ini adalah array bakat yang terpilih
+    };
+
+    // Log tracking nilai payload sebelum dikirimkan
+    console.log("Payload before sending:", payload);
+
     setLoading(true);
 
-    // Dispatch action Redux untuk menambahkan jurusan menggunakan thunk
-    dispatch(addJurusan(formData))
-      .then(() => {
+    // Menggunakan axios atau fetch untuk mengirim data raw (JSON)
+    dispatch(addJurusan(payload))
+      .then((response) => {
+        // Log hasil response dari action addJurusan
+        console.log("Response from addJurusan:", response);
+
         dispatch(
           showNotification({ message: "New Jurusan Added!", status: 1 })
         );
         closeModal();
-        setLoading(false); // Matikan loading setelah berhasil
+        setLoading(false);
       })
       .catch((error) => {
-        setErrorMessage(error.message || "Failed to add new jurusan.");
-        setLoading(false); // Matikan loading jika terjadi kesalahan
+        // Log error jika ada
+        console.error("Error while adding jurusan:", error);
+
+        const errorDetails = error?.response?.data?.errors;
+        if (errorDetails) {
+          setErrorMessage(errorDetails.name?.[0] || errorDetails.bakat?.[0]);
+        } else {
+          setErrorMessage(error.message || "Failed to add new jurusan.");
+        }
+        setLoading(false);
       });
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage("");
-    if (updateType === "bakat") {
-      // Jika yang diupdate adalah bakat, simpan array ID bakat
-      setJurusanObj({ ...jurusanObj, [updateType]: value });
-    } else {
-      setJurusanObj({ ...jurusanObj, [updateType]: value });
-    }
+    console.log(`Updating ${updateType} with value:`, value); // Log perubahan input
+    setErrorMessage(""); // Reset error message
+    setJurusanObj({ ...jurusanObj, [updateType]: value });
   };
+
+  // Only render the component when bakatOptions are available
+  if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
+
+  // Prepare options for react-select
+  const bakatSelectOptions = bakatOptions.map((bakat) => ({
+    value: bakat.value,
+    label: bakat.label,
+  }));
 
   return (
     <>
       <InputText
         type="text"
-        defaultValue={jurusanObj.name}
+        value={jurusanObj.name || ""} // Ensure it's always defined
+        defaultValue={jurusanObj.name || ""} // Add defaultValue for initial value
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
       />
 
-      {/* Untuk memilih bakat, Anda bisa menggunakan select atau checkbox */}
+      {/* Dropdown for selecting bakat using react-select */}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700">Bakat</label>
-        <select
-          multiple
-          value={jurusanObj.bakat}
-          onChange={(e) =>
+        <Select
+          isMulti
+          options={bakatSelectOptions}
+          value={bakatSelectOptions.filter((option) =>
+            jurusanObj.bakat.includes(option.value)
+          )}
+          onChange={(selectedOptions) =>
             updateFormValue({
               updateType: "bakat",
-              value: Array.from(
-                e.target.selectedOptions,
-                (option) => option.value
-              ),
+              value: selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : [], // Ensure bakat is always an array
             })
           }
-          className="select select-bordered w-full"
-        >
-          <option value="9d9ac6a3-812b-438e-bd61-a8f544cbe620">Bakat 1</option>
-          <option value="9d9ac6a3-8598-466b-b185-9c97a91774b6">Bakat 2</option>
-          {/* Tambahkan opsi lainnya sesuai kebutuhan */}
-        </select>
+          className="w-full"
+          placeholder="Select Bakat"
+        />
       </div>
 
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
@@ -97,7 +133,7 @@ function AddJurusansModalBody({ closeModal }) {
         </button>
         <button
           className="btn btn-primary px-6"
-          onClick={() => saveNewJurusan()}
+          onClick={saveNewJurusan}
           disabled={loading}
         >
           {loading ? "Saving..." : "Save"}

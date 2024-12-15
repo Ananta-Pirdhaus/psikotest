@@ -124,7 +124,6 @@ function MasterKelas() {
               aria-label="Filter by Level"
             >
               <option value="">All Levels</option>
-              <option value="SD">SD</option>
               <option value="SMP">SMP</option>
               <option value="SMA">SMA</option>
             </select>
