@@ -9,6 +9,7 @@ import UpdateBakatModalBody from "../features/master/MasterBakat/components/upda
 import ViewBakatModalBody from "../features/master/MasterBakat/components/viewBakatModalBody";
 import AddProfesiModalBody from "../features/master/MasterProfesi/components/AddProfesiModalBody";
 import ConfirmationModalBody from "../features/common/components/ConfirmationModalBody";
+import JurusanModalAddModalBody from "../features/master/MasterJurusan/components/AddJurusanModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -63,6 +64,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.EDUCATION_ADD_NEW]: (
                 <AddCampusModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.JURUSAN_ADD_NEW]: (
+                <JurusanModalAddModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.CONFIRMATION]: (
                 <ConfirmationModalBody {...modalBodyProps} />

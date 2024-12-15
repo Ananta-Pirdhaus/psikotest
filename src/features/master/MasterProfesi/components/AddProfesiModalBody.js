@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
-import { addProfesi } from "../profesiSlice";
-import { fetchBakat } from "../../MasterBakat/bakatSlice";
+import { addProfesi, getBakatContent } from "../profesiSlice";
 
 const INITIAL_PROFESI_OBJ = {
   profesi_name: "",
@@ -29,8 +28,11 @@ function AddProfesiModalBody({ closeModal }) {
       bakatStatus !== "loading" &&
       bakatStatus !== "succeeded"
     ) {
-      dispatch(fetchBakat());
+      dispatch(getBakatContent());
     }
+
+    // Log the fetched bakat data to the console
+    console.log("Fetched bakat data:", bakatData);
   }, [dispatch, bakatData, bakatStatus]);
 
   const saveNewProfesi = () => {
@@ -65,7 +67,10 @@ function AddProfesiModalBody({ closeModal }) {
 
   const updateFormValue = ({ updateType, value }) => {
     setErrorMessage("");
-    setProfesiObj({ ...profesiObj, [updateType]: value });
+    setProfesiObj((prevState) => ({
+      ...prevState,
+      [updateType]: value,
+    }));
   };
 
   return (
@@ -85,9 +90,10 @@ function AddProfesiModalBody({ closeModal }) {
           Select Skills
         </label>
         <select
+          multiple
           value={profesiObj.bakat}
           onChange={(e) => {
-            const selectedBakat = [...e.target.selectedOptions].map(
+            const selectedBakat = Array.from(e.target.selectedOptions).map(
               (option) => option.value
             );
             updateFormValue({ updateType: "bakat", value: selectedBakat });
@@ -111,7 +117,7 @@ function AddProfesiModalBody({ closeModal }) {
         type="text"
         value={
           Array.isArray(profesiObj.bakat) ? profesiObj.bakat.join(", ") : ""
-        } // Menampilkan skill yang dipilih dengan koma sebagai pemisah
+        }
         updateType="bakat"
         containerStyle="mt-4"
         labelTitle="Selected Skills"

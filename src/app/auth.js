@@ -1,36 +1,34 @@
 import axios from "axios";
 
+// Fungsi untuk mendecode JWT
+const parseJWT = (token) => {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace("-", "+").replace("_", "/");
+  const decoded = JSON.parse(window.atob(base64));
+  return decoded;
+};
+
 const checkAuth = () => {
   // Setting base URL for all API requests via Axios
   axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
-  /* Simulating fetching the token value stored in localStorage.
-     Here, we simulate the 'expired_token' value being null or 0 for testing purposes. */
-  let TOKEN = localStorage.getItem("expired_token");
+  // Fetching the token value stored in localStorage
+  let TOKEN = localStorage.getItem("token");
 
-  if (TOKEN === "null" || TOKEN === "0") {
-    // Simulating an expired token or missing token
-    console.log("Token expired or missing. Attempting to refresh token...");
+  if (TOKEN) {
+    // Decode token and check the expiration time
+    const decodedToken = parseJWT(TOKEN);
+    const expirationTime = decodedToken.exp * 1000; // Convert exp to milliseconds
+    const currentTime = Date.now(); // Current time in milliseconds
 
-    // Simulate refreshing the token by calling a fake API endpoint
-    return refreshToken();
-  }
+    // Check if the token is expired
+    if (currentTime >= expirationTime) {
+      // Token expired, redirect to login page
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+      return;
+    }
 
-  const PUBLIC_ROUTES = [
-    "login",
-    "forgot-password",
-    "register",
-    "documentation",
-  ];
-
-  const isPublicPage = PUBLIC_ROUTES.some((r) =>
-    window.location.href.includes(r)
-  );
-
-  if (!TOKEN && !isPublicPage) {
-    window.location.href = "/login";
-    return;
-  } else {
     // Set Authorization header for all Axios requests
     axios.defaults.headers.common["Authorization"] = `Bearer ${TOKEN}`;
 
@@ -62,21 +60,11 @@ const checkAuth = () => {
     );
 
     return TOKEN;
+  } else {
+    // If no token exists, redirect to login
+    window.location.href = "/login";
+    return;
   }
-};
-
-// Simulating a function to refresh the token (you would normally call your API here)
-const refreshToken = () => {
-  // Simulate a delay for refreshing the token (e.g., API request delay)
-  setTimeout(() => {
-    console.log("Token has been refreshed!");
-
-    // Simulate setting a new token in localStorage after successful refresh
-    localStorage.setItem("expired_token", "new_refreshed_token");
-
-    // Re-run the checkAuth function after token is refreshed
-    checkAuth();
-  }, 2000); // Simulating a 2-second delay for refreshing the token
 };
 
 export default checkAuth;

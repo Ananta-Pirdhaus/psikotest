@@ -1,12 +1,12 @@
 import moment from "moment";
-import React from "react";
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
 import {
+  getProfesi,
+  addProfesi,
   deleteProfesi,
-  getProfesiContent,
   importProfesiData,
 } from "./profesiSlice";
 import {
@@ -14,7 +14,6 @@ import {
   MODAL_BODY_TYPES,
 } from "../../../utils/globalConstantUtil";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { showNotification } from "../../common/headerSlice";
 import * as XLSX from "xlsx";
 
 const TopSideButtons = ({ onImport }) => {
@@ -45,13 +44,13 @@ const TopSideButtons = ({ onImport }) => {
 
         const formattedData = sheetData
           .map((row) => ({
-            ID: row[0],
-            NamaProfesi: row[1] ? row[1].toLowerCase() : "",
+            id: row[0], // Ensure this matches the ID structure
+            name: row[1] ? row[1].toLowerCase() : "",
+            bakat: row[2] ? row[2].split(",") : [], // Assuming "bakat" is a comma-separated string in the CSV
           }))
           .filter((row, index, self) => {
             return (
-              row.NamaProfesi &&
-              index === self.findIndex((r) => r.NamaProfesi === row.NamaProfesi)
+              row.name && index === self.findIndex((r) => r.name === row.name)
             );
           });
 
@@ -85,19 +84,29 @@ const TopSideButtons = ({ onImport }) => {
 };
 
 function Profesi() {
-  const profesi = useSelector((state) => state.profesi?.profesi || []);
+  const profesi = useSelector((state) => state.profesi.profesi);
+  const status = useSelector((state) => state.profesi.status);
+  const error = useSelector((state) => state.profesi.error);
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
-  const [importedProfesi, setImportedProfesi] = useState([]);
 
   useEffect(() => {
-    dispatch(getProfesiContent());
+    dispatch(getProfesi());
   }, [dispatch]);
 
-  const deleteCurrentProfesi = (index) => {
+  useEffect(() => {
+    if (status === "succeeded") {
+      console.log("Fetched profesi data:", profesi);
+    }
+    if (status === "failed") {
+      console.log("Error fetching profesi:", error);
+    }
+  }, [status, profesi, error]);
+
+  const deleteCurrentProfesi = (id) => {
     dispatch(
       openModal({
         title: "Confirmation",
@@ -105,20 +114,17 @@ function Profesi() {
         extraObject: {
           message: "Are you sure you want to delete this profesi record?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.PROFESI_DELETE,
-          index,
+          id,
         },
       })
     );
+    dispatch(deleteProfesi(id)); // Delete the profession with the given ID
   };
 
   const filteredProfesi = useMemo(() => {
     return profesi.filter((p) => {
-      const namaProfesi = String(p.NamaProfesi).toLowerCase();
-      const institusi = String(p.Institusi).toLowerCase();
-      return (
-        namaProfesi.includes(searchQuery.toLowerCase()) ||
-        institusi.includes(searchQuery.toLowerCase())
-      );
+      const name = String(p.name || "").toLowerCase();
+      return name.includes(searchQuery.toLowerCase());
     });
   }, [profesi, searchQuery]);
 
@@ -137,48 +143,52 @@ function Profesi() {
       <TitleCard
         title="Master Profesi"
         topMargin="mt-2"
-        TopSideButtons={<TopSideButtons onImport={setImportedProfesi} />}
+        TopSideButtons={
+          <TopSideButtons onImport={dispatch(importProfesiData)} />
+        }
       >
+        {status === "loading" && <p>Loading...</p>}
+        {status === "failed" && <p>Failed to load data.</p>}
+
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search by Profesi Name or Institution"
+            placeholder="Search by Profesi Name"
             className="input input-bordered w-full max-w-xs"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <div className="overflow-x-auto w-full">
-          <table className="table w-full">
-            <thead>
+        {/* Jurusan List Table */}
+        <div className="overflow-x-auto w-full mt-4">
+          <table className="table-auto w-full text-sm text-gray-700">
+            <thead className="bg-gray-100 border-b">
               <tr>
-                <th>Nama Profesi</th>
-                <th>Institusi</th>
-                <th>Dibuat Pada</th>
-                <th>Status</th>
-                <th>Aksi</th>
+                <th className="px-4 py-2 text-left">Profesi Name</th>
+                <th className="px-4 py-2 text-left">Bakat</th>
+
+                <th className="px-4 py-2 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
               {currentProfesi.map((p, k) => (
-                <tr key={k} className="hover">
-                  <td>{p.NamaProfesi}</td>
-                  <td>{p.Institusi}</td>
-                  <td>{moment(p.created_at).format("DD MMM YYYY")}</td>
-                  <td>
-                    <div
-                      className={`badge ${
-                        p.is_active ? "badge-primary" : "badge-ghost"
-                      }`}
-                    >
-                      {p.is_active ? "Active" : "Inactive"}
-                    </div>
+                <tr
+                  key={k}
+                  className="border-b hover:bg-gray-50 transition duration-200"
+                >
+                  <td className="px-4 py-2">{p.name}</td>
+                  <td className="px-4 py-2">
+                    {p.bakat && p.bakat.length > 0
+                      ? p.bakat.join(", ")
+                      : "No Bakat"}
                   </td>
-                  <td>
+
+                  <td className="px-4 py-2 text-center">
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => deleteCurrentProfesi(k)}
+                      onClick={() => deleteCurrentProfesi(p.id)}
+                      aria-label="Delete Profesi Record"
                     >
                       <TrashIcon className="w-5 text-red-500" />
                     </button>
@@ -189,20 +199,25 @@ function Profesi() {
           </table>
         </div>
 
+        {/* DaisyUI Pagination */}
         <div className="flex justify-center mt-4">
-          <div className="btn-group">
+          <div className="btn-group space-x-2">
             <button
               className="btn btn-sm"
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
+              aria-label="Previous Page"
             >
               Previous
             </button>
-            <button className="btn btn-sm">{currentPage}</button>
+            <span className="btn btn-sm">
+              Page {currentPage} of {totalPages}
+            </span>
             <button
               className="btn btn-sm"
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
+              aria-label="Next Page"
             >
               Next
             </button>

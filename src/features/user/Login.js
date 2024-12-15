@@ -43,10 +43,10 @@ function Login() {
 
       // Check if token is in the response data (correct path)
       const token = response.data.data?.token;
+      const expiredToken = response.data.data?.expires_in;
 
       if (token) {
-        // Simulate token expiry for testing (set expired_token to 'null' or '0')
-        localStorage.setItem("expired_token", "0"); // or `null` for simulating expired token
+        localStorage.setItem("expired_token", expiredToken); 
         localStorage.setItem("token", token);
         toast.success("Selamat datang kembali! Anda sudah login.");
         window.location.href = "/app/welcome";
