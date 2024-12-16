@@ -195,8 +195,8 @@ function MasterKelas() {
           </table>
         </div>
 
-        <div className="mt-4 flex justify-between items-center">
-          <div>
+        <div className="flex justify-center mt-4">
+          <div className="btn-group space-x-2">
             <button
               className="btn btn-sm"
               disabled={currentPage === 1}
@@ -205,7 +205,7 @@ function MasterKelas() {
             >
               Previous
             </button>
-            <span className="mx-2">
+            <span className="btn btn-sm">
               Page {currentPage} of {totalPages}
             </span>
             <button

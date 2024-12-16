@@ -1,33 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  education: [],
+  university: [],
 };
 
-const educationSlice = createSlice({
-  name: "education",
+const universitySlice = createSlice({
+  name: "university",
   initialState,
   reducers: {
-    getEducationContent(state, action) {
-      // Fetch education data (API call simulation)
+    getUniversityContent(state, action) {
+      // Fetch university data (API call simulation)
     },
-    deleteEducation(state, action) {
+    deleteUniversity(state, action) {
       // Handle deletion
     },
-    importEducationData(state, action) {
-      state.education = [...state.education, ...action.payload];
+    importUniversityData(state, action) {
+      state.university = [...state.university, ...action.payload];
     },
-    addNewEducation(state, action) {
-      state.education.push(action.payload); // Tambahkan data baru ke array
+    addNewUniversity(state, action) {
+      state.university.push(action.payload); // Tambahkan data baru ke array
     },
   },
 });
 
 export const {
-  getEducationContent,
-  deleteEducation,
-  importEducationData,
-  addNewEducation, // Ekspor aksi baru
-} = educationSlice.actions;
+  getUniversityContent,
+  deleteUniversity,
+  importUniversityData,
+  addNewUniversity, // Ekspor aksi baru
+} = universitySlice.actions;
 
-export default educationSlice.reducer;
+export default universitySlice.reducer;

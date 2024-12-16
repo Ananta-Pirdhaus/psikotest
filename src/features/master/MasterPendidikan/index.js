@@ -1,250 +1,197 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
-import { showNotification } from "../../common/headerSlice";
-import axios from "axios"; // Using axios to fetch API data
+import {
+  CONFIRMATION_MODAL_CLOSE_TYPES,
+  MODAL_BODY_TYPES,
+} from "../../../utils/globalConstantUtil";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
+import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
+import { fetchSekolah } from "./sekolahSlice"; // Import fetchSekolah action
 
-const TopSideButtons = () => {
+function MasterPendidikan() {
+  const { sekolah, loading, error, meta } = useSelector(
+    (state) => state.sekolah
+  ); // Akses data sekolah dari Redux store
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const openAddNewEducationModal = () => {
+  // Fetch education data based on selected level and current page
+  useEffect(() => {
+    dispatch(fetchSekolah({ level: selectedLevel, page: currentPage }));
+  }, [dispatch, selectedLevel, currentPage]);
+
+  // Log the data whenever it changes
+  useEffect(() => {
+    if (sekolah) {
+      console.log("Fetched Pendidikan Data:", sekolah);
+    }
+  }, [sekolah]);
+
+  const deleteCurrentPendidikan = (id) => {
     dispatch(
       openModal({
-        title: "Add New Education",
-        bodyType: "EDUCATION_ADD_NEW", // Adjust if needed
+        title: "Confirmation",
+        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+        extraObject: {
+          message: "Are you sure you want to delete this education record?",
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.PENDIDIKAN_DELETE,
+          id,
+        },
       })
     );
   };
 
-  return (
-    <div className="inline-block float-right space-x-2">
-      <button
-        className="btn px-6 btn-sm normal-case btn-primary"
-        onClick={() => openAddNewEducationModal()}
-      >
-        Add New
-      </button>
-    </div>
-  );
-};
-
-function Education() {
-  const dispatch = useDispatch();
-
-  // State for pagination and filter
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const [searchQuery, setSearchQuery] = useState(""); // Search term for school name
-  const [selectedKabupaten, setSelectedKabupaten] = useState(""); // Kabupatan filter
-  const [selectedBentuk, setSelectedBentuk] = useState(""); // Bentuk (type) filter
-  const [selectedProvinsi, setSelectedProvinsi] = useState(""); // Province filter
-  const [selectedKecamatan, setSelectedKecamatan] = useState(""); // District filter
-
-  const [schools, setSchools] = useState([]); // Store schools data
-  const [totalData, setTotalData] = useState(0); // Track total data count
-
-  // Fetch data when page or filter changes
-  useEffect(() => {
-    fetchData();
-  }, [
-    currentPage,
-    searchQuery,
-    selectedKabupaten,
-    selectedBentuk,
-    selectedProvinsi,
-    selectedKecamatan,
-  ]);
-
-  const fetchData = async () => {
-    try {
-      let url = `https://api-sekolah-indonesia.vercel.app/sekolah?s=${searchQuery}&page=${currentPage}&perPage=${itemsPerPage}`;
-
-      if (selectedProvinsi) url += `&provinsi=${selectedProvinsi}`;
-      if (selectedKabupaten) url += `&kab_kota=${selectedKabupaten}`;
-      if (selectedKecamatan) url += `&kec=${selectedKecamatan}`;
-      if (selectedBentuk) url += `&bentuk=${selectedBentuk}`;
-
-      const response = await axios.get(url);
-      setSchools(response.data.dataSekolah || []);
-      setTotalData(response.data.total_data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      dispatch(
-        showNotification({ message: "Failed to fetch data", type: "error" })
-      );
-    }
+  const updatePendidikanDetails = (pendidikan) => {
+    dispatch(
+      openModal({
+        title: "Update Education",
+        bodyType: MODAL_BODY_TYPES.PENDIDIKAN_UPDATE,
+        extraObject: pendidikan,
+      })
+    );
   };
 
-  // Get unique kabupaten, provinsi, bentuk values for filtering
-  const kabupatenList = [
-    ...new Set(schools.map((school) => school.kabupaten_kota)),
-  ];
-  const provinsiList = [...new Set(schools.map((school) => school.propinsi))];
-  const bentukList = ["SD", "SMP", "SMA", "SMK"]; // Filter by school level
+  const viewPendidikanDetails = (pendidikan) => {
+    dispatch(
+      openModal({
+        title: "Education Details",
+        bodyType: MODAL_BODY_TYPES.PENDIDIKAN_VIEW,
+        extraObject: pendidikan,
+      })
+    );
+  };
 
-  // Filter schools based on searchQuery, kabupaten_kota, and bentuk
-  const filteredSchools = schools.filter(
-    (e) =>
-      (e.sekolah.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        searchQuery === "") &&
-      (e.kabupaten_kota.includes(selectedKabupaten) ||
-        selectedKabupaten === "") &&
-      (e.propinsi.includes(selectedProvinsi) || selectedProvinsi === "") &&
-      (e.kecamatan.includes(selectedKecamatan) || selectedKecamatan === "") &&
-      (e.bentuk.includes(selectedBentuk) || selectedBentuk === "")
-  );
+  // Filter Pendidikan based on search query and selected level
+  const filteredPendidikan = useMemo(() => {
+    if (!sekolah) return []; // Handle case when sekolah is undefined
+    return sekolah.filter((p) => {
+      const name = String(p.name || "").toLowerCase();
+      const level = String(p.level || "").toLowerCase();
+      const query = searchQuery.toLowerCase();
+      return name.includes(query) || (selectedLevel && level === selectedLevel);
+    });
+  }, [sekolah, searchQuery, selectedLevel]);
 
-  // Pagination Logic
+  // Paginate filteredPendidikan
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentSchools = filteredSchools.slice(
+  const currentPendidikan = filteredPendidikan.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(totalData / itemsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = meta?.last_page || 1; // Define totalPages based on the response
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber); // Update the current page
+      dispatch(fetchSekolah({ level: selectedLevel, page: pageNumber }));
+    }
+  };
 
   return (
-    <>
-      <TitleCard
-        title="Master Pendidikan"
-        topMargin="mt-2"
-        TopSideButtons={<TopSideButtons />}
-      >
-        {/* Search Bar */}
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Search by School Name"
-            className="input input-bordered w-full max-w-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {/* Filters for Province, Kabupaten, District, and School Type */}
-        <div className="mb-4 flex space-x-4">
-          <select
-            className="select select-bordered"
-            value={selectedProvinsi}
-            onChange={(e) => setSelectedProvinsi(e.target.value)}
-          >
-            <option value="">Select Province</option>
-            {provinsiList.map((provinsi, index) => (
-              <option key={index} value={provinsi}>
-                {provinsi}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="select select-bordered"
-            value={selectedKabupaten}
-            onChange={(e) => setSelectedKabupaten(e.target.value)}
-          >
-            <option value="">Select Kabupaten</option>
-            {kabupatenList.map((kabupaten, index) => (
-              <option key={index} value={kabupaten}>
-                {kabupaten}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="select select-bordered"
-            value={selectedKecamatan}
-            onChange={(e) => setSelectedKecamatan(e.target.value)}
-          >
-            <option value="">Select District</option>
-            {schools.map((school, index) => (
-              <option key={index} value={school.kecamatan}>
-                {school.kecamatan}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="select select-bordered"
-            value={selectedBentuk}
-            onChange={(e) => setSelectedBentuk(e.target.value)}
-          >
-            <option value="">Select Bentuk</option>
-            {bentukList.map((bentuk, index) => (
-              <option key={index} value={bentuk}>
-                {bentuk}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* School List in table format */}
-        <div className="overflow-x-auto w-full mt-4">
-          <table className="table-auto w-full text-sm">
-            <thead className="bg-info  border-b ">
-              <tr>
-                <th className="px-4 py-2 text-left">Nama Sekolah</th>
-                <th className="px-4 py-2 text-left">Bentuk</th>
-                <th className="px-4 py-2 text-left">Alamat</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentSchools.map((e, k) => (
-                <tr
-                  key={k}
-                  className="border-b hover:bg-base-100  transition duration-200"
-                >
-                  <td className="px-4 py-2">{e.sekolah}</td>
-                  <td className="px-4 py-2">{e.bentuk}</td>
-                  <td className="px-4 py-2">{e.alamat_jalan}</td>
-                  <td className="px-4 py-2">
-                    <div
-                      className={`badge ${
-                        e.status === "S" ? "badge-primary" : "badge-ghost"
-                      }`}
-                    >
-                      {e.status === "S" ? "Active" : "Inactive"}
-                    </div>
-                  </td>
+    <TitleCard title="Master Pendidikan" topMargin="mt-2">
+      {/* Search and Level Filter */}
+      <div className="mb-4 flex justify-between items-center">
+        <input
+          type="text"
+          placeholder="Search by Education Name"
+          className="input input-bordered w-full max-w-xs"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <select
+          className="select select-bordered w-full max-w-xs"
+          value={selectedLevel}
+          onChange={(e) => setSelectedLevel(e.target.value)}
+        >
+          <option value="">All Levels</option>
+          <option value="SMP">SMP</option>
+          <option value="SMA">SMA</option>
+        </select>
+      </div>
+      {/* Error handling */}
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+      {/* Education Table */}
+      <div className="overflow-x-auto w-full mt-4">
+        <table className="table-auto w-full text-sm text-gray-700">
+          <thead className="bg-gray-100 border-b">
+            <tr>
+              <th className="px-4 py-2 text-left">Nama Pendidikan</th>
+              <th className="px-4 py-2 text-left">Tingkat</th>
+              <th className="px-4 py-2 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sekolah?.length > 0 ? (
+              sekolah.map((p, index) => (
+                <tr key={p.id || index} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-2">{p.name}</td>
+                  <td className="px-4 py-2">{p.level}</td>
                   <td className="px-4 py-2 text-center">
-                    <button className="btn btn-square btn-ghost">
-                      <TrashIcon className="w-5 text-red-500" />
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => updatePendidikanDetails(p)}
+                    >
+                      <PencilIcon className="h-5 w-5 text-blue-500" />
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => viewPendidikanDetails(p)}
+                    >
+                      <EyeIcon className="h-5 w-5 text-green-500" />
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => deleteCurrentPendidikan(p.id)}
+                    >
+                      <TrashIcon className="h-5 w-5 text-red-500" />
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="px-4 py-2 text-center text-gray-500">
+                  No education records found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        <div className="btn-group space-x-2">
+          <button
+            className="btn btn-sm"
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            aria-label="Previous Page"
+          >
+            Previous
+          </button>
+          <span className="btn btn-sm">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn btn-sm"
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            aria-label="Next Page"
+          >
+            Next
+          </button>
         </div>
-
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          <div className="btn-group space-x-2">
-            <button
-              className="btn btn-sm"
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <button className="btn btn-sm">{currentPage}</button>
-            <button
-              className="btn btn-sm"
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </TitleCard>
-    </>
+      </div>
+    </TitleCard>
   );
 }
 
-export default Education;
+export default MasterPendidikan;
