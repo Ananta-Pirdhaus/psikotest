@@ -4,6 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { closeModal } from "../features/common/modalSlice";
 import AddLeadModalBody from "../features/leads/components/AddLeadModalBody";
 import AddCampusModalBody from "../features/master/MasterKampus/components/AddCampusModalBody";
+import AddSekolahModalBody from "../features/master/MasterPendidikan/components/AddSekolahModalBody";
+import ViewDetailSekolah from "../features/master/MasterPendidikan/components/ViewSekolahModalBody";
+import UpdateSekolah from "../features/master/MasterPendidikan/components/UpdateSekolahModalBody";
 import AddBakatModalBody from "../features/master/MasterBakat/components/AddBakatModalBody";
 import UpdateBakatModalBody from "../features/master/MasterBakat/components/updateBakatModalBody";
 import ViewBakatModalBody from "../features/master/MasterBakat/components/viewBakatModalBody";
@@ -52,6 +55,15 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.PROFESI_ADD_NEW]: (
                 <AddProfesiModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.SEKOLAH_ADD_NEW]: (
+                <AddSekolahModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.SEKOLAH_VIEW_DETAIL]: (
+                <ViewDetailSekolah {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.UPDATE_SEKOLAH]: (
+                <UpdateSekolah {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.SKILL_ADD_NEW]: (
                 <AddBakatModalBody {...modalBodyProps} />

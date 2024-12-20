@@ -2,6 +2,8 @@ import moment from "moment";
 import { useEffect, useState, useMemo } from "react";
 import TitleCard from "../../../components/Cards/TitleCard";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import PencilIcon from "@heroicons/react/24/outline/PencilIcon"; // Import PencilIcon for Update
+import EyeIcon from "@heroicons/react/24/outline/EyeIcon"; // Import EyeIcon for View
 import { useDispatch, useSelector } from "react-redux";
 import { getJurusan, deleteJurusan } from "./jurusanSlice"; // Adjust import based on file structure
 import {
@@ -59,6 +61,16 @@ function Jurusan() {
 
   const deleteCurrentJurusan = (id) => {
     dispatch(deleteJurusan(id)); // Dispatch deleteJurusan action with the selected jurusan id
+  };
+
+  const updateJurusan = (id) => {
+    console.log(`Updating Jurusan with ID: ${id}`); // Log for update action
+    // Dispatch action or navigate to update page
+  };
+
+  const viewJurusan = (id) => {
+    console.log(`Viewing details for Jurusan with ID: ${id}`); // Log for view action
+    // Handle view logic here, e.g., open modal with details
   };
 
   const filteredJurusan = useMemo(() => {
@@ -125,6 +137,22 @@ function Jurusan() {
                     {j.bakat ? j.bakat.join(", ") : "N/A"}
                   </td>
                   <td className="px-4 py-2 text-center">
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => updateJurusan(j.id)} // Log update
+                      aria-label="Update Jurusan Record"
+                    >
+                      <PencilIcon className="w-5 text-blue-500" />{" "}
+                      {/* Pencil icon for update */}
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => viewJurusan(j.id)} // Log view
+                      aria-label="View Jurusan Record"
+                    >
+                      <EyeIcon className="w-5 text-green-500" />{" "}
+                      {/* Eye icon for view */}
+                    </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentJurusan(j.id)} // Use the jurusan ID for deletion

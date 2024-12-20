@@ -172,7 +172,7 @@ function MasterBakat() {
   return (
     <>
       <TitleCard
-        title="Master Skills"
+        title="Master Bakat"
         topMargin="mt-2"
         TopSideButtons={<TopSideButtons />}
       >
@@ -183,7 +183,7 @@ function MasterBakat() {
             className="input input-bordered w-full max-w-xs"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search Skills"
+            aria-label="Cari Bakat"
           />
         </div>
 
