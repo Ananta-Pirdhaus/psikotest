@@ -11,6 +11,7 @@ import {
   MODAL_BODY_TYPES,
 } from "../../../utils/globalConstantUtil";
 import { openModal } from "../../common/modalSlice";
+import { Title } from "chart.js";
 
 const TopSideButtons = () => {
   const dispatch = useDispatch();
@@ -63,14 +64,28 @@ function Jurusan() {
     dispatch(deleteJurusan(id)); // Dispatch deleteJurusan action with the selected jurusan id
   };
 
-  const updateJurusan = (id) => {
-    console.log(`Updating Jurusan with ID: ${id}`); // Log for update action
-    // Dispatch action or navigate to update page
+  const updateJurusan = (id, jurusanDetail) => {
+    console.log(`Updating Jurusan with ID: ${id}`);
+    console.log("Jurusan Details: ", jurusanDetail); // Log the jurusan details
+    dispatch(
+      openModal({
+        title: "Update Jurusan",
+        bodyType: MODAL_BODY_TYPES.JURUSAN_UPDATE,
+        extraObject: { id, jurusanDetail }, // Perbaikan pada struktur objek
+      })
+    );
   };
 
-  const viewJurusan = (id) => {
-    console.log(`Viewing details for Jurusan with ID: ${id}`); // Log for view action
-    // Handle view logic here, e.g., open modal with details
+  const viewJurusan = (id, jurusanDetail) => {
+    console.log(`Viewing details for Jurusan with ID: ${id}`);
+    console.log("Jurusan Details: ", jurusanDetail); // Log the jurusan details
+    dispatch(
+      openModal({
+        title: "Jurusan Details",
+        bodyType: MODAL_BODY_TYPES.JURUSAN_VIEW,
+        extraObject: { id, jurusanDetail }, // Perbaikan pada struktur objek
+      })
+    );
   };
 
   const filteredJurusan = useMemo(() => {
@@ -139,7 +154,7 @@ function Jurusan() {
                   <td className="px-4 py-2 text-center">
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => updateJurusan(j.id)} // Log update
+                      onClick={() => updateJurusan(j.id, j)} // Log update and jurusan details
                       aria-label="Update Jurusan Record"
                     >
                       <PencilIcon className="w-5 text-blue-500" />{" "}
@@ -147,7 +162,7 @@ function Jurusan() {
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => viewJurusan(j.id)} // Log view
+                      onClick={() => viewJurusan(j.id, j)} // Log view and jurusan details
                       aria-label="View Jurusan Record"
                     >
                       <EyeIcon className="w-5 text-green-500" />{" "}

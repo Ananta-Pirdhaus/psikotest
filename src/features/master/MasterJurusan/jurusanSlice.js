@@ -27,6 +27,23 @@ export const addJurusan = createAsyncThunk(
   }
 );
 
+// Async thunk to update an existing jurusan
+export const updateJurusan = createAsyncThunk(
+  "jurusan/updateJurusan",
+  async (updatedJurusan, { rejectWithValue }) => {
+    try {
+      // Update the API request body to match the provided structure
+      const response = await axios.put(`jurusan/${updatedJurusan.id}`, {
+        name: updatedJurusan.name, // Nama jurusan
+        bakat: updatedJurusan.bakat, // Array bakat yang berisi ID-ID bakat
+      });
+      return response.data.data; // Mengembalikan response.data sebagai hasil sukses
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 // Async thunk to fetch all bakat data
 export const getBakat = createAsyncThunk(
   "bakat/getBakat",
@@ -142,6 +159,23 @@ const jurusanSlice = createSlice({
       .addCase(addJurusan.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Failed to add jurusan.";
+      })
+      .addCase(updateJurusan.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateJurusan.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Update the jurusan in the state with the updated data
+        const index = state.jurusan.findIndex(
+          (jurusan) => jurusan.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.jurusan[index] = action.payload; // Replace the old jurusan with the updated one
+        }
+      })
+      .addCase(updateJurusan.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Failed to update jurusan.";
       })
       .addCase(deleteJurusan.pending, (state) => {
         state.status = "loading";
