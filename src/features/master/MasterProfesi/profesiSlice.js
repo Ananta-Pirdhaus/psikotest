@@ -1,20 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Set base URL dari environment variable
+// Set base URL from environment variable
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
-// Menambahkan header Authorization dengan token dari localStorage
+// Add Authorization header with token from localStorage
 const token = localStorage.getItem("token");
 if (token) {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-// Async thunk untuk menambahkan profesi
+// Async thunk for adding profesi
 export const addProfesi = createAsyncThunk(
   "profesi/addProfesi",
   async (newProfesi, { getState, rejectWithValue }) => {
-    const bakat = getState().bakat.data;
+    const { bakat } = getState().profesi;
 
     if (!bakat || bakat.length === 0) {
       return rejectWithValue("Bakat data is not available.");
@@ -33,7 +33,7 @@ export const addProfesi = createAsyncThunk(
   }
 );
 
-// Async thunk untuk mendapatkan profesi
+// Async thunk for getting profesi
 export const getProfesi = createAsyncThunk(
   "profesi/getProfesi",
   async (_, { rejectWithValue }) => {
@@ -46,9 +46,9 @@ export const getProfesi = createAsyncThunk(
   }
 );
 
-// Async thunk untuk `bakat`
+// Async thunk for fetching bakat
 export const fetchBakat = createAsyncThunk(
-  "data/fetchBakat",
+  "profesi/fetchBakat",
   async (_, thunkAPI) => {
     try {
       const response = await axios.get("bakat");
@@ -63,10 +63,11 @@ export const fetchBakat = createAsyncThunk(
 
 // Initial state
 const initialState = {
-  profesi: [], // Data profesi
+  profesi: [],
   bakat: [],
-  status: "idle", // Status loading
-  error: null, // Error state
+  selectBakatOptions: [],
+  status: "idle",
+  error: null,
 };
 
 const profesiSlice = createSlice({
@@ -74,8 +75,7 @@ const profesiSlice = createSlice({
   initialState,
   reducers: {
     getProfesiContent(state, action) {
-      const profesiData = Array.isArray(action.payload) ? action.payload : [];
-      state.profesi = profesiData;
+      state.profesi = Array.isArray(action.payload) ? action.payload : [];
     },
     deleteProfesi(state, action) {
       const idToDelete = action.payload;
@@ -90,6 +90,12 @@ const profesiSlice = createSlice({
     getBakatContent(state, action) {
       state.bakat = action.payload || [];
     },
+    setSelectBakatOptions(state, action) {
+      state.selectBakatOptions = action.payload.map((bakat) => ({
+        value: bakat.id,
+        label: bakat.name,
+      }));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -98,33 +104,30 @@ const profesiSlice = createSlice({
       })
       .addCase(getProfesi.fulfilled, (state, action) => {
         state.status = "succeeded";
-
-        // Access the 'data' field in the response
         const profesiData = action.payload?.data || [];
-
-        // Update the state with the profesi data
         state.profesi = Array.isArray(profesiData) ? profesiData : [];
-
-        // Log the data to the console
         console.log("data dari profesi", profesiData);
       })
-
+      .addCase(getProfesi.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Failed to fetch profesi data.";
+      })
       .addCase(fetchBakat.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchBakat.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.bakat = action.payload;
-        console.log("data fetchBaka mantap: ", action.payload);
+        const bakatData = action.payload || [];
+        state.bakat = Array.isArray(bakatData) ? bakatData : [];
+        state.selectBakatOptions = bakatData.map((bakat) => ({
+          value: bakat.id,
+          label: bakat.name,
+        }));
+        console.log("Select Bakat Options:", state.selectBakatOptions);
       })
       .addCase(fetchBakat.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload;
-      })
-
-      .addCase(getProfesi.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload || "Failed to fetch profesi data.";
+        state.error = action.payload || "Failed to fetch bakat data.";
       })
       .addCase(addProfesi.pending, (state) => {
         state.status = "loading";
@@ -146,6 +149,7 @@ export const {
   deleteProfesi,
   importProfesiData,
   getBakatContent,
+  setSelectBakatOptions,
 } = profesiSlice.actions;
 
 // Export reducer

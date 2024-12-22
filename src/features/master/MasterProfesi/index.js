@@ -5,7 +5,6 @@ import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
 import {
   getProfesi,
-  addProfesi,
   deleteProfesi,
   importProfesiData,
 } from "./profesiSlice";
@@ -14,6 +13,8 @@ import {
   MODAL_BODY_TYPES,
 } from "../../../utils/globalConstantUtil";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import EyeIcon from "@heroicons/react/24/outline/EyeIcon"; // Import Eye Icon
+import PencilIcon from "@heroicons/react/24/outline/PencilIcon"; // Import Pencil Icon
 import * as XLSX from "xlsx";
 
 const TopSideButtons = ({ onImport }) => {
@@ -23,7 +24,7 @@ const TopSideButtons = ({ onImport }) => {
     dispatch(
       openModal({
         title: "Add New Profesi",
-        bodyType: MODAL_BODY_TYPES.PROFESI_ADD_NEW,
+        bodyType: MODAL_BODY_TYPES.ADD_PROFESI_NEW,
       })
     );
   };
@@ -121,6 +122,14 @@ function Profesi() {
     dispatch(deleteProfesi(id)); // Delete the profession with the given ID
   };
 
+  const viewProfesi = (id) => {
+    console.log("View Profesi ID:", id);
+  };
+
+  const editProfesi = (id) => {
+    console.log("Edit Profesi ID:", id);
+  };
+
   const filteredProfesi = useMemo(() => {
     return profesi.filter((p) => {
       const name = String(p.name || "").toLowerCase();
@@ -185,6 +194,20 @@ function Profesi() {
                   </td>
 
                   <td className="px-4 py-2 text-center">
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => editProfesi(p.id)}
+                      aria-label="Edit Profesi Record"
+                    >
+                      <PencilIcon className="w-5 text-blue-500" />
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => viewProfesi(p.id)}
+                      aria-label="View Profesi Record"
+                    >
+                      <EyeIcon className="w-5 text-green-500" />
+                    </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentProfesi(p.id)}

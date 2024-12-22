@@ -55,9 +55,6 @@ function ModalLayout() {
               [MODAL_BODY_TYPES.LEAD_ADD_NEW]: (
                 <AddLeadModalBody {...modalBodyProps} />
               ),
-              [MODAL_BODY_TYPES.PROFESI_ADD_NEW]: (
-                <AddProfesiModalBody {...modalBodyProps} />
-              ),
               [MODAL_BODY_TYPES.SEKOLAH_ADD_NEW]: (
                 <AddSekolahModalBody {...modalBodyProps} />
               ),
@@ -90,6 +87,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.CONFIRMATION]: (
                 <ConfirmationModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.ADD_PROFESI_NEW]: (
+                <AddProfesiModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]

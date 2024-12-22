@@ -18,7 +18,7 @@ const TopSideButtons = () => {
   const openAddNewJurusanModal = () => {
     dispatch(
       openModal({
-        title: "Add New Skill",
+        title: "Add New Jurusan",
         bodyType: MODAL_BODY_TYPES.JURUSAN_ADD_NEW,
       })
     );

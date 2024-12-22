@@ -12,6 +12,7 @@ module.exports = Object.freeze({
     SKILL_ADD_NEW: "SKILL_ADD_NEW",
     SKILL_UPDATE: "SKILL_UPDATE",
     SKILL_VIEW: "SKILL_VIEW",
+    ADD_PROFESI_NEW: "ADD_PROFESI_NEW",
     DEFAULT: "",
   },
 
