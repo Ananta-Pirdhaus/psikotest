@@ -7,7 +7,6 @@ import educationSlice from "../features/master/MasterPendidikan/sekolahSlice"; /
 import MasterJurusanSlice from "../features/master/MasterJurusan/jurusanSlice"; // Tambahkan ini
 import MasterRegion from "../features/master/MasteRegion/regionSlice"; // Tambahkan ini
 import MasterProfesi from "../features/master/MasterProfesi/profesiSlice";
-import MasterSuccess from "../features/master/MasterSuccess/succesSlice";
 import MasterBakat from "../features/master/MasterBakat/bakatSlice";
 import MasterKelas from "../features/master/MasterKelas/kelasSlice";
 import MasterKampus from "../features/master/MasterKampus/kampuSlice";
@@ -21,10 +20,9 @@ const combinedReducer = {
   jurusan: MasterJurusanSlice, // Tambahkan reducer ini
   region: MasterRegion, // Tambahkan reducer ini
   profesi: MasterProfesi, // Tambahkan reducer ini
-  orangSukses: MasterSuccess, // Tambahkan reducer ini
   bakat: MasterBakat, // Tambahkan reducer ini
   kelas: MasterKelas, // Tambahkan reducer ini
-  university: MasterKampus, // Tambahkan reducer ini
+  kampus: MasterKampus, // Tambahkan reducer ini
 };
 
 export default configureStore({

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText"; // Tambahkan komponen ini
 import { showNotification } from "../../../common/headerSlice";
-import { addNewUniversity } from "../kampuSlice"; // Perbarui path sesuai lokasi slice
+import { addKampus } from "../kampuSlice"; // Perbarui path sesuai lokasi slice
 
 const INITIAL_FORM_DATA = {
   NamaProdi: "",
@@ -37,7 +37,7 @@ const AddCampusModalBody = ({ closeModal }) => {
     }
 
     // Data valid, kirim ke Redux
-    dispatch(addNewUniversity(formData)); // Kirim data ke Redux
+    dispatch(addKampus(formData)); // Kirim data ke Redux
     dispatch(
       showNotification({
         message: "New campus added successfully!",

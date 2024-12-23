@@ -26,7 +26,6 @@ const MasterKampus = lazy(() => import("../pages/protected/MasterKampus"));
 const MasterJurusan = lazy(() => import("../pages/protected/MasterJurusan"));
 const MasterRegion = lazy(() => import("../pages/protected/MasterRegion"));
 const MasterProfesi = lazy(() => import("../pages/protected/MasterProfesi"));
-const MasterSukses = lazy(() => import("../pages/protected/MasterSuccess"));
 const MasterBakat = lazy(() => import("../pages/protected/MasterBakat"));
 const MasterKelas = lazy(() => import("../pages/protected/MasterKelas"));
 
@@ -111,10 +110,7 @@ const routes = [
     path: "/master-profesi",
     component: MasterProfesi,
   },
-  {
-    path: "/master-orang-sukses",
-    component: MasterSukses,
-  },
+
   {
     path: "/master-bakat",
     component: MasterBakat,

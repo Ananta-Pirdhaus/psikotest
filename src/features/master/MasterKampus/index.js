@@ -1,151 +1,215 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { importUniversityData, deleteUniversity } from "./kampuSlice";
-import * as XLSX from "xlsx"; // Perbaikan impor XLSX
-import { TrashIcon } from "@heroicons/react/outline";
+import moment from "moment";
+import { useEffect, useState, useMemo } from "react";
+import TitleCard from "../../../components/Cards/TitleCard";
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
+import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { getKampus, deleteKampus } from "./kampuSlice"; // Adjust import path
+import {
+  CONFIRMATION_MODAL_CLOSE_TYPES,
+  MODAL_BODY_TYPES,
+} from "../../../utils/globalConstantUtil";
+import { openModal } from "../../common/modalSlice";
 
-const TopSideButtons = ({ onImport }) => {
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
+const TopSideButtons = () => {
+  const dispatch = useDispatch();
 
-    reader.onload = (event) => {
-      const binaryStr = event.target.result;
-      const workbook = XLSX.read(binaryStr, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  const openAddNewKampusModal = () => {
+    dispatch(
+      openModal({
+        title: "Add New Kampus",
+        bodyType: MODAL_BODY_TYPES.KAMPUS_ADD_NEW,
+      })
+    );
+  };
 
-      // Process data: Remove duplicates by NamaProdi and NamaPT
-      const uniqueData = sheetData.filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex(
-            (t) => t.NamaProdi === value.NamaProdi && t.NamaPT === value.NamaPT
-          )
-      );
-
-      onImport(uniqueData);
-    };
-
-    reader.readAsBinaryString(file);
+  const handleFileUpload = async (event) => {
+    // Handle file upload logic here
   };
 
   return (
-    <div className="flex justify-end mb-4">
-      <label htmlFor="file-upload" className="btn btn-primary mr-2">
-        Import Data
+    <div className="inline-block float-right space-x-2">
+      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
+        Import CSV/Excel
+        <input
+          type="file"
+          accept=".csv, .xlsx"
+          className="hidden"
+          onChange={handleFileUpload}
+        />
       </label>
-      <input
-        id="file-upload"
-        type="file"
-        className="hidden"
-        onChange={handleFileUpload}
-      />
       <button
-        className="btn btn-secondary"
-        onClick={() => alert("Add University Modal")}
+        className="btn px-6 btn-sm normal-case btn-primary"
+        onClick={openAddNewKampusModal}
       >
-        Add University
+        Add New
       </button>
     </div>
   );
 };
 
-const Education = () => {
+function Kampus() {
   const dispatch = useDispatch();
-  const universityData = useSelector((state) => state.university.university);
-
+  const { kampus, loading, error } = useSelector((state) => state.kampus);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this university?")) {
-      dispatch(deleteUniversity(id));
-    }
+  useEffect(() => {
+    dispatch(getKampus());
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await dispatch(getKampus());
+        console.log("Data from getKampus:", data); // Log the data returned by the action
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
+
+  const deleteCurrentKampus = (id) => {
+    dispatch(deleteKampus(id)); // Dispatch delete action
   };
 
-  const handleImport = (data) => {
-    dispatch(importUniversityData(data));
+  const updateKampus = (id, kampusDetail) => {
+    dispatch(
+      openModal({
+        title: "Update Kampus",
+        bodyType: MODAL_BODY_TYPES.KAMPUS_UPDATE,
+        extraObject: { id, kampusDetail },
+      })
+    );
   };
 
-  // Filter and paginate data
-  const filteredData = universityData.filter(
-    (item) =>
-      item.NamaProdi.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.LLDikti.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const viewKampus = (id, kampusDetail) => {
+    dispatch(
+      openModal({
+        title: "Kampus Details",
+        bodyType: MODAL_BODY_TYPES.KAMPUS_VIEW,
+        extraObject: { id, kampusDetail },
+      })
+    );
+  };
 
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const filteredKampus = useMemo(() => {
+    return kampus.filter((k) => {
+      const namaKampus = String(k.name).toLowerCase();
+      return namaKampus.includes(searchQuery.toLowerCase());
+    });
+  }, [kampus, searchQuery]);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentKampus = filteredKampus.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(filteredKampus.length / itemsPerPage);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div className="p-4">
-      <TopSideButtons onImport={handleImport} />
+    <>
+      <TitleCard
+        title="Master Kampus"
+        topMargin="mt-2"
+        TopSideButtons={<TopSideButtons />}
+      >
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search by Kampus Name"
+            className="input input-bordered w-full max-w-xs"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search Kampus"
+          />
+        </div>
 
-      <input
-        type="text"
-        placeholder="Search by NamaProdi or LLDikti"
-        className="input input-bordered w-full mb-4"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-
-      <table className="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nama Prodi</th>
-            <th>Nama PT</th>
-            <th>LLDikti</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedData.map((item, index) => (
-            <tr key={index}>
-              <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-              <td>{item.NamaProdi}</td>
-              <td>{item.NamaPT}</td>
-              <td>{item.LLDikti}</td>
-              <td>
-                <button
-                  className="btn btn-error btn-sm"
-                  onClick={() => handleDelete(item.id)}
+        <div className="overflow-x-auto w-full mt-4">
+          <table className="table-auto w-full text-sm text-gray-700">
+            <thead className="bg-gray-100 border-b">
+              <tr>
+                <th className="px-4 py-2 text-left">Nama Kampus</th>
+                <th className="px-4 py-2 text-left">Ranking</th>
+                <th className="px-4 py-2 text-left">Jurusan</th>
+                <th className="px-4 py-2 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentKampus.map((k, index) => (
+                <tr
+                  key={index}
+                  className="border-b hover:bg-gray-50 transition duration-200"
                 >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="px-4 py-2">{k.name}</td>
+                  <td className="px-4 py-2">{k.rank}</td>
+                  <td className="px-4 py-2">
+                    {k.jurusan ? k.jurusan.join(", ") : "N/A"}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => updateKampus(k.id, k)}
+                    >
+                      <PencilIcon className="w-5 text-blue-500" />
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => viewKampus(k.id, k)}
+                    >
+                      <EyeIcon className="w-5 text-green-500" />
+                    </button>
+                    <button
+                      className="btn btn-square btn-ghost"
+                      onClick={() => deleteCurrentKampus(k.id)}
+                    >
+                      <TrashIcon className="w-5 text-red-500" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div className="flex justify-between items-center mt-4">
-        <button
-          className="btn btn-secondary"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {Math.ceil(filteredData.length / itemsPerPage)}
-        </span>
-        <button
-          className="btn btn-secondary"
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={
-            currentPage === Math.ceil(filteredData.length / itemsPerPage)
-          }
-        >
-          Next
-        </button>
-      </div>
-    </div>
+        <div className="flex justify-center mt-4">
+          <div className="btn-group space-x-2">
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="btn btn-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </TitleCard>
+    </>
   );
-};
+}
 
-export default Education;
+export default Kampus;
