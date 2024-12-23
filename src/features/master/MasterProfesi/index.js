@@ -3,11 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
-import {
-  getProfesi,
-  deleteProfesi,
-  importProfesiData,
-} from "./profesiSlice";
+import { getProfesi, deleteProfesi, importProfesiData } from "./profesiSlice";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,
@@ -88,6 +84,7 @@ function Profesi() {
   const profesi = useSelector((state) => state.profesi.profesi);
   const status = useSelector((state) => state.profesi.status);
   const error = useSelector((state) => state.profesi.error);
+  const [selectedProfesiData, setSelectedProfesiData] = useState(null);
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -122,12 +119,27 @@ function Profesi() {
     dispatch(deleteProfesi(id)); // Delete the profession with the given ID
   };
 
-  const viewProfesi = (id) => {
-    console.log("View Profesi ID:", id);
+  const viewProfesi = (id, profesi) => {
+    console.log("View Profesi:", id);
+    console.log("Data Profesi:", profesi);
+    dispatch(
+      openModal({
+        title: "View Profesi",
+        bodyType: MODAL_BODY_TYPES.VIEW_PROFESI,
+        extraObject: { id, profesi }, // Kirim seluruh data profesi
+      })
+    );
   };
 
-  const editProfesi = (id) => {
-    console.log("Edit Profesi ID:", id);
+  const editProfesi = (profesi) => {
+    console.log("Edit Profesi:", profesi);
+    dispatch(
+      openModal({
+        title: "Edit Profesi",
+        bodyType: MODAL_BODY_TYPES.EDIT_PROFESI,
+        extraObject: profesi, // Kirim seluruh data profesi
+      })
+    );
   };
 
   const filteredProfesi = useMemo(() => {
@@ -203,7 +215,7 @@ function Profesi() {
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => viewProfesi(p.id)}
+                      onClick={() => viewProfesi(p.id, p)}
                       aria-label="View Profesi Record"
                     >
                       <EyeIcon className="w-5 text-green-500" />

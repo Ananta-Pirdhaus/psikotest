@@ -76,6 +76,8 @@ function Kampus() {
   };
 
   const viewKampus = (id, kampusDetail) => {
+    console.log("id yang dipanggil: ", id)
+    console.log("data yang dipanggil: ", kampusDetail)
     dispatch(
       openModal({
         title: "Kampus Details",

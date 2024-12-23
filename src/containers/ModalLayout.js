@@ -11,11 +11,13 @@ import AddBakatModalBody from "../features/master/MasterBakat/components/AddBaka
 import UpdateBakatModalBody from "../features/master/MasterBakat/components/updateBakatModalBody";
 import ViewBakatModalBody from "../features/master/MasterBakat/components/viewBakatModalBody";
 import AddProfesiModalBody from "../features/master/MasterProfesi/components/AddProfesiModalBody";
+import ViewProfesiModalBody from "../features/master/MasterProfesi/components/ViewProfesiModalBody";
 import ConfirmationModalBody from "../features/common/components/ConfirmationModalBody";
 import JurusanModalAddModalBody from "../features/master/MasterJurusan/components/AddJurusanModalBody";
 import ViewJurusanModalBody from "../features/master/MasterJurusan/components/ViewJurusanModalBody";
 import UpdateJurusanModalBody from "../features/master/MasterJurusan/components/UpdateJurusanModalBody";
 import AddKampusModalBody from "../features/master/MasterKampus/components/AddCampusModalBody";
+import ViewKampusModalBody from "../features/master/MasterKampus/components/ViewKampusModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -92,8 +94,14 @@ function ModalLayout() {
               [MODAL_BODY_TYPES.ADD_PROFESI_NEW]: (
                 <AddProfesiModalBody {...modalBodyProps} />
               ),
+              [MODAL_BODY_TYPES.VIEW_PROFESI]: (
+                <ViewProfesiModalBody {...modalBodyProps} />
+              ),
               [MODAL_BODY_TYPES.KAMPUS_ADD_NEW]: (
                 <AddKampusModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.KAMPUS_VIEW]: (
+                <ViewKampusModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
