@@ -13,13 +13,30 @@ if (token) {
 // Async thunk to add a new kampus with jurusan
 export const addKampus = createAsyncThunk(
   "kampus/addKampus",
-  async (newKampus, { rejectWithValue }) => {
+  async (newKampus, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post("perguruan-tinggi", {
-        name: newKampus.name, // Nama kampus
-        jurusan: newKampus.jurusan, // Array jurusan yang berisi ID-ID jurusan
+        name: newKampus.name,
+        rank: newKampus.rank,
+        jurusan: newKampus.jurusan,
       });
+
+      // Dispatch getKampus untuk mengambil data terbaru
+      dispatch(getKampus());
+
       return response.data; // Mengembalikan response.data sebagai hasil sukses
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const getKampus = createAsyncThunk(
+  "kampus/getKampus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("perguruan-tinggi");
+      return response.data.data || response.data; // Consistency with response data
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -33,6 +50,7 @@ export const updateKampus = createAsyncThunk(
     try {
       const response = await axios.put(`perguruan-tinggi/${updatedKampus.id}`, {
         name: updatedKampus.name, // Nama kampus
+        rank: updatedKampus.rank,
         jurusan: updatedKampus.jurusan, // Array jurusan yang berisi ID-ID jurusan
       });
       return response.data.data; // Mengembalikan response.data sebagai hasil sukses
@@ -56,17 +74,7 @@ export const getJurusan = createAsyncThunk(
 );
 
 // Async thunk to fetch all kampus data
-export const getKampus = createAsyncThunk(
-  "kampus/getKampus",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get("perguruan-tinggi");
-      return response.data.data || response.data; // Consistency with response data
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
+
 
 // Async thunk to delete a kampus
 export const deleteKampus = createAsyncThunk(
@@ -88,6 +96,7 @@ const initialState = {
   selectJurusanOptions: [], // Data untuk select options
   status: "idle", // Loading status
   error: null, // Error state
+  loading: false,
 };
 
 const kampusSlice = createSlice({
@@ -116,28 +125,33 @@ const kampusSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // getKampus
       .addCase(getKampus.pending, (state) => {
+        state.loading = true;
         state.status = "loading";
       })
       .addCase(getKampus.fulfilled, (state, action) => {
+        state.loading = false;
         state.status = "succeeded";
         state.kampus = Array.isArray(action.payload) ? action.payload : [];
         console.log("data dari kampus: ", action.payload);
       })
       .addCase(getKampus.rejected, (state, action) => {
+        state.loading = false;
         state.status = "failed";
         state.error = action.payload || "Failed to fetch kampus data.";
       })
+
+      // getJurusan
       .addCase(getJurusan.pending, (state) => {
+        state.loading = true;
         state.status = "loading";
       })
       .addCase(getJurusan.fulfilled, (state, action) => {
+        state.loading = false;
         state.status = "succeeded";
-
-        // Check if action.payload is an array
         if (Array.isArray(action.payload)) {
           state.jurusan = action.payload;
-          // Map jurusan data to select options
           state.selectJurusanOptions = action.payload.map((jurusan) => ({
             value: jurusan.id,
             label: jurusan.name,
@@ -152,24 +166,34 @@ const kampusSlice = createSlice({
         }
       })
       .addCase(getJurusan.rejected, (state, action) => {
+        state.loading = false;
         state.status = "failed";
         state.error = action.payload || "Failed to fetch jurusan data.";
       })
+
+      // addKampus
       .addCase(addKampus.pending, (state) => {
+        state.loading = true;
         state.status = "loading";
       })
       .addCase(addKampus.fulfilled, (state, action) => {
+        state.loading = false;
         state.status = "succeeded";
         state.kampus.push(action.payload);
       })
       .addCase(addKampus.rejected, (state, action) => {
+        state.loading = false;
         state.status = "failed";
         state.error = action.payload || "Failed to add kampus.";
       })
+
+      // updateKampus
       .addCase(updateKampus.pending, (state) => {
+        state.loading = true;
         state.status = "loading";
       })
       .addCase(updateKampus.fulfilled, (state, action) => {
+        state.loading = false;
         state.status = "succeeded";
         const index = state.kampus.findIndex(
           (kampus) => kampus.id === action.payload.id
@@ -179,19 +203,25 @@ const kampusSlice = createSlice({
         }
       })
       .addCase(updateKampus.rejected, (state, action) => {
+        state.loading = false;
         state.status = "failed";
         state.error = action.payload || "Failed to update kampus.";
       })
+
+      // deleteKampus
       .addCase(deleteKampus.pending, (state) => {
+        state.loading = true;
         state.status = "loading";
       })
       .addCase(deleteKampus.fulfilled, (state, action) => {
+        state.loading = false;
         state.status = "succeeded";
         state.kampus = state.kampus.filter(
           (kampus) => kampus.id !== action.payload
         );
       })
       .addCase(deleteKampus.rejected, (state, action) => {
+        state.loading = false;
         state.status = "failed";
         state.error = action.payload || "Failed to delete kampus.";
       });

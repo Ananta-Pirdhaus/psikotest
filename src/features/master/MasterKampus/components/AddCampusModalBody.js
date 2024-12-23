@@ -1,107 +1,169 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
-import ErrorText from "../../../../components/Typography/ErrorText"; // Tambahkan komponen ini
+import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
-import { addKampus } from "../kampuSlice"; // Perbarui path sesuai lokasi slice
+import { addKampus, getJurusan } from "../kampuSlice";
+import Select from "react-select"; // Import react-select
 
-const INITIAL_FORM_DATA = {
-  NamaProdi: "",
-  NamaPT: "",
-  Jenjang: "",
-  LLDikti: "",
+const INITIAL_KAMPUS_OBJ = {
+  name: "",
+  rank: 1, // Default rank, can be modified
+  jurusan: [], // Array for selected "jurusan" (departments)
 };
 
-const AddCampusModalBody = ({ closeModal }) => {
+function AddKampusModalBody({ closeModal }) {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+
+  // Get "jurusanOptions" from Redux store
+  const jurusanOptions = useSelector(
+    (state) => state.kampus.selectJurusanOptions
+  );
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [kampusObj, setKampusObj] = useState(INITIAL_KAMPUS_OBJ);
+  const [newKampusObj, setNewKampusObj] = useState(null); // New state for validated object
 
-  const handleSubmit = () => {
-    // Validasi langsung di fungsi submit
-    if (formData.NamaProdi.trim() === "") {
-      setErrorMessage("Program name is required!");
-      return;
+  // Fetch "jurusan" options if not available in Redux store
+  useEffect(() => {
+    if (!jurusanOptions || jurusanOptions.length === 0) {
+      dispatch(getJurusan());
     }
-    if (formData.NamaPT.trim() === "") {
-      setErrorMessage("Institution name is required!");
+  }, [jurusanOptions, dispatch]);
+
+  const saveNewKampus = () => {
+    // Log tracking nilai kampusObj sebelum penyimpanan
+    console.log("Kampus Object before save:", kampusObj);
+
+    // Validate kampusObj and prepare newKampusObj
+    if (kampusObj.name.trim() === "") {
+      setErrorMessage("Name is required!");
       return;
-    }
-    if (formData.Jenjang.trim() === "") {
-      setErrorMessage("Level is required!");
+    } else if (kampusObj.jurusan.length === 0) {
+      setErrorMessage("At least one Jurusan is required!");
       return;
-    }
-    if (formData.LLDikti.trim() === "") {
-      setErrorMessage("LLDikti is required!");
+    } else if (isNaN(kampusObj.rank) || kampusObj.rank <= 0) {
+      setErrorMessage("Rank must be a positive integer!");
       return;
     }
 
-    // Data valid, kirim ke Redux
-    dispatch(addKampus(formData)); // Kirim data ke Redux
-    dispatch(
-      showNotification({
-        message: "New campus added successfully!",
-        status: 1, // Ganti "type: success" dengan status angka
+    // Create the validated newKampusObj
+    const validatedKampusObj = {
+      name: kampusObj.name,
+      rank: parseInt(kampusObj.rank), // Ensure rank is an integer
+      jurusan: kampusObj.jurusan, // Array of selected jurusan IDs
+    };
+
+    // Update the newKampusObj state with the validated data
+    setNewKampusObj(validatedKampusObj);
+
+    // Log tracking nilai payload sebelum dikirimkan
+    console.log("Validated Payload before sending:", validatedKampusObj);
+
+    setLoading(true);
+
+    // Menggunakan axios atau fetch untuk mengirim data raw (JSON)
+    dispatch(addKampus(validatedKampusObj))
+      .then((response) => {
+        // Log hasil response dari action addKampus
+        console.log("Response from addKampus:", response);
+
+        dispatch(showNotification({ message: "New Kampus Added!", status: 1 }));
+        closeModal();
+        setLoading(false);
       })
-    );
-    closeModal(); // Tutup modal
+      .catch((error) => {
+        // Log error jika ada
+        console.error("Error while adding kampus:", error);
+
+        const errorDetails = error?.response?.data?.errors;
+        if (errorDetails) {
+          setErrorMessage(errorDetails.name?.[0] || errorDetails.jurusan?.[0]);
+        } else {
+          setErrorMessage(error.message || "Failed to add new kampus.");
+        }
+        setLoading(false);
+      });
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage(""); // Reset error saat input diubah
-    setFormData({ ...formData, [updateType]: value });
+    console.log(`Updating ${updateType} with value:`, value); // Log perubahan input
+    setErrorMessage(""); // Reset error message
+    setKampusObj({ ...kampusObj, [updateType]: value });
   };
+
+  // Only render the component when jurusanOptions are available
+  if (!jurusanOptions || jurusanOptions.length === 0)
+    return <div>Loading...</div>;
+
+  // Prepare options for react-select
+  const jurusanSelectOptions = jurusanOptions.map((jurusan) => ({
+    value: jurusan.value,
+    label: jurusan.label,
+  }));
 
   return (
     <>
       <InputText
         type="text"
-        defaultValue={formData.NamaProdi}
-        updateType="NamaProdi"
+        value={kampusObj.name || ""} // Ensure it's always defined
+        defaultValue={kampusObj.name || ""} // Add defaultValue for initial value
+        updateType="name"
         containerStyle="mt-4"
-        labelTitle="Program Name"
+        labelTitle="Name"
         updateFormValue={updateFormValue}
       />
 
       <InputText
-        type="text"
-        defaultValue={formData.NamaPT}
-        updateType="NamaPT"
+        type="number"
+        value={kampusObj.rank || 1} // Ensure it's always defined
+        defaultValue={kampusObj.rank || 1} // Add defaultValue for initial value
+        updateType="rank"
         containerStyle="mt-4"
-        labelTitle="Institution Name"
+        labelTitle="Rank"
         updateFormValue={updateFormValue}
       />
 
-      <InputText
-        type="text"
-        defaultValue={formData.Jenjang}
-        updateType="Jenjang"
-        containerStyle="mt-4"
-        labelTitle="Level"
-        updateFormValue={updateFormValue}
-      />
+      {/* Dropdown for selecting jurusan using react-select */}
+      <div className="mt-4">
+        <label className="block text-sm font-medium text-gray-700">
+          Jurusan
+        </label>
+        <Select
+          isMulti
+          options={jurusanSelectOptions}
+          value={jurusanSelectOptions.filter((option) =>
+            kampusObj.jurusan.includes(option.value)
+          )}
+          onChange={(selectedOptions) =>
+            updateFormValue({
+              updateType: "jurusan",
+              value: selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : [], // Ensure jurusan is always an array
+            })
+          }
+          className="w-full"
+          placeholder="Select Jurusan"
+        />
+      </div>
 
-      <InputText
-        type="text"
-        defaultValue={formData.LLDikti}
-        updateType="LLDikti"
-        containerStyle="mt-4"
-        labelTitle="LLDikti"
-        updateFormValue={updateFormValue}
-      />
-
-      <ErrorText styleClass="mt-16">{errorMessage}</ErrorText>
+      <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
 
       <div className="modal-action">
-        <button className="btn btn-ghost" onClick={closeModal}>
+        <button className="btn btn-ghost" onClick={() => closeModal()}>
           Cancel
         </button>
-        <button className="btn btn-primary px-6" onClick={handleSubmit}>
-          Submit
+        <button
+          className="btn btn-primary px-6"
+          onClick={saveNewKampus}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
         </button>
       </div>
     </>
   );
-};
+}
 
-export default AddCampusModalBody;
+export default AddKampusModalBody;

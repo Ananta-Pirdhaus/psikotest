@@ -13,15 +13,28 @@ if (token) {
 // Async thunk to add a new jurusan with bakat
 export const addJurusan = createAsyncThunk(
   "jurusan/addJurusan",
-  async (newJurusan, { rejectWithValue }) => {
+  async (newJurusan, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post("jurusan", {
         name: newJurusan.name, // Nama jurusan
         bakat: newJurusan.bakat, // Array bakat yang berisi ID-ID bakat
       });
+      dispatch(getJurusan());
       return response.data; // Mengembalikan response.data sebagai hasil sukses
     } catch (error) {
       // Jika terjadi error, mengembalikan pesan error
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const getJurusan = createAsyncThunk(
+  "jurusan/getJurusan",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("jurusan");
+      return response.data;
+    } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
@@ -58,17 +71,7 @@ export const getBakat = createAsyncThunk(
 );
 
 // Async thunk to fetch all jurusan data
-export const getJurusan = createAsyncThunk(
-  "jurusan/getJurusan",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get("jurusan");
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
+
 
 // Async thunk to delete a jurusan
 export const deleteJurusan = createAsyncThunk(

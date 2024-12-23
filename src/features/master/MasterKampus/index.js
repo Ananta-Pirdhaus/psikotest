@@ -56,22 +56,9 @@ function Kampus() {
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch data when the component mounts or when data changes
   useEffect(() => {
     dispatch(getKampus());
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await dispatch(getKampus());
-        console.log("Data from getKampus:", data); // Log the data returned by the action
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
   }, [dispatch]);
 
   const deleteCurrentKampus = (id) => {
@@ -98,6 +85,7 @@ function Kampus() {
     );
   };
 
+  // Filtering kampus data based on the search query
   const filteredKampus = useMemo(() => {
     return kampus.filter((k) => {
       const namaKampus = String(k.name).toLowerCase();
@@ -105,6 +93,7 @@ function Kampus() {
     });
   }, [kampus, searchQuery]);
 
+  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentKampus = filteredKampus.slice(indexOfFirstItem, indexOfLastItem);

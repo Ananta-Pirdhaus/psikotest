@@ -13,7 +13,7 @@ if (token) {
 // Async thunk for adding profesi
 export const addProfesi = createAsyncThunk(
   "profesi/addProfesi",
-  async (newProfesi, { getState, rejectWithValue }) => {
+  async (newProfesi, { getState, rejectWithValue, dispatch }) => {
     const { bakat } = getState().profesi;
 
     if (!bakat || bakat.length === 0) {
@@ -25,6 +25,8 @@ export const addProfesi = createAsyncThunk(
         name: newProfesi.name,
         bakat: newProfesi.bakat,
       });
+
+      dispatch(getProfesi());
 
       return response.data;
     } catch (error) {

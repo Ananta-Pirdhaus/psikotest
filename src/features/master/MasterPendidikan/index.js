@@ -103,15 +103,14 @@ const TopSideButtons = () => {
 };
 
 function MasterPendidikan() {
-  const { sekolah, loading, error, meta } = useSelector(
+  const { sekolah, error, meta, status } = useSelector(
     (state) => state.sekolah
-  ); // Akses data sekolah dari Redux store
+  );
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch sekolah data based on selected level and current page
   useEffect(() => {
     dispatch(fetchSekolah({ level: selectedLevel, page: currentPage }));
   }, [dispatch, selectedLevel, currentPage]);
@@ -140,9 +139,8 @@ function MasterPendidikan() {
     );
   };
 
-  // Function to handle Eye Icon click, logging school details
   const viewSekolahDetails = (sekolah) => {
-    console.log("Viewing school details:", sekolah); // Log school details
+    console.log("Viewing school details:", sekolah);
     dispatch(
       openModal({
         title: "School Details",
@@ -153,7 +151,7 @@ function MasterPendidikan() {
   };
 
   const filteredSekolah = useMemo(() => {
-    if (!sekolah) return []; // Handle case when sekolah is undefined
+    if (!sekolah) return [];
     return sekolah.filter((p) => {
       const name = String(p.name || "").toLowerCase();
       const level = String(p.level || "").toLowerCase();
@@ -185,7 +183,15 @@ function MasterPendidikan() {
       topMargin="mt-2"
       TopSideButtons={<TopSideButtons />}
     >
-      {/* Search and Level Filter */}
+      {status === "failed" && error && (
+        <div className="text-red-500 mb-4">
+          {/* Check if error is an object, and render its message */}
+          {typeof error === "object" && error !== null
+            ? error.message || "Unknown error occurred"
+            : error}
+        </div>
+      )}
+
       <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
@@ -204,9 +210,7 @@ function MasterPendidikan() {
           <option value="SMA">SMA</option>
         </select>
       </div>
-      {/* Error handling */}
       {error && <div className="text-red-500 mb-4">{error}</div>}
-      {/* School Table */}
       <div className="overflow-x-auto w-full mt-4">
         <table className="table-auto w-full text-sm text-gray-700">
           <thead className="bg-gray-100 border-b">
@@ -231,7 +235,7 @@ function MasterPendidikan() {
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => viewSekolahDetails(p)} // Trigger viewSekolahDetails
+                      onClick={() => viewSekolahDetails(p)}
                     >
                       <EyeIcon className="h-5 w-5 text-green-500" />
                     </button>
@@ -254,7 +258,6 @@ function MasterPendidikan() {
           </tbody>
         </table>
       </div>
-      {/* Pagination */}
       <div className="flex justify-center mt-4">
         <div className="btn-group space-x-2">
           <button

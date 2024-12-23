@@ -15,6 +15,7 @@ import ConfirmationModalBody from "../features/common/components/ConfirmationMod
 import JurusanModalAddModalBody from "../features/master/MasterJurusan/components/AddJurusanModalBody";
 import ViewJurusanModalBody from "../features/master/MasterJurusan/components/ViewJurusanModalBody";
 import UpdateJurusanModalBody from "../features/master/MasterJurusan/components/UpdateJurusanModalBody";
+import AddKampusModalBody from "../features/master/MasterKampus/components/AddCampusModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -90,6 +91,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.ADD_PROFESI_NEW]: (
                 <AddProfesiModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.KAMPUS_ADD_NEW]: (
+                <AddKampusModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
