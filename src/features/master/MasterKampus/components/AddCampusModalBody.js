@@ -92,9 +92,15 @@ function AddKampusModalBody({ closeModal }) {
     setKampusObj({ ...kampusObj, [updateType]: value });
   };
 
-  // Only render the component when jurusanOptions are available
-  if (!jurusanOptions || jurusanOptions.length === 0)
+  // Render loading message while jurusanOptions is not available
+  if (!jurusanOptions || jurusanOptions.length === 0) {
     return <div>Loading...</div>;
+  }
+
+  // If there is an error message for jurusan, display it
+  if (errorMessage === "Jurusan tidak tersedia") {
+    return <div className="text-red-500 mt-4">Jurusan tidak tersedia</div>;
+  }
 
   // Prepare options for react-select
   const jurusanSelectOptions = jurusanOptions.map((jurusan) => ({

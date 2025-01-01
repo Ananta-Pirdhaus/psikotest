@@ -79,7 +79,12 @@ function AddJurusansModalBody({ closeModal }) {
   const updateFormValue = ({ updateType, value }) => {
     console.log(`Updating ${updateType} with value:`, value); // Log perubahan input
     setErrorMessage(""); // Reset error message
-    setJurusanObj({ ...jurusanObj, [updateType]: value });
+
+    // Update state dengan urutan pilihan yang dipilih
+    setJurusanObj({
+      ...jurusanObj,
+      [updateType]: value, // menyimpan urutan pilihan yang dipilih
+    });
   };
 
   // Only render the component when bakatOptions are available
@@ -90,6 +95,11 @@ function AddJurusansModalBody({ closeModal }) {
     value: bakat.value,
     label: bakat.label,
   }));
+
+  // Menyaring nilai yang dipilih untuk mencocokkan urutan yang benar
+  const selectedOptions = bakatSelectOptions.filter((option) =>
+    jurusanObj.bakat.includes(option.value)
+  );
 
   return (
     <>
@@ -109,15 +119,13 @@ function AddJurusansModalBody({ closeModal }) {
         <Select
           isMulti
           options={bakatSelectOptions}
-          value={bakatSelectOptions.filter((option) =>
-            jurusanObj.bakat.includes(option.value)
-          )}
+          value={selectedOptions} // Menampilkan urutan pilihan yang benar
           onChange={(selectedOptions) =>
             updateFormValue({
               updateType: "bakat",
               value: selectedOptions
-                ? selectedOptions.map((option) => option.value)
-                : [], // Ensure bakat is always an array
+                ? selectedOptions.map((option) => option.value) // Urutan yang dipilih tetap terjaga
+                : [], // Pastikan bakat selalu berupa array
             })
           }
           className="w-full"

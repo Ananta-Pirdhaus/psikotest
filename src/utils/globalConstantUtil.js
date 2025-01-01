@@ -16,6 +16,7 @@ module.exports = Object.freeze({
     VIEW_PROFESI: "VIEW_PROFESI",
     KAMPUS_ADD_NEW: "KAMPUS_ADD_NEW",
     KAMPUS_VIEW: "KAMPUS_VIEW",
+    SOAL_ADD_NEW: "SOAL_ADD_NEW",
     DEFAULT: "",
   },
 

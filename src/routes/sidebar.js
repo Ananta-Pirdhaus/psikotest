@@ -33,6 +33,11 @@ const routes = [
     name: "User",
   },
   {
+    path: "/app/master-soal",  // Master Soal sebagai item utama
+    icon: <BookOpenIcon className={iconClasses} />,
+    name: "Master Soal",
+  },
+  {
     path: "", // Path utama kosong karena memiliki submenu
     icon: <Cog6ToothIcon className={`${iconClasses} inline`} />,
     name: "Master",
@@ -76,11 +81,6 @@ const routes = [
         path: "/app/master-admin",
         icon: <KeyIcon className={submenuIconClasses} />,
         name: "Master Admin",
-      },
-      {
-        path: "/app/master-soal",
-        icon: <BookOpenIcon className={submenuIconClasses} />,
-        name: "Master Soal",
       },
     ],
   },

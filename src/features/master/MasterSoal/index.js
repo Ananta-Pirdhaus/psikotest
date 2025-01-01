@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
-import { deleteSoal, fetchSoal, importSoalData } from "./soalSlice";
+import { deleteSoal, fetchSoal, importSoalData, fetchBakat } from "./soalSlice";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,
@@ -102,7 +102,7 @@ const TopSideButtons = () => {
 };
 
 function MasterSoal() {
-  const { soal, status, error } = useSelector((state) => state.soal);
+  const { soal, bakat, status, error } = useSelector((state) => state.soal);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -110,6 +110,7 @@ function MasterSoal() {
 
   useEffect(() => {
     dispatch(fetchSoal());
+    dispatch(fetchBakat()); // Fetch bakat data
   }, [dispatch]);
 
   const deleteCurrentSoal = (index) => {
@@ -169,6 +170,12 @@ function MasterSoal() {
     }
   };
 
+  // Map bakat id to name
+  const getBakatName = (bakatId) => {
+    const bakatItem = bakat.find((b) => b.id === bakatId);
+    return bakatItem ? bakatItem.name : "Bakat tidak tersedia";
+  };
+
   return (
     <>
       <TitleCard
@@ -194,6 +201,7 @@ function MasterSoal() {
               <th>Question</th>
               <th>Category</th>
               <th>Options</th>
+              <th>Created At</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -210,22 +218,19 @@ function MasterSoal() {
                         <div className="flex items-center">
                           {/* Display Answer with Highlight */}
                           <div className="mr-2">
-                            <strong className="text-blue-500">Answer: </strong>
-                            <span className="text-lg font-semibold text-green-600">
+                            <span
+                              className={`inline-block text-sm ${
+                                option.bakat ? "text-blue-600" : "text-black"
+                              }`}
+                            >
                               {option.answer}
                             </span>
                           </div>
-
-                          {/* Display Bakat with Badge */}
-                          <div>
-                            <strong className="text-indigo-500">Bakat: </strong>
-                            <span
-                              className={`px-2 py-1 rounded-full ${
-                                option.bakat ? "bg-yellow-200" : "bg-gray-300"
-                              }`}
-                            >
-                              {option.bakat ? option.bakat : "N/A"}
-                            </span>
+                          {/* Display Bakat Name */}
+                          <div className="text-sm ml-4 text-green-600">
+                            {option.bakat
+                              ? getBakatName(option.bakat)
+                              : "bakat tidak tersedia "}
                           </div>
                         </div>
                       </li>
@@ -233,24 +238,25 @@ function MasterSoal() {
                   </ul>
                 </td>
 
-                <td>
-                  <button
-                    className="btn btn-sm btn-info"
-                    onClick={() => viewSoalDetails(s)}
-                  >
-                    <EyeIcon className="w-4 h-4" />
-                  </button>
+                <td>{new Date(s.created_at).toISOString().split("T")[0]}</td>
+                <td className="flex justify-center space-x-2">
                   <button
                     className="btn btn-sm btn-warning"
                     onClick={() => updateSoalDetails(s)}
                   >
-                    <PencilIcon className="w-4 h-4" />
+                    <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
-                    className="btn btn-sm btn-error"
-                    onClick={() => deleteCurrentSoal(s.id)}
+                    className="btn btn-sm btn-danger"
+                    onClick={() => deleteCurrentSoal(index)}
                   >
-                    <TrashIcon className="w-4 h-4" />
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    className="btn btn-sm btn-info"
+                    onClick={() => viewSoalDetails(s)}
+                  >
+                    <EyeIcon className="h-5 w-5" />
                   </button>
                 </td>
               </tr>
@@ -258,18 +264,29 @@ function MasterSoal() {
           </tbody>
         </table>
 
-        <div className="mt-4 flex justify-center">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+          <div className="btn-group space-x-2">
             <button
-              key={page}
-              className={`btn btn-sm mx-1 ${
-                page === currentPage ? "btn-active" : ""
-              }`}
-              onClick={() => paginate(page)}
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+              onClick={() => paginate(currentPage - 1)}
+              aria-label="Previous Page"
             >
-              {page}
+              Previous
             </button>
-          ))}
+            <span className="btn btn-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+              onClick={() => paginate(currentPage + 1)}
+              aria-label="Next Page"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </TitleCard>
     </>

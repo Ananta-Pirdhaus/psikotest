@@ -25,6 +25,20 @@ export const fetchSoal = createAsyncThunk(
   }
 );
 
+export const fetchBakat = createAsyncThunk(
+  "bakat/fetchBakat",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get("bakat"); // Replace with the correct API endpoint
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "An error occurred"
+      );
+    }
+  }
+);
+
 // Function to add a new question (POST method)
 export const addNewSoalAsync = createAsyncThunk(
   "soal/addNewSoalAsync",
@@ -55,6 +69,7 @@ export const addNewSoalAsync = createAsyncThunk(
 
 const initialState = {
   soal: [], // List of questions
+  bakat: [], // List of bakat data
   status: "idle", // API calling status: idle | loading | succeeded | failed
   error: null, // Error message if any
 };
@@ -79,6 +94,10 @@ const soalSlice = createSlice({
         state.soal.push(action.payload); // Add new question to state
       }
     },
+    // Action to update bakat data directly
+    getBakatContent(state, action) {
+      state.bakat = action.payload || [];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -89,13 +108,32 @@ const soalSlice = createSlice({
       .addCase(fetchSoal.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.soal = action.payload; // Update soal state with data from API
-        console.log("data soal: ",action.payload)
+        console.log("data soal: ", action.payload);
       })
       .addCase(fetchSoal.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
-      
+
+      // Fetch Bakat
+      .addCase(fetchBakat.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchBakat.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const bakatData = action.payload || [];
+        state.bakat = Array.isArray(bakatData) ? bakatData : [];
+        state.selectBakatOptions = bakatData.map((bakat) => ({
+          value: bakat.id,
+          label: bakat.name,
+        }));
+        console.log("Select Bakat Options:", state.selectBakatOptions);
+      })
+      .addCase(fetchBakat.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
       .addCase(addNewSoalAsync.pending, (state) => {
         state.status = "loading";
       })
@@ -110,6 +148,7 @@ const soalSlice = createSlice({
   },
 });
 
-export const { getSoalContent, importSoalData, addNewSoal } = soalSlice.actions;
+export const { getSoalContent, importSoalData, addNewSoal, getBakatContent } =
+  soalSlice.actions;
 
 export default soalSlice.reducer;

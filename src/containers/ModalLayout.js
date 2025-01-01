@@ -18,6 +18,7 @@ import ViewJurusanModalBody from "../features/master/MasterJurusan/components/Vi
 import UpdateJurusanModalBody from "../features/master/MasterJurusan/components/UpdateJurusanModalBody";
 import AddKampusModalBody from "../features/master/MasterKampus/components/AddCampusModalBody";
 import ViewKampusModalBody from "../features/master/MasterKampus/components/ViewKampusModalBody";
+import AddSoalModalBody from "../features/master/MasterSoal/components/AddSoalModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -102,6 +103,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.KAMPUS_VIEW]: (
                 <ViewKampusModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.SOAL_ADD_NEW]: (
+                <AddSoalModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
