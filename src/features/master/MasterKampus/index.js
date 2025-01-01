@@ -49,20 +49,20 @@ const TopSideButtons = () => {
   );
 };
 
-function Kampus() {
+const Kampus = () => {
   const dispatch = useDispatch();
   const { kampus, loading, error } = useSelector((state) => state.kampus);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Default to ascending order
 
-  // Fetch data when the component mounts or when data changes
   useEffect(() => {
     dispatch(getKampus());
   }, [dispatch]);
 
   const deleteCurrentKampus = (id) => {
-    dispatch(deleteKampus(id)); // Dispatch delete action
+    dispatch(deleteKampus(id));
   };
 
   const updateKampus = (id, kampusDetail) => {
@@ -76,8 +76,8 @@ function Kampus() {
   };
 
   const viewKampus = (id, kampusDetail) => {
-    console.log("id yang dipanggil: ", id)
-    console.log("data yang dipanggil: ", kampusDetail)
+    console.log("id yang dipanggil: ", id);
+    console.log("data yang dipanggil: ", kampusDetail);
     dispatch(
       openModal({
         title: "Kampus Details",
@@ -87,15 +87,18 @@ function Kampus() {
     );
   };
 
-  // Filtering kampus data based on the search query
   const filteredKampus = useMemo(() => {
-    return kampus.filter((k) => {
-      const namaKampus = String(k.name).toLowerCase();
-      return namaKampus.includes(searchQuery.toLowerCase());
-    });
-  }, [kampus, searchQuery]);
+    let sortedKampus = [...kampus];
+    if (sortOrder === "ascending") {
+      sortedKampus.sort((a, b) => a.rank - b.rank);
+    } else {
+      sortedKampus.sort((a, b) => b.rank - a.rank);
+    }
+    return sortedKampus.filter((k) =>
+      String(k.name).toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [kampus, searchQuery, sortOrder]);
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentKampus = filteredKampus.slice(indexOfFirstItem, indexOfLastItem);
@@ -103,6 +106,12 @@ function Kampus() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(filteredKampus.length / itemsPerPage);
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) =>
+      prevOrder === "ascending" ? "descending" : "ascending"
+    );
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -119,7 +128,7 @@ function Kampus() {
         topMargin="mt-2"
         TopSideButtons={<TopSideButtons />}
       >
-        <div className="mb-4">
+        <div className="flex justify-between items-center mb-4">
           <input
             type="text"
             placeholder="Search by Kampus Name"
@@ -128,6 +137,50 @@ function Kampus() {
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Search Kampus"
           />
+
+          {/* Sorting Button */}
+          <button
+            className="btn btn-sm flex items-center"
+            onClick={toggleSortOrder}
+          >
+            {sortOrder === "ascending" ? (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 15l7-7 7 7"
+                  />
+                </svg>
+                <span>Urutkan dari atas</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+                <span>Urutkan dari bawah</span>
+              </>
+            )}
+          </button>
         </div>
 
         <div className="overflow-x-auto w-full mt-4">
@@ -201,6 +254,6 @@ function Kampus() {
       </TitleCard>
     </>
   );
-}
+};
 
 export default Kampus;

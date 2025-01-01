@@ -77,6 +77,11 @@ const routes = [
         icon: <KeyIcon className={submenuIconClasses} />,
         name: "Master Admin",
       },
+      {
+        path: "/app/master-soal",
+        icon: <BookOpenIcon className={submenuIconClasses} />,
+        name: "Master Soal",
+      },
     ],
   },
 
