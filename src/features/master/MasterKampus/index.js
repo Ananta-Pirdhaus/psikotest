@@ -202,7 +202,9 @@ const Kampus = () => {
                   <td className="px-4 py-2">{k.name}</td>
                   <td className="px-4 py-2">{k.rank}</td>
                   <td className="px-4 py-2">
-                    {k.jurusan ? k.jurusan.join(", ") : "N/A"}
+                    {k.jurusan && k.jurusan.length > 0
+                      ? k.jurusan.map((j) => j.name).join(", ")
+                      : "N/A"}
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button
