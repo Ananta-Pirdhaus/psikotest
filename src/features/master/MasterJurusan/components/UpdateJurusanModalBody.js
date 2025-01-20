@@ -132,14 +132,13 @@ function JurusanModalBody({ closeModal, extraObject }) {
             />
           </div>
         ) : (
-          // Show bakat as text when not in editing mode with label
           <div>
             <InputText
               type="text"
-              defaultValue={jurusanDetail.bakat.join(", ")} // Display bakat as a comma-separated string
+              defaultValue={jurusanDetail.bakat.map((b) => b.name).join(", ")}
               updateType="bakat"
               containerStyle="mt-4"
-              disabled={true} // Disable field when not editing
+              disabled={true} 
               labelTitle="Bakat"
             />
           </div>
