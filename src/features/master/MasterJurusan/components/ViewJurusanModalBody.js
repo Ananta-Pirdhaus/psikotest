@@ -29,10 +29,7 @@ function ViewJurusanModalBody({ closeModal, extraObject }) {
           />
           <InputText
             type="text"
-            defaultValue={
-              jurusanDetail.bakat?.join(", ") ||
-              "Tidak ada bakat yang terdaftar"
-            }
+            defaultValue={jurusanDetail.bakat.map((b) => b.name).join(", ")}
             updateType="bakat"
             containerStyle="mt-4"
             labelTitle="Bakat"
