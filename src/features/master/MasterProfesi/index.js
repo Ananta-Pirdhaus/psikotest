@@ -131,13 +131,14 @@ function Profesi() {
     );
   };
 
-  const editProfesi = (profesi) => {
-    console.log("Edit Profesi:", profesi);
+  const updateProfesi = (id, profesi) => {
+    console.log("Update Profesi:", profesi);
+    console.log("Update Profesi:", id);
     dispatch(
       openModal({
-        title: "Edit Profesi",
-        bodyType: MODAL_BODY_TYPES.EDIT_PROFESI,
-        extraObject: profesi, // Kirim seluruh data profesi
+        title: "Update Profesi",
+        bodyType: MODAL_BODY_TYPES.UPDATE_PROFESI,
+        extraObject: { id, profesi }, // Kirim seluruh data profesi
       })
     );
   };
@@ -201,14 +202,13 @@ function Profesi() {
                   <td className="px-4 py-2">{p.name}</td>
                   <td className="px-4 py-2">
                     {p.bakat && p.bakat.length > 0
-                      ? p.bakat.join(", ")
+                      ? p.bakat.map((b) => b.name).join(", ")
                       : "No Bakat"}
                   </td>
-
                   <td className="px-4 py-2 text-center">
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => editProfesi(p.id)}
+                      onClick={() => updateProfesi(p.id, p)}
                       aria-label="Edit Profesi Record"
                     >
                       <PencilIcon className="w-5 text-blue-500" />

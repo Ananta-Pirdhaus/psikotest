@@ -170,12 +170,6 @@ function MasterSoal() {
     }
   };
 
-  // Map bakat id to name
-  const getBakatName = (bakatId) => {
-    const bakatItem = bakat.find((b) => b.id === bakatId);
-    return bakatItem ? bakatItem.name : "Bakat tidak tersedia";
-  };
-
   return (
     <>
       <TitleCard
@@ -200,67 +194,95 @@ function MasterSoal() {
               <th>No</th>
               <th>Question</th>
               <th>Category</th>
+              <th>Version</th>
               <th>Options</th>
-              <th>Created At</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {currentSoal.map((s, index) => (
-              <tr key={index}>
-                <td>{index + 1 + indexOfFirstItem}</td>
-                <td>{s.question}</td>
-                <td>{s.type}</td>
-                <td>
-                  <ul>
-                    {s.options.map((option, idx) => (
-                      <li key={idx} className="mb-2 p-2 rounded-lg bg-gray-100">
-                        <div className="flex items-center">
-                          {/* Display Answer with Highlight */}
-                          <div className="mr-2">
-                            <span
-                              className={`inline-block text-sm ${
-                                option.bakat ? "text-blue-600" : "text-black"
-                              }`}
-                            >
-                              {option.answer}
-                            </span>
-                          </div>
-                          {/* Display Bakat Name */}
-                          <div className="text-sm ml-4 text-green-600">
-                            {option.bakat
-                              ? getBakatName(option.bakat)
-                              : "bakat tidak tersedia "}
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-
-                <td>{new Date(s.created_at).toISOString().split("T")[0]}</td>
-                <td className="flex justify-center space-x-2">
-                  <button
-                    className="btn btn-sm btn-warning"
-                    onClick={() => updateSoalDetails(s)}
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => deleteCurrentSoal(index)}
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    className="btn btn-sm btn-info"
-                    onClick={() => viewSoalDetails(s)}
-                  >
-                    <EyeIcon className="h-5 w-5" />
-                  </button>
+            {Array.isArray(currentSoal) && currentSoal.length > 0 ? (
+              currentSoal.map((s, index) => (
+                <tr key={index}>
+                  <td>{index + 1 + indexOfFirstItem}</td>
+                  <td>{s.question}</td>
+                  <td>{s.type}</td>
+                  <td>{s.versi}</td>
+                  <td>
+                    <ul className="space-y-2">
+                      {Array.isArray(s.options) && s.options.length > 0 ? (
+                        s.options.map((option, idx) => (
+                          <li
+                            key={idx}
+                            className={`p-4 border border-gray-300 rounded-md shadow-sm hover:shadow-lg ${
+                              idx % 2 === 0 ? "bg-green-500" : "bg-red-500"
+                            }`}
+                          >
+                            <div className="flex justify-between items-center">
+                              {/* Display Answer */}
+                              <div className="flex items-center space-x-2">
+                                <span
+                                  className={`font-medium ${
+                                    option.bakat
+                                      ? "text-white"
+                                      : "text-gray-200"
+                                  }`}
+                                >
+                                  {option.answer}
+                                </span>
+                              </div>
+                              {/* Display Bakat Name */}
+                              <div className="text-sm flex justify-end w-full">
+                                {option.bakat ? (
+                                  <span className="text-white font-semibold">
+                                    {option.bakat}
+                                  </span>
+                                ) : (
+                                  <span className="italic text-gray-200">
+                                    {option.bakat_id === null
+                                      ? "Bakat tidak tersedia"
+                                      : "Bakat tidak dikenal"}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </li>
+                        ))
+                      ) : (
+                        <span className="italic text-gray-200">
+                          No options available
+                        </span>
+                      )}
+                    </ul>
+                  </td>
+                  <td className="flex justify-center space-x-2">
+                    <button
+                      className="btn btn-sm btn-warning"
+                      onClick={() => updateSoalDetails(s)}
+                    >
+                      <PencilIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => deleteCurrentSoal(index)}
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="btn btn-sm btn-info"
+                      onClick={() => viewSoalDetails(s)}
+                    >
+                      <EyeIcon className="h-5 w-5" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center">
+                  No data available
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 

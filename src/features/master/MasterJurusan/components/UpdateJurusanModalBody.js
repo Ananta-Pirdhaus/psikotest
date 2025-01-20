@@ -4,6 +4,7 @@ import { openModal } from "../../../common/modalSlice"; // Import openModal acti
 import InputText from "../../../../components/Input/InputText"; // Import InputText component
 import Select from "react-select"; // Import react-select for multiselect input
 import { updateJurusan, getBakat } from "../jurusanSlice";
+import { showNotification } from "../../../common/headerSlice";
 
 function JurusanModalBody({ closeModal, extraObject }) {
   const [jurusanDetail, setJurusanDetail] = useState(
@@ -71,10 +72,22 @@ function JurusanModalBody({ closeModal, extraObject }) {
         .unwrap() // Handle the promise returned by the async thunk (optional)
         .then(() => {
           console.log("Jurusan updated successfully.");
+          dispatch(
+            showNotification({
+              message: "Jurusan updated successfully!",
+              status: 1, // Success status
+            })
+          );
           closeModal(); // Close the modal after saving
         })
         .catch((error) => {
           console.error("Error updating jurusan: ", error);
+          dispatch(
+            showNotification({
+              message: `Error: ${error.message}`,
+              status: 0, // Error status
+            })
+          );
         });
     }
   };

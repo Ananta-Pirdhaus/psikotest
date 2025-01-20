@@ -15,6 +15,7 @@ import KeyIcon from "@heroicons/react/24/outline/KeyIcon";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
 import BuildingIcon from "@heroicons/react/24/outline/BuildingLibraryIcon"; // Tambahkan import
 import MapIcon from "@heroicons/react/24/outline/MapIcon"; // Tambahkan import
+import NumberedListIcon from "@heroicons/react/24/outline/NumberedListIcon"; // Tambahkan import
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
@@ -33,7 +34,7 @@ const routes = [
     name: "User",
   },
   {
-    path: "/app/master-soal",  // Master Soal sebagai item utama
+    path: "/app/master-soal", // Master Soal sebagai item utama
     icon: <BookOpenIcon className={iconClasses} />,
     name: "Master Soal",
   },
@@ -76,6 +77,16 @@ const routes = [
         path: "/app/master-region",
         icon: <MapIcon className={submenuIconClasses} />,
         name: "Master Region",
+      },
+      {
+        path: "/app/master-versi",
+        icon: <NumberedListIcon className={submenuIconClasses} />,
+        name: "Master Versi",
+      },
+      {
+        path: "/app/master-panduan",
+        icon: <NumberedListIcon className={submenuIconClasses} />,
+        name: "Master Panduan",
       },
       {
         path: "/app/master-admin",

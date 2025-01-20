@@ -45,9 +45,8 @@ export const addNewSoalAsync = createAsyncThunk(
   async (newSoal, thunkAPI) => {
     try {
       const bakatID = localStorage.getItem("bakatID"); // Ganti dengan cara mendapatkan bakatID yang sesuai
-
-      // Menyiapkan data soal berdasarkan tipe
       const soalData = {
+        versi: newSoal.versi,
         type: newSoal.type, // 'SINGLE' atau 'MULTIPLE'
         question: newSoal.question,
         options: newSoal.options.map((option) => ({
@@ -55,13 +54,27 @@ export const addNewSoalAsync = createAsyncThunk(
           bakat: option.bakat === "{{bakatID}}" ? bakatID : option.bakat, // Mengganti {{bakatID}} dengan nilai aktual
         })),
       };
-
+        thunkAPI.dispatch(fetchSoal());
       // Kirimkan data soal ke server
       const response = await axios.post("pertanyaan", soalData);
       return response.data.data; // Return the added question
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat menambahkan soal"
+      );
+    }
+  }
+);
+// Function to get version (GET method)
+export const getVersion = createAsyncThunk(
+  "bakat/getVersion",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get("versi-pertanyaan"); // Replace with the correct API endpoint
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "An error occurred"
       );
     }
   }
@@ -97,6 +110,10 @@ const soalSlice = createSlice({
     // Action to update bakat data directly
     getBakatContent(state, action) {
       state.bakat = action.payload || [];
+    },
+
+    getVersion(state, action) {
+      state.versi = action.payload || [];
     },
   },
   extraReducers: (builder) => {
@@ -142,6 +159,25 @@ const soalSlice = createSlice({
         state.soal.push(action.payload); // Add the new soal to the array
       })
       .addCase(addNewSoalAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      // Get Version (versi-pertanyaan)
+      .addCase(getVersion.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getVersion.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const versionData = action.payload || [];
+        state.versi = Array.isArray(versionData) ? versionData : [];
+        state.version = versionData.map((version) => ({
+          value: version.id,
+          label: version.name,
+          status: version.status,
+        }));
+        console.log("Version Options:", state.version);
+      })
+      .addCase(getVersion.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

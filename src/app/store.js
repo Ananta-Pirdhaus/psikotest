@@ -11,6 +11,8 @@ import MasterBakat from "../features/master/MasterBakat/bakatSlice";
 import MasterKelas from "../features/master/MasterKelas/kelasSlice";
 import MasterKampus from "../features/master/MasterKampus/kampuSlice";
 import MasterSoal from "../features/master/MasterSoal/soalSlice";
+import MasterVersion from "../features/master/MasterVersi/versiSlice";
+import MasterPanduan from "../features/master/MasterPanduan/panduanSlice";
 
 const combinedReducer = {
   header: headerSlice,
@@ -25,6 +27,8 @@ const combinedReducer = {
   kelas: MasterKelas, // Tambahkan reducer ini
   kampus: MasterKampus, // Tambahkan reducer ini
   soal: MasterSoal, // Tambahkan reducer ini
+  versi: MasterVersion, // Tambahkan reducer ini
+  panduan: MasterPanduan, // Tambahkan reducer ini
 };
 
 export default configureStore({

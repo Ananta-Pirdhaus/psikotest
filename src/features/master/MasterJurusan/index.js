@@ -149,28 +149,28 @@ function Jurusan() {
                 >
                   <td className="px-4 py-2">{j.name}</td>
                   <td className="px-4 py-2">
-                    {j.bakat ? j.bakat.join(", ") : "N/A"}
+                    {j.bakat && j.bakat.length > 0
+                      ? j.bakat.map((b) => b.name).join(", ")
+                      : "N/A"}
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => updateJurusan(j.id, j)} // Log update and jurusan details
+                      onClick={() => updateJurusan(j.id, j)}
                       aria-label="Update Jurusan Record"
                     >
-                      <PencilIcon className="w-5 text-blue-500" />{" "}
-                      {/* Pencil icon for update */}
+                      <PencilIcon className="w-5 text-blue-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => viewJurusan(j.id, j)} // Log view and jurusan details
+                      onClick={() => viewJurusan(j.id, j)}
                       aria-label="View Jurusan Record"
                     >
-                      <EyeIcon className="w-5 text-green-500" />{" "}
-                      {/* Eye icon for view */}
+                      <EyeIcon className="w-5 text-green-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
-                      onClick={() => deleteCurrentJurusan(j.id)} // Use the jurusan ID for deletion
+                      onClick={() => deleteCurrentJurusan(j.id)}
                       aria-label="Delete Jurusan Record"
                     >
                       <TrashIcon className="w-5 text-red-500" />

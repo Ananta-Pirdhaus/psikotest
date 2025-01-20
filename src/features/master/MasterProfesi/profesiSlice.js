@@ -48,6 +48,22 @@ export const getProfesi = createAsyncThunk(
   }
 );
 
+export const updateProfesi = createAsyncThunk(
+  "profesi/updateProfesi",
+  async ({ id, updatedData }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.put(`profesi/${id}`, updatedData);
+
+      // Refresh the profesi list after successful update
+      dispatch(getProfesi());
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 // Async thunk for fetching bakat
 export const fetchBakat = createAsyncThunk(
   "profesi/fetchBakat",
@@ -141,6 +157,34 @@ const profesiSlice = createSlice({
       .addCase(addProfesi.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Failed to add profesi.";
+      })
+      .addCase(updateProfesi.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateProfesi.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const updatedProfesi = action.payload;
+
+        // Update the profesi in the state
+        const index = state.profesi.findIndex(
+          (profesi) => profesi.id === updatedProfesi.id
+        );
+        if (index !== -1) {
+          state.profesi[index] = updatedProfesi;
+        }
+
+        // Log success
+        console.log("Profesi updated successfully:", updatedProfesi);
+      })
+      .addCase(updateProfesi.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Failed to update profesi.";
+
+        // Log failure
+        console.error(
+          "Failed to update profesi:",
+          action.payload || "Unknown error"
+        );
       });
   },
 });

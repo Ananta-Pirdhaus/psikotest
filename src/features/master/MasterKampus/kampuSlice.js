@@ -23,7 +23,6 @@ export const addKampus = createAsyncThunk(
 
       // Dispatch getKampus untuk mengambil data terbaru
       dispatch(getKampus());
-
       return response.data; // Mengembalikan response.data sebagai hasil sukses
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -46,14 +45,18 @@ export const getKampus = createAsyncThunk(
 // Async thunk to update an existing kampus
 export const updateKampus = createAsyncThunk(
   "kampus/updateKampus",
-  async (updatedKampus, { rejectWithValue }) => {
+  async (updatedKampus, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.put(`perguruan-tinggi/${updatedKampus.id}`, {
-        name: updatedKampus.name, // Nama kampus
-        rank: updatedKampus.rank,
-        jurusan: updatedKampus.jurusan, // Array jurusan yang berisi ID-ID jurusan
-      });
-      return response.data.data; // Mengembalikan response.data sebagai hasil sukses
+      const response = await axios.put(
+        `perguruan-tinggi/${updatedKampus.kampusId}`,
+        {
+          name: updatedKampus.kampusDetail.name,
+          rank: updatedKampus.kampusDetail.rank,
+          jurusan: updatedKampus.kampusDetail.jurusan,
+        }
+      );
+      dispatch(getKampus());
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -72,9 +75,6 @@ export const getJurusan = createAsyncThunk(
     }
   }
 );
-
-// Async thunk to fetch all kampus data
-
 
 // Async thunk to delete a kampus
 export const deleteKampus = createAsyncThunk(
@@ -196,10 +196,15 @@ const kampusSlice = createSlice({
         state.loading = false;
         state.status = "succeeded";
         const index = state.kampus.findIndex(
-          (kampus) => kampus.id === action.payload.id
+          (kampus) => kampus.id === action.payload.id // Periksa ID yang sesuai
         );
         if (index !== -1) {
+          // Jika ID ditemukan, perbarui data kampus tersebut
           state.kampus[index] = action.payload;
+        } else {
+          console.error(
+            `Kampus dengan ID ${action.payload.id} tidak ditemukan.`
+          );
         }
       })
       .addCase(updateKampus.rejected, (state, action) => {

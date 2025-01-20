@@ -2,29 +2,38 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import { updateSekolah } from "../sekolahSlice"; // Import action updateSekolah
+import { showNotification } from "../../../common/headerSlice";
 
 function UpdateSekolahModalBody({ closeModal, extraObject }) {
-  // Mengambil data sekolah yang ada di Redux store berdasarkan extraObject (sekolah yang dipilih)
   const dispatch = useDispatch();
-  const sekolahDetail = useSelector((state) => state.sekolah.sekolahDetail);
 
   // State lokal untuk menyimpan perubahan input sebelum update
-  const [name, setName] = useState(sekolahDetail ? sekolahDetail.name : "");
-  const [level, setLevel] = useState(sekolahDetail ? sekolahDetail.level : "");
+  const [name, setName] = useState(extraObject ? extraObject.name : "");
+  const [level, setLevel] = useState(extraObject ? extraObject.level : "");
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  useEffect(() => {
-    // Pastikan data sekolah diperbarui ketika extraObject berubah
-    if (extraObject) {
-      setName(extraObject.name);
-      setLevel(extraObject.level);
+  // Fungsi untuk menangani pembaruan sekolah
+  const handleUpdateSekolah = async () => {
+    setIsUpdating(true);
+    try {
+      // Dispatch action untuk update sekolah
+      await dispatch(
+        updateSekolah({ id: extraObject.id, name, level })
+      ).unwrap();
+
+      // Tampilkan notifikasi sukses
+      dispatch(
+        showNotification({ message: "School updated successfully!", status: 1 })
+      );
+      closeModal(); // Menutup modal setelah update berhasil
+    } catch (error) {
+      // Tampilkan notifikasi jika terjadi error
+      dispatch(
+        showNotification({ message: "Failed to update school!", status: 0 })
+      );
+    } finally {
+      setIsUpdating(false);
     }
-  }, [extraObject]);
-
-  // Fungsi untuk menangani perubahan input dan update sekolah
-  const handleUpdateSekolah = () => {
-    const updatedData = { id: extraObject.id, name, level };
-    dispatch(updateSekolah(updatedData)); // Dispatch action untuk update sekolah
-    closeModal(); // Menutup modal setelah update berhasil
   };
 
   // Fungsi untuk menangani perubahan nilai input
@@ -72,12 +81,20 @@ function UpdateSekolahModalBody({ closeModal, extraObject }) {
 
       <div className="modal-action">
         {/* Tombol untuk membatalkan dan menutup modal */}
-        <button className="btn btn-ghost" onClick={() => closeModal()}>
+        <button
+          className="btn btn-ghost"
+          onClick={closeModal}
+          disabled={isUpdating}
+        >
           Cancel
         </button>
         {/* Tombol untuk mengupdate data sekolah */}
-        <button className="btn btn-primary" onClick={handleUpdateSekolah}>
-          Update
+        <button
+          className="btn btn-primary"
+          onClick={handleUpdateSekolah}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "Updating..." : "Update"}
         </button>
       </div>
     </>

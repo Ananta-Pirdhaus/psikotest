@@ -12,6 +12,7 @@ import UpdateBakatModalBody from "../features/master/MasterBakat/components/upda
 import ViewBakatModalBody from "../features/master/MasterBakat/components/viewBakatModalBody";
 import AddProfesiModalBody from "../features/master/MasterProfesi/components/AddProfesiModalBody";
 import ViewProfesiModalBody from "../features/master/MasterProfesi/components/ViewProfesiModalBody";
+import UpdateProfesiModalBody from "../features/master/MasterProfesi/components/UpdateProfesiModalBody";
 import ConfirmationModalBody from "../features/common/components/ConfirmationModalBody";
 import JurusanModalAddModalBody from "../features/master/MasterJurusan/components/AddJurusanModalBody";
 import ViewJurusanModalBody from "../features/master/MasterJurusan/components/ViewJurusanModalBody";
@@ -19,6 +20,8 @@ import UpdateJurusanModalBody from "../features/master/MasterJurusan/components/
 import AddKampusModalBody from "../features/master/MasterKampus/components/AddCampusModalBody";
 import ViewKampusModalBody from "../features/master/MasterKampus/components/ViewKampusModalBody";
 import AddSoalModalBody from "../features/master/MasterSoal/components/AddSoalModalBody";
+import UpdateCampusModalBody from "../features/master/MasterKampus/components/UpdateKampusModalBody";
+import AddVersiModalBody from "../features/master/MasterVersi/components/AddVersiModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -98,14 +101,23 @@ function ModalLayout() {
               [MODAL_BODY_TYPES.VIEW_PROFESI]: (
                 <ViewProfesiModalBody {...modalBodyProps} />
               ),
+              [MODAL_BODY_TYPES.UPDATE_PROFESI]: (
+                <UpdateProfesiModalBody {...modalBodyProps} />
+              ),
               [MODAL_BODY_TYPES.KAMPUS_ADD_NEW]: (
                 <AddKampusModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.KAMPUS_VIEW]: (
                 <ViewKampusModalBody {...modalBodyProps} />
               ),
+              [MODAL_BODY_TYPES.KAMPUS_UPDATE]: (
+                <UpdateCampusModalBody {...modalBodyProps} />
+              ),
               [MODAL_BODY_TYPES.SOAL_ADD_NEW]: (
                 <AddSoalModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.VERSI_ADD_NEW]: (
+                <AddVersiModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
