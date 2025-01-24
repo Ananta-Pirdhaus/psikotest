@@ -10,6 +10,7 @@ const INITIAL_KAMPUS_OBJ = {
   name: "",
   rank: 1, // Default rank, can be modified
   jurusan: [], // Array for selected "jurusan" (departments)
+  status: "Active", // Array for selected "jurusan" (departments)
 };
 
 function AddKampusModalBody({ closeModal }) {
@@ -52,6 +53,7 @@ function AddKampusModalBody({ closeModal }) {
       name: kampusObj.name,
       rank: parseInt(kampusObj.rank), // Ensure rank is an integer
       jurusan: kampusObj.jurusan, // Array of selected jurusan IDs
+      status: kampusObj.status, // Array of selected jurusan IDs
     };
 
     // Update the newKampusObj state with the validated data
@@ -153,6 +155,16 @@ function AddKampusModalBody({ closeModal }) {
           placeholder="Select Jurusan"
         />
       </div>
+
+      <InputText
+        type="text"
+        value={kampusObj.status || "Active"} // Ensure it's always defined
+        defaultValue={kampusObj.status || "Active"} // Add defaultValue for initial value
+        updateType="status"
+        containerStyle="mt-4"
+        labelTitle="Status"
+        updateFormValue={updateFormValue}
+      />
 
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
 

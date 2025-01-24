@@ -19,6 +19,7 @@ export const addKampus = createAsyncThunk(
         name: newKampus.name,
         rank: newKampus.rank,
         jurusan: newKampus.jurusan,
+        status: newKampus.status,
       });
 
       // Dispatch getKampus untuk mengambil data terbaru
@@ -53,6 +54,7 @@ export const updateKampus = createAsyncThunk(
           name: updatedKampus.kampusDetail.name,
           rank: updatedKampus.kampusDetail.rank,
           jurusan: updatedKampus.kampusDetail.jurusan,
+          status: updatedKampus.kampusDetail.status,
         }
       );
       dispatch(getKampus());

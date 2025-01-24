@@ -9,6 +9,7 @@ const INITIAL_KAMPUS_OBJ = {
   name: "",
   rank: 1, // Default rank, can be modified
   jurusan: [], // Array for selected "jurusan" (departments)
+  status: "Active", // Array for selected "jurusan" (departments)
 };
 
 function UpdateCampusModalBody({ closeModal, extraObject }) {
@@ -33,10 +34,14 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
   // Syncing with extraObject prop
   useEffect(() => {
     if (extraObject) {
-      setKampusDetail(extraObject.kampusDetail);
+      setKampusDetail((prev) => ({
+        ...prev,
+        jurusan: extraObject.kampusDetail.jurusan.map((j) => j.id),
+      }));
       setKampusId(extraObject.id);
     }
   }, [extraObject]);
+
 
   // Handling changes in input fields
   const updateFormValue = ({ updateType, value }) => {
@@ -56,6 +61,8 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
     setErrorMessage(""); // Clear previous error if jurusan is selected
 
     if (kampusDetail && kampusId) {
+      console.log("Data:", kampusDetail);
+
       setLoading(true);
       dispatch(updateKampus({ kampusId, kampusDetail }))
         .then((response) => {
@@ -83,6 +90,10 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
     label: jurusan.label, // Assuming 'label' is available in the data
     value: jurusan.value, // Assuming 'value' is available in the data
   }));
+
+  console.log("Test: ", jurusanSelectOptions.filter(
+    (option) => kampusDetail.jurusan.some((j) => j.id === option.value) // Match based on jurusan ID
+  ));
 
   return (
     <>
@@ -115,7 +126,7 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
               isMulti
               options={jurusanSelectOptions}
               value={jurusanSelectOptions.filter(
-                (option) => kampusDetail.jurusan?.includes(option.value) // Match based on jurusan ID
+                (option) => kampusDetail.jurusan.includes(option.value) // Match based on jurusan ID
               )}
               onChange={(selectedOptions) =>
                 updateFormValue({
@@ -129,6 +140,16 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
               placeholder="Select Jurusan"
             />
           </div>
+
+          <InputText
+            type="text"
+            value={kampusDetail.status || "Active"} // Ensure it's always defined
+            defaultValue={kampusDetail.status || "Active"} // Add defaultValue for initial value
+            updateType="status"
+            containerStyle="mt-4"
+            labelTitle="Status"
+            updateFormValue={updateFormValue}
+          />
 
           {/* Show error message if no jurusan is selected */}
           {errorMessage && (
