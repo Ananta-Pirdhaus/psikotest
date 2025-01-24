@@ -18,7 +18,7 @@ const combinedReducer = {
   header: headerSlice,
   rightDrawer: rightDrawerSlice,
   modal: modalSlice,
-  lead: leadsSlice,
+  peserta: leadsSlice,
   sekolah: educationSlice, // Tambahkan reducer ini
   jurusan: MasterJurusanSlice, // Tambahkan reducer ini
   region: MasterRegion, // Tambahkan reducer ini

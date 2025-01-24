@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import InputText from '../../../components/Input/InputText'
 import ErrorText from '../../../components/Typography/ErrorText'
 import { showNotification } from "../../common/headerSlice"
-import { addNewLead } from "../leadSlice"
+import { addNewPeserta } from "../leadSlice"
 
 const INITIAL_LEAD_OBJ = {
     first_name : "",
@@ -29,7 +29,7 @@ function AddLeadModalBody({closeModal}){
                 "last_name": leadObj.last_name,
                 "avatar": "https://reqres.in/img/faces/1-image.jpg"
             }
-            dispatch(addNewLead({newLeadObj}))
+            dispatch(addNewPeserta({newLeadObj}))
             dispatch(showNotification({message : "New Lead Added!", status : 1}))
             closeModal()
         }

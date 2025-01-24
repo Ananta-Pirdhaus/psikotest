@@ -1,47 +1,83 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
+// Set base URL dari environment variable
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
+// Menambahkan header Authorization dengan token dari localStorage
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
 
-export const getLeadsContent = createAsyncThunk('/leads/content', async () => {
-	const response = await axios.get('/api/users?page=2', {})
-	return response.data;
-})
+// Thunk untuk mendapatkan data peserta
+export const getPesertaContent = createAsyncThunk(
+  "/peserta/content",
+  async () => {
+    const response = await axios.get("/peserta?page=2");
+    return response.data;
+  }
+);
 
-export const leadsSlice = createSlice({
-    name: 'leads',
-    initialState: {
-        isLoading: false,
-        leads : []
-    },
-    reducers: {
+// Thunk untuk menghapus peserta berdasarkan id
+export const deletePesertaById = createAsyncThunk(
+  "/peserta/delete",
+  async (idPeserta, { rejectWithValue }) => {
+    try {
+      // Log ID peserta yang diterima
+      console.log("ID Peserta yang akan dihapus:", idPeserta);
 
-
-        addNewLead: (state, action) => {
-            let {newLeadObj} = action.payload
-            state.leads = [...state.leads, newLeadObj]
-        },
-
-        deleteLead: (state, action) => {
-            let {index} = action.payload
-            state.leads.splice(index, 1)
-        }
-    },
-
-    extraReducers: {
-		[getLeadsContent.pending]: state => {
-			state.isLoading = true
-		},
-		[getLeadsContent.fulfilled]: (state, action) => {
-			state.leads = action.payload.data
-			state.isLoading = false
-		},
-		[getLeadsContent.rejected]: state => {
-			state.isLoading = false
-		},
+      // Menghapus peserta
+      await axios.delete(`/peserta/${idPeserta}`);
+      return idPeserta; // Mengembalikan idPeserta yang berhasil dihapus
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
-})
+  }
+);
 
-export const { addNewLead, deleteLead } = leadsSlice.actions
+export const pesertaSlice = createSlice({
+  name: "peserta",
+  initialState: {
+    isLoading: false,
+    peserta: [],
+    error: null,
+  },
+  reducers: {
+    addNewPeserta: (state, action) => {
+      const { newPesertaObj } = action.payload;
+      state.peserta = [...state.peserta, newPesertaObj];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getPesertaContent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getPesertaContent.fulfilled, (state, action) => {
+        state.peserta = action.payload.data;
+        state.isLoading = false;
+      })
+      .addCase(getPesertaContent.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deletePesertaById.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePesertaById.fulfilled, (state, action) => {
+        const idPeserta = action.payload;
+        state.peserta = state.peserta.filter(
+          (peserta) => peserta.id !== idPeserta
+        );
+        state.isLoading = false;
+      })
+      .addCase(deletePesertaById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+  },
+});
 
-export default leadsSlice.reducer
+// Ekspor action dan reducer
+export const { addNewPeserta } = pesertaSlice.actions;
+export default pesertaSlice.reducer;
