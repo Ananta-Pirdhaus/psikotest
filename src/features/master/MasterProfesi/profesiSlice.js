@@ -50,9 +50,12 @@ export const getProfesi = createAsyncThunk(
 
 export const updateProfesi = createAsyncThunk(
   "profesi/updateProfesi",
-  async ({ id, updatedData }, { rejectWithValue, dispatch }) => {
+  async (updatedData, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.put(`profesi/${id}`, updatedData);
+      const response = await axios.put(`profesi/${updatedData.profesiId}`, {
+        name: updatedData.profesiObj.name,
+        bakat: updatedData.profesiObj.bakat,
+      });
 
       // Refresh the profesi list after successful update
       dispatch(getProfesi());

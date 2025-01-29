@@ -6,6 +6,11 @@ import { showNotification } from "../../../common/headerSlice";
 import { updateProfesi, fetchBakat } from "../profesiSlice";
 import Select from "react-select"; // Import react-select
 
+const INITIAL_PROFESI_OBJ = {
+  name: "",
+  bakat: [],
+};
+
 function UpdateProfesiModalBody({ closeModal, extraObject }) {
   const dispatch = useDispatch();
 
@@ -13,10 +18,10 @@ function UpdateProfesiModalBody({ closeModal, extraObject }) {
   const bakatOptions = useSelector((state) => state.profesi.selectBakatOptions);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [profesiObj, setProfesiObj] = useState({
-    name: "",
-    bakat: [],
-  });
+  const [profesiId, setProfesiId] = useState(extraObject?.id || null);
+  const [profesiObj, setProfesiObj] = useState(
+    extraObject?.profesi || INITIAL_PROFESI_OBJ
+  );
 
   // Fetch "bakat" options if not available in Redux store
   useEffect(() => {
@@ -28,12 +33,11 @@ function UpdateProfesiModalBody({ closeModal, extraObject }) {
   // Load existing "Profesi" data into the form from `extraObject`
   useEffect(() => {
     if (extraObject && extraObject.profesi) {
-      console.log("extraObject.profesi:", extraObject.profesi); // Log isi dari extraObject.profesi
-      const { name, bakat } = extraObject.profesi;
-      setProfesiObj({
-        name: name || "",
-        bakat: bakat || [],
-      });
+      setProfesiObj((prev) => ({
+        ...prev,
+        bakat: extraObject.profesi.bakat.map((b) => b.id),
+      }));
+      setProfesiId(extraObject.id);
     }
   }, [extraObject]);
 
@@ -48,57 +52,52 @@ function UpdateProfesiModalBody({ closeModal, extraObject }) {
       return;
     }
 
-    // Pastikan bakat yang dikirim adalah array ID string (UUID)
-    const payload = {
-      id: extraObject.id, // Assuming `extraObject` includes an `id` field
-      name: profesiObj.name,
-      bakat: profesiObj.bakat, // pastikan bakat adalah array ID string
-    };
+    setErrorMessage(""); // Clear previous error if jurusan is selected
 
-    console.log("Payload before sending:", payload);
+    if (profesiObj && profesiId) {
+      console.log("Payload before sending:", profesiObj);
 
-    setLoading(true);
+      setLoading(true);
 
-    dispatch(updateProfesi(payload))
-      .then((response) => {
-        console.log("Response from updateProfesi:", response);
+      dispatch(updateProfesi({profesiId, profesiObj}))
+        .then((response) => {
+          console.log("Response from updateProfesi:", response);
 
-        dispatch(
-          showNotification({
-            message: "Profesi Updated Successfully!",
-            status: 1,
-          })
-        );
-        closeModal();
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error while updating profesi:", error);
+          dispatch(
+            showNotification({
+              message: "Profesi Updated Successfully!",
+              status: 1,
+            })
+          );
+          closeModal();
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error while updating profesi:", error);
 
-        const errorDetails = error?.response?.data?.errors;
-        const errorMessage =
-          errorDetails?.name?.[0] ||
-          errorDetails?.bakat?.[0] ||
-          error.message ||
-          "Failed to update profesi.";
+          const errorDetails = error?.response?.data?.errors;
+          const errorMessage =
+            errorDetails?.name?.[0] ||
+            errorDetails?.bakat?.[0] ||
+            error.message ||
+            "Failed to update profesi.";
 
-        setErrorMessage(errorMessage);
+          setErrorMessage(errorMessage);
 
-        dispatch(
-          showNotification({
-            message: `Error: ${errorMessage}`,
-            status: 0, // 0 indicates an error
-          })
-        );
+          dispatch(
+            showNotification({
+              message: `Error: ${errorMessage}`,
+              status: 0, // 0 indicates an error
+            })
+          );
 
-        setLoading(false);
-      });
+          setLoading(false);
+        });
+    }
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    console.log(`Updating ${updateType} with value:`, value);
-    setErrorMessage("");
-    setProfesiObj({ ...profesiObj, [updateType]: value });
+    setProfesiObj((prev) => ({ ...prev, [updateType]: value }));
   };
 
   if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
@@ -108,11 +107,13 @@ function UpdateProfesiModalBody({ closeModal, extraObject }) {
     label: bakat.label,
   }));
 
+  console.log("Test 1:", profesiObj.name);
+
   return (
     <>
       <InputText
         type="text"
-        value={profesiObj.name || ""}
+        defaultValue={profesiObj.name || ""}
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Name"
