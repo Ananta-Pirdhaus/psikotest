@@ -149,6 +149,13 @@ const MasterVersion = () => {
   const updateMasterDetails = (item) => {
     console.log("Update Master Details:", item);
     // Implementasikan logika untuk update data
+    dispatch(
+      openModal({
+        title: "Update Versi Pertanyaan",
+        bodyType: MODAL_BODY_TYPES.VERSI_UPDATE_NEW,
+        extraObject: { item },
+      })
+    );
   };
 
   const viewMasterDetails = (item) => {

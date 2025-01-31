@@ -16,9 +16,7 @@ export const fetchVersiPertanyaan = createAsyncThunk(
   "versi-pertanyaan/fetchVersiPertanyaan",
   async (page, thunkAPI) => {
     try {
-      const response = await axios.get("versi-pertanyaan", {
-        params: { page }, // Only pass the page parameter
-      });
+      const response = await axios.get("versi-pertanyaan");
 
       if (response.data.status === "success") {
         return response.data.data; // Return the data part of the response
@@ -86,17 +84,13 @@ export const importVersiPertanyaan = createAsyncThunk(
 // Update versi-pertanyaan data
 export const updateVersiPertanyaan = createAsyncThunk(
   "versi-pertanyaan/updateVersiPertanyaan",
-  async ({ id, name, level }, thunkAPI) => {
+  async ({ id, data }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.put(`versi-pertanyaan/${id}`, {
-        name,
-        level,
-      });
-      return response.data.data;
+      const response = await axios.put(`versi-pertanyaan/${id}`, data);
+      dispatch(fetchVersiPertanyaan());
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Terjadi kesalahan"
-      );
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -189,25 +183,14 @@ const versiPertanyaanSlice = createSlice({
       .addCase(updateVersiPertanyaan.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.status = "loading";
       })
       .addCase(updateVersiPertanyaan.fulfilled, (state, action) => {
         state.loading = false;
-        const updatedVersiPertanyaan = action.payload;
-        state.versiPertanyaan = state.versiPertanyaan.map((versiPertanyaan) =>
-          versiPertanyaan.id === updatedVersiPertanyaan.id
-            ? updatedVersiPertanyaan
-            : versiPertanyaan
-        );
-        if (state.versiPertanyaanDetails?.id === updatedVersiPertanyaan.id) {
-          state.versiPertanyaanDetails = updatedVersiPertanyaan;
-        }
-        state.status = "succeeded";
+        state.versiPertanyaan = action.payload.data;
       })
       .addCase(updateVersiPertanyaan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.status = "failed";
       });
   },
 });
