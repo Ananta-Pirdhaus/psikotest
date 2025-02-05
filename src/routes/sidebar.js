@@ -30,13 +30,25 @@ const routes = [
   },
   {
     path: "/app/user",
-    icon: <InboxArrowDownIcon className={iconClasses} />,
+    icon: <UsersIcon className={iconClasses} />,
     name: "User",
   },
   {
     path: "/app/master-soal", // Master Soal sebagai item utama
     icon: <BookOpenIcon className={iconClasses} />,
     name: "Master Soal",
+  },
+  {
+    path: "", // No URL needed as this has submenu
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
+    name: "Hasil",
+    submenu: [
+      {
+        path: "/app/hasil-quiz",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Result Quiz",
+      },
+    ],
   },
   {
     path: "", // Path utama kosong karena memiliki submenu

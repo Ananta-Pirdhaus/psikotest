@@ -25,7 +25,7 @@ function Leads() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this lead?`,
+          message: `Are you sure you want to delete this User?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.LEAD_DELETE,
           id, // Kirim ID peserta
         },
@@ -60,11 +60,7 @@ function Leads() {
                   <td>{l.class}</td>
                   <td>{l.dream_university}</td>
                   <td>{l.dream_major}</td>
-                  <td>
-                    {moment(new Date())
-                      .add(-5 * (peserta.indexOf(l) + 2), "days")
-                      .format("DD MMM YY")}
-                  </td>
+                  <td>{moment(l.created_at).format("DD MMM YYYY")}</td>
                   <td>
                     <button
                       className="btn btn-square btn-ghost"

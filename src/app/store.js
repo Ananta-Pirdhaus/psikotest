@@ -13,6 +13,7 @@ import MasterKampus from "../features/master/MasterKampus/kampuSlice";
 import MasterSoal from "../features/master/MasterSoal/soalSlice";
 import MasterVersion from "../features/master/MasterVersi/versiSlice";
 import MasterPanduan from "../features/master/MasterPanduan/panduanSlice";
+import HasilQuiz from "../features/hasil/HasilQuiz/hasilQuizSlice"; // Tambahkan ini
 
 const combinedReducer = {
   header: headerSlice,
@@ -29,6 +30,7 @@ const combinedReducer = {
   soal: MasterSoal, // Tambahkan reducer ini
   versi: MasterVersion, // Tambahkan reducer ini
   panduan: MasterPanduan, // Tambahkan reducer ini
+  hasilQuiz: HasilQuiz, // Tambahkan reducer ini
 };
 
 export default configureStore({
