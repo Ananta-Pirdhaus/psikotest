@@ -37,40 +37,6 @@ const routes = [
   },
   {
     path: "",
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
-    name: "Hasil",
-    submenu: [
-      {
-        path: "/app/hasil-quiz",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Result Quiz",
-      },
-    ],
-  },
-  {
-    path: "",
-    icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
-    name: "Setting Quiz",
-    submenu: [
-      {
-        path: "/app/master-versi",
-        icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Versi",
-      },
-      {
-        path: "/app/master-panduan",
-        icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Panduan",
-      },
-      {
-        path: "/app/master-soal",
-        icon: <BookOpenIcon className={iconClasses} />,
-        name: "Master Soal",
-      },
-    ],
-  },
-  {
-    path: "",
     icon: <ArchiveBoxIcon className={`${iconClasses} inline`} />,
     name: "Master",
     submenu: [
@@ -111,6 +77,40 @@ const routes = [
       },
     ],
   },
+  {
+    path: "",
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
+    name: "Hasil",
+    submenu: [
+      {
+        path: "/app/hasil-quiz",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Result Quiz",
+      },
+    ],
+  },
+  {
+    path: "",
+    icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
+    name: "Setting Quiz",
+    submenu: [
+      {
+        path: "/app/master-versi",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Versi",
+      },
+      {
+        path: "/app/master-panduan",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Panduan",
+      },
+      {
+        path: "/app/master-soal",
+        icon: <BookOpenIcon className={iconClasses} />,
+        name: "Master Soal",
+      },
+    ],
+  },
 
   {
     path: "",
@@ -123,7 +123,7 @@ const routes = [
         name: "Profile",
       },
     ],
-  },
+  }
   // {
   //   path: "",
   //   icon: <DocumentTextIcon className={`${iconClasses} inline`} />,
