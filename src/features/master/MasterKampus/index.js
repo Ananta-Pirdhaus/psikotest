@@ -61,8 +61,20 @@ const Kampus = () => {
     dispatch(getKampus());
   }, [dispatch]);
 
+  
+
   const deleteCurrentKampus = (id) => {
-    dispatch(deleteKampus(id));
+    dispatch(
+      openModal({
+        title: "Confirmation",
+        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+        extraObject: {
+          message: `Are you sure you want to delete this campus?`,
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.CAMPUS_DELETE,
+          id, // Kirim ID peserta
+        },
+      })
+    );
   };
 
   const updateKampus = (id, kampusDetail) => {

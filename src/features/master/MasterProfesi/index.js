@@ -110,13 +110,12 @@ function Profesi() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: "Are you sure you want to delete this profesi record?",
+          message: `Are you sure you want to delete this profesi record?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.PROFESI_DELETE,
-          id,
+          id, // Kirim ID peserta
         },
       })
     );
-    dispatch(deleteProfesi(id)); // Delete the profession with the given ID
   };
 
   const viewProfesi = (id, profesi) => {

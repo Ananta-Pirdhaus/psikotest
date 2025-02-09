@@ -52,25 +52,33 @@ function Leads() {
               </tr>
             </thead>
             <tbody>
-              {peserta.map((l) => (
-                <tr key={l.id}>
-                  <td>{l.email}</td>
-                  <td>{l.name}</td>
-                  <td>{l.school}</td>
-                  <td>{l.class}</td>
-                  <td>{l.dream_university}</td>
-                  <td>{l.dream_major}</td>
-                  <td>{moment(l.created_at).format("DD MMM YYYY")}</td>
-                  <td>
-                    <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => deleteCurrentLead(l.id)} // Kirim ID di sini
-                    >
-                      <TrashIcon className="w-5" />
-                    </button>
+              {peserta.length > 0 ? (
+                peserta.map((l) => (
+                  <tr key={l.id}>
+                    <td>{l.email}</td>
+                    <td>{l.name}</td>
+                    <td>{l.school}</td>
+                    <td>{l.class}</td>
+                    <td>{l.dream_university}</td>
+                    <td>{l.dream_major}</td>
+                    <td>{moment(l.created_at).format("DD MMM YYYY")}</td>
+                    <td>
+                      <button
+                        className="btn btn-square btn-ghost"
+                        onClick={() => deleteCurrentLead(l.id)}
+                      >
+                        <TrashIcon className="w-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center">
+                    No results available.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

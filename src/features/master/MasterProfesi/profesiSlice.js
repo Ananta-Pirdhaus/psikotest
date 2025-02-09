@@ -67,6 +67,22 @@ export const updateProfesi = createAsyncThunk(
   }
 );
 
+export const deleteProfesi = createAsyncThunk(
+  "profesi/deleteProfesi",
+  async (profesiId, { rejectWithValue, dispatch }) => {
+    try {
+      await axios.delete(`profesi/${profesiId}`);
+
+      // Refresh the profesi list after successful deletion
+      dispatch(getProfesi());
+
+      return profesiId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 // Async thunk for fetching bakat
 export const fetchBakat = createAsyncThunk(
   "profesi/fetchBakat",
@@ -195,7 +211,6 @@ const profesiSlice = createSlice({
 // Export actions
 export const {
   getProfesiContent,
-  deleteProfesi,
   importProfesiData,
   getBakatContent,
   setSelectBakatOptions,

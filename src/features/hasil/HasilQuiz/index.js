@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
-import { deleteQuizResult, getSesiContent } from "./hasilQuizSlice";
+import { getSesiContent } from "./hasilQuizSlice";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,
@@ -25,7 +25,7 @@ function HasilQuiz() {
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
           message: `Are you sure you want to delete this result?`,
-          type: CONFIRMATION_MODAL_CLOSE_TYPES.QUIZ_RESULT_DELETE,
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.SESI_DELETE,
           id,
         },
       })
@@ -66,7 +66,7 @@ function HasilQuiz() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9">No results available.</td>
+                  <td colSpan="9" className="text-center">No results available.</td>
                 </tr>
               )}
             </tbody>

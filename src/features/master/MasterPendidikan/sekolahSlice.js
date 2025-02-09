@@ -96,6 +96,20 @@ export const updateSekolah = createAsyncThunk(
   }
 );
 
+export const deleteSekolah = createAsyncThunk(
+  "sekolah/deleteSekolah",
+  async (id, thunkAPI) => {
+    try {
+      await axios.delete(`sekolah/${id}`);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Terjadi kesalahan"
+      );
+    }
+  }
+);
+
 const sekolahSlice = createSlice({
   name: "sekolah",
   initialState: {
@@ -196,6 +210,23 @@ const sekolahSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(updateSekolah.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.status = "failed";
+      })
+      .addCase(deleteSekolah.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.status = "loading";
+      })
+      .addCase(deleteSekolah.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sekolah = state.sekolah.filter(
+          (sekolah) => sekolah.id !== action.payload
+        );
+        state.status = "succeeded";
+      })
+      .addCase(deleteSekolah.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.status = "failed";

@@ -107,6 +107,27 @@ function MasterSoal() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState("");
+
+  // Menampilkan daftar versi unik dari soal yang tersedia
+  const uniqueVersions = useMemo(() => {
+    const versions = soal.map((s) => s.versi);
+    return [...new Set(versions)].filter(Boolean);
+  }, [soal]);
+
+  const filteredSoal = useMemo(() => {
+    return soal.filter((s) => {
+      const questionName = String(s.question || "").toLowerCase();
+      const category = String(s.kategori || "").toLowerCase();
+      const versionMatch = selectedVersion ? s.versi === selectedVersion : true;
+
+      return (
+        (questionName.includes(searchQuery.toLowerCase()) ||
+          category.includes(searchQuery.toLowerCase())) &&
+        versionMatch
+      );
+    });
+  }, [soal, searchQuery, selectedVersion]);
 
   useEffect(() => {
     dispatch(fetchSoal());
@@ -147,17 +168,17 @@ function MasterSoal() {
     );
   };
 
-  const filteredSoal = useMemo(() => {
-    return soal.filter((s) => {
-      const questionName = String(s.question || "").toLowerCase();
-      const category = String(s.kategori || "").toLowerCase();
+  // const filteredSoal = useMemo(() => {
+  //   return soal.filter((s) => {
+  //     const questionName = String(s.question || "").toLowerCase();
+  //     const category = String(s.kategori || "").toLowerCase();
 
-      return (
-        questionName.includes(searchQuery.toLowerCase()) ||
-        category.includes(searchQuery.toLowerCase())
-      );
-    });
-  }, [soal, searchQuery]);
+  //     return (
+  //       questionName.includes(searchQuery.toLowerCase()) ||
+  //       category.includes(searchQuery.toLowerCase())
+  //     );
+  //   });
+  // }, [soal, searchQuery]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -177,7 +198,7 @@ function MasterSoal() {
         topMargin="mt-2"
         TopSideButtons={<TopSideButtons />}
       >
-        <div className="mb-4">
+        <div className="mb-4 flex space-x-2">
           <input
             type="text"
             placeholder="Search by Question Name or Category"
@@ -186,6 +207,19 @@ function MasterSoal() {
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Cari Soal"
           />
+
+          <select
+            className="select select-bordered w-full max-w-xs"
+            value={selectedVersion}
+            onChange={(e) => setSelectedVersion(e.target.value)}
+          >
+            <option value="">All Versions</option>
+            {uniqueVersions.map((version) => (
+              <option key={version} value={version}>
+                {version}
+              </option>
+            ))}
+          </select>
         </div>
 
         <table className="table w-full">

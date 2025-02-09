@@ -13,11 +13,13 @@ import InboxArrowDownIcon from "@heroicons/react/24/outline/InboxArrowDownIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import KeyIcon from "@heroicons/react/24/outline/KeyIcon";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
-import BuildingIcon from "@heroicons/react/24/outline/BuildingLibraryIcon"; // Tambahkan import
-import MapIcon from "@heroicons/react/24/outline/MapIcon"; // Tambahkan import
-import NumberedListIcon from "@heroicons/react/24/outline/NumberedListIcon"; // Tambahkan import
+import BuildingLibraryIcon from "@heroicons/react/24/outline/BuildingLibraryIcon"; // Perbaikan dari BuildingIcon
+import MapIcon from "@heroicons/react/24/outline/MapIcon";
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
+import ArchiveBoxIcon from "@heroicons/react/24/outline/ArchiveBoxIcon"; // Ikon untuk "Master"
+import WrenchScrewdriverIcon from "@heroicons/react/24/outline/WrenchScrewdriverIcon"; // Ikon untuk "Settings"
+import AdjustmentsHorizontalIcon from "@heroicons/react/24/outline/AdjustmentsHorizontalIcon"; // Ikon untuk "Setting Quiz"
 
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
@@ -34,12 +36,7 @@ const routes = [
     name: "User",
   },
   {
-    path: "/app/master-soal", // Master Soal sebagai item utama
-    icon: <BookOpenIcon className={iconClasses} />,
-    name: "Master Soal",
-  },
-  {
-    path: "", // No URL needed as this has submenu
+    path: "",
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
     name: "Hasil",
     submenu: [
@@ -51,8 +48,30 @@ const routes = [
     ],
   },
   {
-    path: "", // Path utama kosong karena memiliki submenu
-    icon: <Cog6ToothIcon className={`${iconClasses} inline`} />,
+    path: "",
+    icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
+    name: "Setting Quiz",
+    submenu: [
+      {
+        path: "/app/master-versi",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Versi",
+      },
+      {
+        path: "/app/master-panduan",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Panduan",
+      },
+      {
+        path: "/app/master-soal",
+        icon: <BookOpenIcon className={iconClasses} />,
+        name: "Master Soal",
+      },
+    ],
+  },
+  {
+    path: "",
+    icon: <ArchiveBoxIcon className={`${iconClasses} inline`} />,
     name: "Master",
     submenu: [
       {
@@ -72,7 +91,7 @@ const routes = [
       },
       {
         path: "/app/master-kampus",
-        icon: <BuildingIcon className={submenuIconClasses} />,
+        icon: <BuildingLibraryIcon className={submenuIconClasses} />,
         name: "Master Kampus",
       },
       {
@@ -90,59 +109,12 @@ const routes = [
         icon: <MapIcon className={submenuIconClasses} />,
         name: "Master Region",
       },
-      {
-        path: "/app/master-versi",
-        icon: <NumberedListIcon className={submenuIconClasses} />,
-        name: "Master Versi",
-      },
-      {
-        path: "/app/master-panduan",
-        icon: <NumberedListIcon className={submenuIconClasses} />,
-        name: "Master Panduan",
-      },
-      {
-        path: "/app/master-admin",
-        icon: <KeyIcon className={submenuIconClasses} />,
-        name: "Master Admin",
-      },
     ],
   },
 
   {
-    path: "", // No URL needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
-    name: "Pages",
-    submenu: [
-      {
-        path: "/login",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Login",
-      },
-      {
-        path: "/register",
-        icon: <UserIcon className={submenuIconClasses} />,
-        name: "Register",
-      },
-      {
-        path: "/forgot-password",
-        icon: <KeyIcon className={submenuIconClasses} />,
-        name: "Forgot Password",
-      },
-      {
-        path: "/app/blank",
-        icon: <DocumentIcon className={submenuIconClasses} />,
-        name: "Blank Page",
-      },
-      {
-        path: "/app/404",
-        icon: <ExclamationTriangleIcon className={submenuIconClasses} />,
-        name: "404",
-      },
-    ],
-  },
-  {
-    path: "", // No URL needed as this has submenu
-    icon: <Cog6ToothIcon className={`${iconClasses} inline`} />,
+    path: "",
+    icon: <WrenchScrewdriverIcon className={`${iconClasses} inline`} />,
     name: "Settings",
     submenu: [
       {
@@ -150,40 +122,62 @@ const routes = [
         icon: <UserIcon className={submenuIconClasses} />,
         name: "Profile",
       },
-      {
-        path: "/app/settings-billing",
-        icon: <WalletIcon className={submenuIconClasses} />,
-        name: "Billing",
-      },
-      {
-        path: "/app/settings-team",
-        icon: <UsersIcon className={submenuIconClasses} />,
-        name: "Team Members",
-      },
     ],
   },
-  {
-    path: "", // No URL needed as this has submenu
-    icon: <DocumentTextIcon className={`${iconClasses} inline`} />,
-    name: "Documentation",
-    submenu: [
-      {
-        path: "/app/getting-started",
-        icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Getting Started",
-      },
-      {
-        path: "/app/features",
-        icon: <TableCellsIcon className={submenuIconClasses} />,
-        name: "Features",
-      },
-      {
-        path: "/app/components",
-        icon: <CodeBracketSquareIcon className={submenuIconClasses} />,
-        name: "Components",
-      },
-    ],
-  },
+  // {
+  //   path: "",
+  //   icon: <DocumentTextIcon className={`${iconClasses} inline`} />,
+  //   name: "Documentation",
+  //   submenu: [
+  //     {
+  //       path: "/app/getting-started",
+  //       icon: <DocumentTextIcon className={submenuIconClasses} />,
+  //       name: "Getting Started",
+  //     },
+  //     {
+  //       path: "/app/features",
+  //       icon: <TableCellsIcon className={submenuIconClasses} />,
+  //       name: "Features",
+  //     },
+  //     {
+  //       path: "/app/components",
+  //       icon: <CodeBracketSquareIcon className={submenuIconClasses} />,
+  //       name: "Components",
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "",
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
+  //   name: "Pages",
+  //   submenu: [
+  //     {
+  //       path: "/login",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Login",
+  //     },
+  //     {
+  //       path: "/register",
+  //       icon: <UserIcon className={submenuIconClasses} />,
+  //       name: "Register",
+  //     },
+  //     {
+  //       path: "/forgot-password",
+  //       icon: <KeyIcon className={submenuIconClasses} />,
+  //       name: "Forgot Password",
+  //     },
+  //     {
+  //       path: "/app/blank",
+  //       icon: <DocumentIcon className={submenuIconClasses} />,
+  //       name: "Blank Page",
+  //     },
+  //     {
+  //       path: "/app/404",
+  //       icon: <ExclamationTriangleIcon className={submenuIconClasses} />,
+  //       name: "404",
+  //     },
+  //   ],
+  // },
 ];
 
 export default routes;

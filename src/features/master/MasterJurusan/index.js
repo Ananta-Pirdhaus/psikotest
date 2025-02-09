@@ -61,7 +61,17 @@ function Jurusan() {
   }, [dispatch]);
 
   const deleteCurrentJurusan = (id) => {
-    dispatch(deleteJurusan(id)); // Dispatch deleteJurusan action with the selected jurusan id
+    dispatch(
+      openModal({
+        title: "Confirmation",
+        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+        extraObject: {
+          message: `Are you sure you want to delete this jurusan?`,
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.JURUSAN_DELETE,
+          id, // Kirim ID peserta
+        },
+      })
+    );
   };
 
   const updateJurusan = (id, jurusanDetail) => {

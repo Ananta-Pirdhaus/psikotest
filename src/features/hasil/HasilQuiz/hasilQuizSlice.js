@@ -20,20 +20,23 @@ export const getSesiContent = createAsyncThunk("/sesi/content", async () => {
 // Thunk untuk menghapus sesi berdasarkan id
 export const deleteSesiById = createAsyncThunk(
   "/sesi/delete",
-  async (idSesi, { rejectWithValue }) => {
+  async (idSesi, thunkAPI) => {
     try {
-      // Log ID sesi yang diterima
       console.log("ID Sesi yang akan dihapus:", idSesi);
 
-      // Menghapus sesi
       await axios.delete(`/sesi/${idSesi}`);
-      return idSesi; // Mengembalikan idSesi yang berhasil dihapus
+
+      // Panggil ulang getSesiContent setelah penghapusan berhasil
+      await thunkAPI.dispatch(getSesiContent());
+
+      return idSesi;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Terjadi kesalahan"
+      );
     }
   }
 );
-
 export const hasilQuizSlice = createSlice({
   name: "hasilQuiz",
   initialState: {
