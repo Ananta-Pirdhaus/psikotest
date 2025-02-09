@@ -112,7 +112,7 @@ function MasterBakat() {
     dispatch(fetchBakat());
   }, [dispatch]);
 
-  const deleteCurrentBakat = (index) => {
+  const deleteCurrentBakat = (id) => {
     dispatch(
       openModal({
         title: "Confirmation",
@@ -120,7 +120,7 @@ function MasterBakat() {
         extraObject: {
           message: "Are you sure you want to delete this skill record?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.SKILL_DELETE,
-          index,
+          id,
         },
       })
     );
@@ -241,7 +241,7 @@ function MasterBakat() {
                       </button>
                       <button
                         className="btn btn-square btn-ghost"
-                        onClick={() => deleteCurrentBakat(k)}
+                        onClick={() => deleteCurrentBakat(s.id)}
                         aria-label="Delete Skill Record"
                       >
                         <TrashIcon className="w-5 text-red-500" />

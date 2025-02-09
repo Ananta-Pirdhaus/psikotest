@@ -10,6 +10,7 @@ import { deleteSekolah } from "../../master/MasterPendidikan/sekolahSlice";
 import { deleteKampus } from "../../master/MasterKampus/kampuSlice";
 import { deleteJurusan } from "../../master/MasterJurusan/jurusanSlice";
 import { deleteProfesi } from "../../master/MasterProfesi/profesiSlice";
+import { deleteBakat } from "../../master/MasterBakat/bakatSlice";
 import { showNotification } from "../headerSlice";
 
 function ConfirmationModalBody({ extraObject, closeModal }) {
@@ -36,6 +37,9 @@ function ConfirmationModalBody({ extraObject, closeModal }) {
     } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.PROFESI_DELETE) {
       dispatch(deleteProfesi(id));
       dispatch(showNotification({ message: "Profesi Deleted!", status: 1 }));
+    } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.SKILL_DELETE) {
+      dispatch(deleteBakat(id));
+      dispatch(showNotification({ message: "Bakat Deleted!", status: 1 }));
     }
 
     closeModal();

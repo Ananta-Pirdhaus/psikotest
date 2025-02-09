@@ -75,7 +75,7 @@ export const deleteBakat = createAsyncThunk(
   "bakat/deleteBakat",
   async (id, thunkAPI) => {
     try {
-      const response = await axios.delete(`bakat/${id}`);
+      await axios.delete(`/bakat/${id}`); // Pastikan path sesuai
       return id; // Mengembalikan ID bakat yang dihapus
     } catch (error) {
       return thunkAPI.rejectWithValue(
