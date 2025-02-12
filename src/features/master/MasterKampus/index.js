@@ -222,18 +222,21 @@ const Kampus = () => {
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => updateKampus(k.id, k)}
+                      title="Update Kampus"
                     >
                       <PencilIcon className="w-5 text-blue-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => viewKampus(k.id, k)}
+                      title="Lihat Detail Kampus"
                     >
                       <EyeIcon className="w-5 text-green-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentKampus(k.id)}
+                      title="Hapus Kampus"
                     >
                       <TrashIcon className="w-5 text-red-500" />
                     </button>

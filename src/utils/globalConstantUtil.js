@@ -37,5 +37,6 @@ module.exports = Object.freeze({
     JURUSAN_DELETE: "JURUSAN_DELETE",
     PROFESI_DELETE: "PROFESI_DELETE",
     SKILL_DELETE: "SKILL_DELETE",
+    VERSI_DELETE: "VERSI_DELETE",
   },
 });

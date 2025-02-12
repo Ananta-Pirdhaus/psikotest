@@ -228,18 +228,21 @@ function MasterPendidikan() {
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => updateSekolahDetails(p)}
+                      title="Update Sekolah"
                     >
                       <PencilIcon className="h-5 w-5 text-blue-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => viewSekolahDetails(p)}
+                      title="Lihat Detail Sekolah"
                     >
                       <EyeIcon className="h-5 w-5 text-green-500" />
                     </button>
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentSekolah(p.id)}
+                      title="Hapus Sekolah"
                     >
                       <TrashIcon className="h-5 w-5 text-red-500" />
                     </button>

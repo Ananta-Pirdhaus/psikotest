@@ -236,6 +236,7 @@ function MasterBakat() {
                         className="btn btn-square btn-ghost"
                         onClick={() => updateBakatDetails(s)} // Kirim seluruh objek bakat
                         aria-label="Update Skill Record"
+                        title="Ubah Bakat"
                       >
                         <PencilIcon className="w-5 text-blue-500" />
                       </button>
@@ -243,6 +244,7 @@ function MasterBakat() {
                         className="btn btn-square btn-ghost"
                         onClick={() => deleteCurrentBakat(s.id)}
                         aria-label="Delete Skill Record"
+                        title="Hapus Bakat"
                       >
                         <TrashIcon className="w-5 text-red-500" />
                       </button>
@@ -250,6 +252,7 @@ function MasterBakat() {
                         className="btn btn-square btn-ghost"
                         onClick={() => viewBakatDetails(s)} // Kirim seluruh objek bakat
                         aria-label="View Skill Details"
+                        title="Lihat Detail Bakat"
                       >
                         <EyeIcon className="w-5 text-green-500" />
                       </button>

@@ -11,7 +11,6 @@ if (token) {
 }
 
 // Fetch versi-pertanyaan data
-// Fetch versi-pertanyaan data
 export const fetchVersiPertanyaan = createAsyncThunk(
   "versi-pertanyaan/fetchVersiPertanyaan",
   async (page, thunkAPI) => {
@@ -91,6 +90,20 @@ export const updateVersiPertanyaan = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Delete versi-pertanyaan data
+export const deleteVersiPertanyaan = createAsyncThunk(
+  "versi-pertanyaan/deleteVersiPertanyaan",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      await axios.delete(`versi-pertanyaan/${id}`);
+      dispatch(fetchVersiPertanyaan()); // Refresh daftar versi pertanyaan setelah penghapusan
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Terjadi kesalahan");
     }
   }
 );
@@ -189,6 +202,22 @@ const versiPertanyaanSlice = createSlice({
         state.versiPertanyaan = action.payload.data;
       })
       .addCase(updateVersiPertanyaan.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Handle deleteVersiPertanyaan
+      .addCase(deleteVersiPertanyaan.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteVersiPertanyaan.fulfilled, (state, action) => {
+        state.loading = false;
+        state.versiPertanyaan = state.versiPertanyaan.filter(
+          (item) => item.id !== action.payload
+        );
+      })
+      .addCase(deleteVersiPertanyaan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

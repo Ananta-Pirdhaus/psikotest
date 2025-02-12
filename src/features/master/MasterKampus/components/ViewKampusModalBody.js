@@ -39,7 +39,7 @@ function ViewKampusModalBody({ closeModal, extraObject }) {
             type="text"
             defaultValue={
               kampusDetail.jurusan?.length > 0
-                ? kampusDetail.jurusan.join(", ")
+                ? kampusDetail.jurusan.map((jurusan) => jurusan.name).join(", ")
                 : "No jurusan listed"
             }
             updateType="jurusan"
@@ -53,7 +53,6 @@ function ViewKampusModalBody({ closeModal, extraObject }) {
       )}
 
       <div className="modal-action">
-        {/* Button to close the modal */}
         <button className="btn btn-ghost" onClick={() => closeModal()}>
           Close
         </button>

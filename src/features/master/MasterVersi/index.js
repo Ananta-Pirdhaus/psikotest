@@ -164,8 +164,17 @@ const MasterVersion = () => {
   };
 
   const deleteCurrentMaster = (id) => {
-    console.log("Delete Master with ID:", id);
-    // Implementasikan logika untuk menghapus data
+    dispatch(
+      openModal({
+        title: "Confirmation",
+        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+        extraObject: {
+          message: `Are you sure you want to delete this versi?`,
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.VERSI_DELETE,
+          id, // Kirim ID peserta
+        },
+      })
+    );
   };
 
   return (

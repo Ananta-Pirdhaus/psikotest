@@ -144,7 +144,6 @@ function MasterKelas() {
               <tr>
                 <th className="px-4 py-2 text-left">Nama Kelas</th>
                 <th className="px-4 py-2 text-left">Tingkat</th>
-                <th className="px-4 py-2 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -156,29 +155,6 @@ function MasterKelas() {
                   >
                     <td className="px-4 py-2">{k.name}</td>
                     <td className="px-4 py-2">{k.level}</td>
-                    <td className="px-4 py-2 text-center">
-                      <button
-                        className="btn btn-square btn-ghost"
-                        onClick={() => updateKelasDetails(k)}
-                        aria-label="Edit Class"
-                      >
-                        <PencilIcon className="h-5 w-5 text-blue-500" />
-                      </button>
-                      <button
-                        className="btn btn-square btn-ghost"
-                        onClick={() => viewKelasDetails(k)}
-                        aria-label="View Class"
-                      >
-                        <EyeIcon className="h-5 w-5 text-green-500" />
-                      </button>
-                      <button
-                        className="btn btn-square btn-ghost"
-                        onClick={() => deleteCurrentKelas(k.id)}
-                        aria-label="Delete Class"
-                      >
-                        <TrashIcon className="h-5 w-5 text-red-500" />
-                      </button>
-                    </td>
                   </tr>
                 ))
               ) : (

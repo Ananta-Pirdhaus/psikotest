@@ -108,6 +108,7 @@ function MasterSoal() {
   const itemsPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState("");
+  const [selectType, setSelectedType] = useState("");
 
   // Menampilkan daftar versi unik dari soal yang tersedia
   const uniqueVersions = useMemo(() => {
@@ -115,19 +116,26 @@ function MasterSoal() {
     return [...new Set(versions)].filter(Boolean);
   }, [soal]);
 
+  const uniqueType = useMemo(() => {
+    const type = soal.map((s) => s.type);
+    return [...new Set(type)].filter(Boolean);
+  }, [soal]);
+
   const filteredSoal = useMemo(() => {
     return soal.filter((s) => {
       const questionName = String(s.question || "").toLowerCase();
       const category = String(s.kategori || "").toLowerCase();
       const versionMatch = selectedVersion ? s.versi === selectedVersion : true;
+      const typeMatch = selectType ? s.type === selectType : true; // Tambahkan filter berdasarkan selectType
 
       return (
         (questionName.includes(searchQuery.toLowerCase()) ||
           category.includes(searchQuery.toLowerCase())) &&
-        versionMatch
+        versionMatch &&
+        typeMatch
       );
     });
-  }, [soal, searchQuery, selectedVersion]);
+  }, [soal, searchQuery, selectedVersion, selectType]); // Tambahkan `selectType` ke dalam dependency array
 
   useEffect(() => {
     dispatch(fetchSoal());
@@ -207,6 +215,19 @@ function MasterSoal() {
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Cari Soal"
           />
+
+          <select
+            className="select select-bordered w-full max-w-xs"
+            value={selectType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
+            <option value="">All Types</option>
+            {uniqueType.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
 
           <select
             className="select select-bordered w-full max-w-xs"
