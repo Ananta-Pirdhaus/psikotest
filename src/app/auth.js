@@ -1,5 +1,9 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
+import {
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/solid";
 
 // ✅ Konfigurasi baseURL untuk axios berdasarkan environment
 axios.defaults.baseURL =
@@ -42,14 +46,15 @@ const checkAuth = () => {
   return token;
 };
 
-// ✅ Modal untuk refresh token
 function RefreshTokenModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const handleRefreshToken = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     try {
       const url = `${axios.defaults.baseURL}auth/refresh`;
@@ -65,45 +70,59 @@ function RefreshTokenModal({ isOpen, onClose }) {
           axios.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${data.token}`;
-          console.log("✅ New Token Updated");
-          setTimeout(() => onClose(), 500);
+          setSuccess(true);
+          setTimeout(() => onClose(), 1000);
         } else {
-          throw new Error("Invalid token response");
+          throw new Error("Token tidak valid");
         }
       } else {
-        throw new Error("No token received");
+        throw new Error("Token tidak diterima");
       }
     } catch (err) {
       console.error("❌ Error refreshing token:", err);
-      setError("Failed to refresh token. Please try again.");
+      setError("Gagal memperbarui token. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
   }, [onClose]);
 
   return (
-    <>
-      {isOpen && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="text-lg font-bold">Session Expired</h3>
-            <p className="py-2">
-              Your session has expired. Please refresh your token to continue.
-            </p>
-            {error && <p className="text-red-500">{error}</p>}
-            <div className="modal-action">
-              <button
-                className="btn btn-primary"
-                onClick={handleRefreshToken}
-                disabled={loading}
-              >
-                {loading ? "Refreshing..." : "Refresh Token"}
-              </button>
+    isOpen && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-96 animate-fade-in">
+          <div className="flex items-center gap-3 border-b pb-3">
+            <ExclamationTriangleIcon className="w-6 h-6 text-yellow-500" />
+            <h3 className="text-lg font-bold">Sesi Berakhir</h3>
+          </div>
+          <p className="py-3 text-gray-600">
+            Anda telah tidak aktif terlalu lama. Silakan perbarui sesi Anda.
+          </p>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && (
+            <div className="flex items-center gap-2 text-green-600">
+              <CheckCircleIcon className="w-6 h-6" />
+              <p>Token berhasil diperbarui!</p>
             </div>
+          )}
+          <div className="flex justify-end mt-4 gap-2">
+            <button
+              className="btn btn-outline"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Batal
+            </button>
+            <button
+              className={`btn btn-primary ${loading ? "btn-disabled" : ""}`}
+              onClick={handleRefreshToken}
+              disabled={loading}
+            >
+              {loading ? "Memperbarui..." : "Perbarui Token"}
+            </button>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    )
   );
 }
 
@@ -138,31 +157,43 @@ const AuthHandler = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = checkAuth();
+    const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
     }
+
+    let idleTimer;
+
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        console.log("⏳ User is idle, showing refresh token modal...");
+        setShowModal(true);
+      }, 60000); // 1 menit
+    };
+
+    // ✅ Event listener untuk mendeteksi aktivitas
+    const events = ["mousemove", "keydown", "touchstart"];
+    events.forEach((event) => window.addEventListener(event, resetIdleTimer));
+
+    // Mulai timer pertama kali
+    resetIdleTimer();
+
+    return () => {
+      clearTimeout(idleTimer);
+      events.forEach((event) =>
+        window.removeEventListener(event, resetIdleTimer)
+      );
+    };
   }, []);
 
   return (
-    <div className="p-4">
-      {!isAuthenticated ? (
-        <p>🔄 Checking authentication...</p>
-      ) : (
-        <>
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            Open Refresh Token Modal
-          </button>
-          {showModal && (
-            <RefreshTokenModal
-              isOpen={showModal}
-              onClose={() => setShowModal(false)}
-            />
-          )}
-        </>
+    <div>
+      {showModal && (
+        <RefreshTokenModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   );
