@@ -5,7 +5,7 @@ import axios from "axios";
 axios.defaults.baseURL =
   process.env.NODE_ENV === "development"
     ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
-    : "PRODUCTION_URL"; // Gunakan URL produksi langsung
+    : process.env.REACT_APP_PRODUCTION_URL; // Gunakan URL produksi dari .env
 
 // Add Authorization header with token from localStorage
 const token = localStorage.getItem("token");

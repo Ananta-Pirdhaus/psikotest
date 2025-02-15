@@ -6,8 +6,10 @@ import InputText from "../../components/Input/InputText";
 import axios from "axios";
 import { toast } from "react-toastify"; // Import toast from react-toastify
 
-// Set axios default base URL from the environment variable
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
+    : process.env.REACT_APP_PRODUCTION_URL; // Gunakan URL produksi dari .env
 
 function Login() {
   const INITIAL_LOGIN_OBJ = {
@@ -46,7 +48,7 @@ function Login() {
       const expiredToken = response.data.data?.expires_in;
 
       if (token) {
-        localStorage.setItem("expired_token", expiredToken); 
+        localStorage.setItem("expired_token", expiredToken);
         localStorage.setItem("token", token);
         toast.success("Selamat datang kembali! Anda sudah login.");
         window.location.href = "/app/welcome";
