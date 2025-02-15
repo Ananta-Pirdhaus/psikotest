@@ -6,10 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 
 // ✅ Konfigurasi baseURL untuk axios berdasarkan environment
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_BASE_URL
-    : process.env.REACT_APP_PRODUCTION_URL;
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 // ✅ Interceptor untuk selalu memakai token terbaru
 axios.interceptors.request.use((config) => {

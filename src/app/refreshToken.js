@@ -2,10 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 // Konfigurasi baseURL untuk axios berdasarkan environment
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_BASE_URL
-    : process.env.REACT_APP_PRODUCTION_URL;
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
 
 export default function RefreshTokenModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);

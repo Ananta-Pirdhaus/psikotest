@@ -6,10 +6,7 @@ import InputText from "../../components/Input/InputText";
 import axios from "axios";
 import { toast } from "react-toastify"; // Import toast from react-toastify
 
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
-    : process.env.REACT_APP_PRODUCTION_URL; // Gunakan URL produksi dari .env
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 function Login() {
   const INITIAL_LOGIN_OBJ = {
