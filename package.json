@@ -22,6 +22,7 @@
     "dompurify": "^3.2.4",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
+    "framer-motion": "^12.4.3",
     "html-react-parser": "^5.2.2",
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
@@ -59,7 +60,7 @@
   "bugs": {
     "url": "https://github.com/srobbin01/tailwind-dashboard-template-dashwind/issues"
   },
-  "homepage": "",
+  "homepage": "http://admin.careertheexplorer.com/",
   "eslintConfig": {
     "extends": [
       "react-app",
