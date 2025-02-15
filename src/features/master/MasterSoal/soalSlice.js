@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Set base URL from environment variable
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
+    : "PRODUCTION_URL"; // Gunakan URL produksi langsung
 
 // Add Authorization header with token from localStorage
 const token = localStorage.getItem("token");
@@ -54,7 +57,7 @@ export const addNewSoalAsync = createAsyncThunk(
           bakat: option.bakat === "{{bakatID}}" ? bakatID : option.bakat, // Mengganti {{bakatID}} dengan nilai aktual
         })),
       };
-        thunkAPI.dispatch(fetchSoal());
+      thunkAPI.dispatch(fetchSoal());
       // Kirimkan data soal ke server
       const response = await axios.post("pertanyaan", soalData);
       return response.data.data; // Return the added question

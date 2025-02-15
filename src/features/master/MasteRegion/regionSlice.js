@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
+    : "PRODUCTION_URL"; // Gunakan URL produksi langsung
 
 // Fungsi untuk mengambil daftar provinces
 export const fetchProvinces = createAsyncThunk(
@@ -22,17 +25,16 @@ export const fetchRegencies = createAsyncThunk(
 
     // Memodifikasi data yang diterima untuk menambahkan provinceId pada setiap regency
     const regenciesWithProvinceId = response.data.data.map((regency) => ({
-      ...regency,      // Menyalin data regency
+      ...regency, // Menyalin data regency
       provinceId: provinceId, // Menambahkan provinceId ke setiap regency
     }));
 
-    return { 
-      provinceId,       // Kembalikan provinceId agar bisa digunakan
+    return {
+      provinceId, // Kembalikan provinceId agar bisa digunakan
       regencies: regenciesWithProvinceId, // Kembalikan daftar regencies yang sudah dimodifikasi
     };
   }
 );
-
 
 // Fungsi untuk menghapus region berdasarkan ID
 export const deleteRegion = createAsyncThunk(
@@ -100,7 +102,6 @@ const regionSlice = createSlice({
       });
   },
 });
-
 
 export default regionSlice.reducer;
 export const { actions: regionActions } = regionSlice; // Export the actions

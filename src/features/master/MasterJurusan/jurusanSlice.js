@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Set base URL from environment variable
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
+    : "PRODUCTION_URL"; // Gunakan URL produksi langsung
 
 // Adding Authorization header with token from localStorage
 const token = localStorage.getItem("token");
@@ -71,7 +74,6 @@ export const getBakat = createAsyncThunk(
 );
 
 // Async thunk to fetch all jurusan data
-
 
 // Async thunk to delete a jurusan
 export const deleteJurusan = createAsyncThunk(

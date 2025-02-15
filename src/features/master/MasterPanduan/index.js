@@ -1,105 +1,69 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
-import { openModal } from "../../common/modalSlice";
-import {
-  CONFIRMATION_MODAL_CLOSE_TYPES,
-  MODAL_BODY_TYPES,
-} from "../../../utils/globalConstantUtil";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import { fetchPanduan } from "./panduanSlice";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
-import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
-import { fetchPanduan } from "./panduanSlice"; // Import dari PanduanSlice.js
-import { showNotification } from "../../common/headerSlice";
-
-const TopSideButtons = () => {
-  return (
-    <div className="inline-block float-right space-x-2">
-      {/* Removed the Add New button */}
-    </div>
-  );
-};
+import { MODAL_BODY_TYPES } from "../../../utils/globalConstantUtil";
+import { openModal } from "../../common/modalSlice";
+import parse from "html-react-parser";
+import DOMPurify from "dompurify"; // Opsional: untuk keamanan XSS
 
 const MasterPanduan = () => {
-  const { panduan, error, status, message } = useSelector(
-    (state) => state.panduan // Mengambil data dari state panduan
-  );
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setselectedStatus] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [description, setDescription] = useState(""); // Tambahkan state untuk description
-
-  // Mengambil data panduan saat komponen dimuat
-  useEffect(() => {
-    dispatch(fetchPanduan(currentPage)) // Tetap menggunakan fetchPanduan dari PanduanSlice.js
-      .then((response) => {
-        console.log("Response from fetchPanduan:", response);
-        // Akses description dari payload dan simpan dalam state
-        const newDescription = response.payload.description;
-        setDescription(newDescription);
-        console.log("Description:", newDescription); // Menampilkan description di konsol
-      })
-      .catch((error) => {
-        console.error("Error fetching panduan:", error);
-      });
-  }, [dispatch, currentPage]);
-
-  // Filter data berdasarkan query pencarian
-  const filteredMasterData = useMemo(() => {
-    if (!panduan || !panduan.length) return []; // Pastikan data panduan ada
-    return panduan.filter((item) => {
-      const name = String(item.name || "").toLowerCase();
-      const query = searchQuery.toLowerCase();
-      return name.includes(query); // Filter berdasarkan nama
-    });
-  }, [panduan, searchQuery]);
-
-  // Pagination
-  const itemsPerPage = 10;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = filteredMasterData.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  const { panduan, error, status, message } = useSelector(
+    (state) => state.panduan
   );
-  const totalPages = Math.ceil(filteredMasterData.length / itemsPerPage);
 
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(fetchPanduan(currentPage));
+  }, [currentPage, dispatch]);
+
+  const handleUpdatePanduan = (description) => {
+    if (!description) {
+      console.warn("Description tidak tersedia untuk diperbarui");
+      return;
     }
+
+    console.log("Description yang dikirim:", description);
+    dispatch(
+      openModal({
+        title: "Update Panduan",
+        bodyType: MODAL_BODY_TYPES.PANDUAN_UPDATE,
+        extraObject: description, // Hanya mengirim description
+      })
+    );
   };
 
-  const updateMasterDetails = (item) => {
-    console.log("Update Master Details:", item);
-    // Implementasikan logika untuk update data
-  };
+  const renderDescription = (description) => {
+    if (!description) return "No description available";
 
-  const viewMasterDetails = (item) => {
-    console.log("View Master Details:", item);
-    // Implementasikan logika untuk melihat data lebih lanjut
-  };
+    // Ubah semua <ul> menjadi <ol> agar semuanya bernomor
+    let formattedDescription = description
+      .replaceAll(/<ul>/g, "<ol>")
+      .replaceAll(/<\/ul>/g, "</ol>");
 
-  const deleteCurrentMaster = (id) => {
-    console.log("Delete Master with ID:", id);
-    // Implementasikan logika untuk menghapus data
+    // Gabungkan <ol> berurutan agar nomornya tidak reset
+    formattedDescription = formattedDescription.replace(/<\/ol>\s*<ol>/g, "");
+
+    // Opsional: Bersihkan HTML dari potensi XSS
+    const safeHTML = DOMPurify.sanitize(formattedDescription);
+
+    return parse(safeHTML);
   };
 
   return (
-    <TitleCard
-      title="Master Guide"
-      topMargin="mt-2"
-      TopSideButtons={<TopSideButtons />}
-    >
+    <TitleCard title="Master Guide" topMargin="mt-2">
       {status && message && (
         <div
-          className={`text-${status === "failed" ? "red" : "green"}-500 mb-4`}
+          className={`text-${
+            status === "failed" ? "red-500" : "green-500"
+          } mb-4`}
         >
           {message}
         </div>
       )}
-
       <div className="overflow-x-auto w-full mt-4">
         <table className="table-auto w-full text-sm text-gray-700">
           <thead className="bg-gray-100 border-b">
@@ -109,7 +73,23 @@ const MasterPanduan = () => {
             </tr>
           </thead>
           <tbody>
-            <td className="px-4 py-2">{description}</td>
+            <tr>
+              <td className="px-4 py-2">
+                {/* Menambahkan class DaisyUI untuk list bernomor */}
+                <div className="list-decimal list-outside pl-5">
+                  {renderDescription(panduan?.description)}
+                </div>
+              </td>
+              <td className="px-4 py-2 text-center">
+                <button
+                  className="btn btn-warning btn-sm"
+                  onClick={() => handleUpdatePanduan(panduan?.description)}
+                  disabled={!panduan?.description}
+                >
+                  <PencilIcon className="h-5 w-5" />
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

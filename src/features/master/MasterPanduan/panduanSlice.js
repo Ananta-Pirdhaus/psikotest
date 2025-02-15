@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Set base URL from environment variable
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
+    : "PRODUCTION_URL"; // Gunakan URL produksi langsung
 
 // Add Authorization header with token from localStorage
 const token = localStorage.getItem("token");
@@ -35,12 +38,9 @@ export const fetchPanduan = createAsyncThunk(
 // Update panduan data
 export const updatePanduan = createAsyncThunk(
   "panduan/updatePanduan",
-  async ({ id, title, content }, thunkAPI) => {
+  async ({ description }, thunkAPI) => {
     try {
-      const response = await axios.put(`panduan/${id}`, {
-        title,
-        content,
-      });
+      const response = await axios.put("panduan", { description });
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -71,10 +71,19 @@ const panduanSlice = createSlice({
       })
       .addCase(fetchPanduan.fulfilled, (state, action) => {
         state.loading = false;
-        state.panduan = action.payload;
-        state.meta = action.meta.arg; // Storing page info from the meta
+
+        // Menyesuaikan response agar memiliki ID
+        const rawData = action.payload;
+        const formattedData = {
+          id: new Date().getTime(), // ID berdasarkan timestamp
+          ...rawData,
+        };
+
+        state.panduan = formattedData;
+        state.meta = action.meta.arg;
         state.status = "succeeded";
       })
+
       .addCase(fetchPanduan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -87,17 +96,26 @@ const panduanSlice = createSlice({
         state.error = null;
         state.status = "loading";
       })
+
       .addCase(updatePanduan.fulfilled, (state, action) => {
         state.loading = false;
-        const updatedPanduan = action.payload;
-        state.panduan = state.panduan.map((panduan) =>
-          panduan.id === updatedPanduan.id ? updatedPanduan : panduan
-        );
-        if (state.panduanDetails?.id === updatedPanduan.id) {
-          state.panduanDetails = updatedPanduan;
+
+        // Ambil deskripsi terbaru dari payload
+        const updatedDescription = action.payload.description;
+
+        // Pastikan state.panduan ada sebelum mengubahnya
+        if (state.panduan) {
+          state.panduan.description = updatedDescription;
         }
+
+        // Jika ada detail panduan yang sedang ditampilkan, perbarui juga
+        if (state.panduanDetails) {
+          state.panduanDetails.description = updatedDescription;
+        }
+
         state.status = "succeeded";
       })
+
       .addCase(updatePanduan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
