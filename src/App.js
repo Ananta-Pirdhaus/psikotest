@@ -1,4 +1,4 @@
-import React, { lazy, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -7,30 +7,34 @@ import {
   Navigate,
 } from "react-router-dom";
 import { themeChange } from "theme-change";
-import checkAuth from "./app/auth";
+import { checkAuth, AuthHandler } from "./app/auth";
 import initializeApp from "./app/init";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
-// Importing pages
-const Layout = lazy(() => import("./containers/Layout"));
-const Login = lazy(() => import("./pages/Login"));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
-const Documentation = lazy(() => import("./pages/Documentation"));
-// Initializing different libraries
+
+const Layout = React.lazy(() => import("./containers/Layout"));
+const Login = React.lazy(() => import("./pages/Login"));
+const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
+const Documentation = React.lazy(() => import("./pages/Documentation"));
+
 initializeApp();
 
-// Check for login and initialize axios
-const token = checkAuth();
-
 function App() {
+  const [token, setToken] = useState(null);
+
   useEffect(() => {
-    // 👆 daisy UI themes initialization
+    // 🌍 Inisialisasi DaisyUI theme change
     themeChange(false);
+
+    // 🔐 Cek token saat aplikasi dimulai
+    const userToken = checkAuth();
+    setToken(userToken);
   }, []);
 
   return (
     <>
       <Router>
+      <AuthHandler />
         <ToastContainer position="top-right" autoClose={5000} />
         <Routes>
           <Route path="/login" element={<Login />} />

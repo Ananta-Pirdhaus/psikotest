@@ -1,37 +1,45 @@
-import { useState, useEffect } from "react";
-import { Modal, Button } from "daisyui";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
+// Konfigurasi baseURL untuk axios berdasarkan environment
 axios.defaults.baseURL =
   process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_BASE_URL // Gunakan variabel dari .env saat development
-    : process.env.REACT_APP_PRODUCTION_URL; // Gunakan URL produksi dari .env
+    ? process.env.REACT_APP_BASE_URL
+    : process.env.REACT_APP_PRODUCTION_URL;
 
 export default function RefreshTokenModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleRefreshToken = async () => {
+  const handleRefreshToken = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(
-        "/api/refresh-token",
-        {},
-        { withCredentials: true }
-      );
-      console.log("New Token:", response.data.token);
-      onClose();
+      const url = `${axios.defaults.baseURL}auth/refresh`;
+
+      // Hapus token lama sebelum melakukan permintaan token baru
+      localStorage.removeItem("token");
+
+      const response = await axios.get(url, { withCredentials: true });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        console.log("New Token:", response.data.token);
+        onClose(); // Tutup modal setelah sukses
+      } else {
+        throw new Error("No token received");
+      }
     } catch (err) {
+      console.error("Error refreshing token:", err);
       setError("Failed to refresh token. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
-      setError(null);
+      setError(null); // Reset error ketika modal dibuka
     }
   }, [isOpen]);
 
@@ -52,20 +60,16 @@ export default function RefreshTokenModal({ isOpen, onClose }) {
           </p>
           {error && <p className="text-red-500">{error}</p>}
           <div className="modal-action">
-            <Button
+            <button
               className="btn btn-primary"
               onClick={handleRefreshToken}
               disabled={loading}
             >
               {loading ? "Refreshing..." : "Refresh Token"}
-            </Button>
-            <label
-              htmlFor="refresh-token-modal"
-              className="btn"
-              onClick={onClose}
-            >
+            </button>
+            <button className="btn" onClick={onClose}>
               Cancel
-            </label>
+            </button>
           </div>
         </div>
       </div>
