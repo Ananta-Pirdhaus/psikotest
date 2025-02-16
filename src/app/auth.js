@@ -166,7 +166,7 @@ const AuthHandler = () => {
       idleTimer = setTimeout(() => {
         console.log("⏳ User is idle, showing refresh token modal...");
         setShowModal(true);
-      }, 180000); // 1 menit
+      }, 1800000); // 1 menit
     };
 
     // ✅ Event listener untuk mendeteksi aktivitas

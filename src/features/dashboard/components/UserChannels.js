@@ -1,18 +1,25 @@
-import TitleCard from "../../../components/Cards/TitleCard";
 
-const userSourceData = [
-  { source: "Facebook Ads", count: "26,345", conversionPercent: 10.2 },
-  { source: "Google Ads", count: "21,341", conversionPercent: 11.7 },
-  { source: "Instagram Ads", count: "34,379", conversionPercent: 12.4 },
-  { source: "Affiliates", count: "12,359", conversionPercent: 20.9 },
-  { source: "Organic", count: "10,345", conversionPercent: 10.3 },
-];
 
 function UserChannels({}) {
   return (
-    <div className={"card w-full p-6 bg-base-100 shadow-xl "}>
-      <div className="text-center justify-center">
-        <p className="text-4xl font-bold ">Selamat Datang</p>
+    <div className="flex justify-center  bg-base-200">
+      <div className="card w-full max-w-2xl p-8 bg-base-100 shadow-2xl rounded-2xl text-center animate-fade-in">
+        <div className="flex justify-center mb-4">
+          <div className="text-primary text-6xl">
+            <i className="fas fa-user-shield"></i>
+          </div>
+        </div>
+        <h1 className="text-4xl font-bold text-neutral">
+          Selamat Datang, Admin
+        </h1>
+        <p className="text-lg text-neutral-700 mt-2">
+          Selamat datang di panel administrasi. Pantau dan kelola sistem dengan
+          efisiensi, pastikan setiap aspek berjalan optimal, dan buat keputusan
+          berdasarkan data yang akurat.
+        </p>
+        <button className="btn btn-primary mt-6 px-6 py-3 rounded-lg text-white">
+          Masuk ke Dashboard
+        </button>
       </div>
     </div>
   );
