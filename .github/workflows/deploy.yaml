@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: public_html/admin.careertheexplorer.com
-          local-dir: build
+          local-dir: './build/'
           exclude: |
             **/.git**
             **/.git*/**
