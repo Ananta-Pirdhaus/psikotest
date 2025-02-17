@@ -1,0 +1,37 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - admin
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code 🚚
+        uses: actions/checkout@v3
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install Dependencies 📦
+        run: yarn install
+
+      - name: Build React App / Vue App (depending on user app) 🏗️
+        run: yarn build
+
+      - name: Upload to cPanel 📂
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: public_html/admin.careertheexplorer.com
+          local-dir: build
+          exclude: |
+            **/.git**
+            **/.git*/**
+            **/node_modules/**
+            **/.**
