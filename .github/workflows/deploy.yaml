@@ -20,7 +20,7 @@ jobs:
         run: yarn install
 
       - name: Build React App / Vue App (depending on user app) 🏗️
-        run: yarn build
+        run: CI=false yarn build
 
       - name: Upload to cPanel 📂
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
