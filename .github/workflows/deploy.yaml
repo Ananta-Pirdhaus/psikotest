@@ -25,11 +25,12 @@ jobs:
       - name: Upload to cPanel 📂
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
+          timeout: 60000
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: public_html/admin.careertheexplorer.com/
-          local-dir: './build/'
+          local-dir: "./build/"
           exclude: |
             **/.git**
             **/.git*/**
