@@ -210,7 +210,7 @@ function MasterSoal() {
           <input
             type="text"
             placeholder="Search by Question Name or Category"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Cari Soal"
