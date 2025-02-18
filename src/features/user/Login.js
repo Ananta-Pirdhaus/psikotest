@@ -48,7 +48,7 @@ function Login() {
         localStorage.setItem("expired_token", expiredToken);
         localStorage.setItem("token", token);
         toast.success("Selamat datang kembali! Anda sudah login.");
-        window.location.href = "/app/welcome";
+        window.location.href = "/app/dashboard";
       } else {
         console.log("Token not found in the response:", response.data);
         setErrorMessage("Invalid credentials. Please try again.");

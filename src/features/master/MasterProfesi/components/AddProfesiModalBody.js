@@ -83,7 +83,7 @@ function AddProfesiModalBody({ closeModal }) {
   };
 
   // Only render the component when bakatOptions are available
-  if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
+  // if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
 
   // Prepare options for react-select
   const bakatSelectOptions = bakatOptions.map((bakat) => ({

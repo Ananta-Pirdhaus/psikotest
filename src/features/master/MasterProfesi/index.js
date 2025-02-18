@@ -168,8 +168,8 @@ function Profesi() {
           <TopSideButtons onImport={dispatch(importProfesiData)} />
         }
       >
-        {status === "loading" && <p>Loading...</p>}
-        {status === "failed" && <p>Failed to load data.</p>}
+        {/* {status === "loading" && <p>Loading...</p>}
+        {status === "failed" && <p>Failed to load data.</p>} */}
 
         <div className="mb-4">
           <input

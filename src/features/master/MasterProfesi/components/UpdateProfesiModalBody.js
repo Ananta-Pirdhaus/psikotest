@@ -100,7 +100,7 @@ function UpdateProfesiModalBody({ closeModal, extraObject }) {
     setProfesiObj((prev) => ({ ...prev, [updateType]: value }));
   };
 
-  if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
+  // if (!bakatOptions || bakatOptions.length === 0) return <div>Loading...</div>;
 
   const bakatSelectOptions = bakatOptions.map((bakat) => ({
     value: bakat.value,

@@ -95,9 +95,9 @@ function AddKampusModalBody({ closeModal }) {
   };
 
   // Render loading message while jurusanOptions is not available
-  if (!jurusanOptions || jurusanOptions.length === 0) {
-    return <div>Loading...</div>;
-  }
+  // if (!jurusanOptions || jurusanOptions.length === 0) {
+  //   return <div>Loading...</div>;
+  // }
 
   // If there is an error message for jurusan, display it
   if (errorMessage === "Jurusan tidak tersedia") {
