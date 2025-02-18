@@ -103,7 +103,7 @@ function MasterKelas() {
 
   return (
     <>
-      <TitleCard title="Master Classes" topMargin="mt-2">
+      <TitleCard title="Master Kelas" topMargin="mt-2">
         <div className="mb-4 flex justify-between items-center">
           <div className="flex space-x-4">
             {/* Search Input */}

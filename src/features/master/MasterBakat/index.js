@@ -148,8 +148,8 @@ function MasterBakat() {
 
   const filteredBakat = useMemo(() => {
     return bakat.filter((s) => {
-      const skillName = String(s.nama_bakat || "").toLowerCase();
-      const category = String(s.deskripsi_singkat || "").toLowerCase();
+      const skillName = String(s.name || "").toLowerCase();
+      const category = String(s.short_description || "").toLowerCase();
 
       return (
         skillName.includes(searchQuery.toLowerCase()) ||

@@ -22,7 +22,7 @@ function InputText({
   };
 
   return (
-    <div className={`form-control w-full ${containerStyle}`}>
+    <div className={`form-control w-full  ${containerStyle}`}>
       <label className="label">
         <span className={"label-text text-base-content " + labelStyle}>
           {labelTitle}
@@ -33,7 +33,7 @@ function InputText({
         value={value}
         placeholder={placeholder || ""}
         onChange={(e) => updateInputValue(e.target.value)}
-        className="input input-bordered w-full"
+        className="input input-bordered w-full bg-white text-black"
         disabled={disabled} // Disable the input when required
       />
     </div>
