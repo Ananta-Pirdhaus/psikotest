@@ -200,13 +200,29 @@ function MasterPendidikan() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <select
-          className="select select-bordered w-full max-w-xs"
+          className="btn  w-full max-w-xs flex items-center"
           value={selectedLevel}
           onChange={(e) => setSelectedLevel(e.target.value)}
+          aria-label="Filter by Level"
         >
-          <option value="">All Levels</option>
-          <option value="SMP">SMP</option>
-          <option value="SMA">SMA</option>
+          <option
+            value=""
+            className="bg-white text-start flex items-start justify-start"
+          >
+            All Levels
+          </option>
+          <option
+            value="SMP"
+            className="bg-white text-start flex items-start justify-start"
+          >
+            SMP
+          </option>
+          <option
+            value="SMA"
+            className="bg-white text-start flex items-start justify-start"
+          >
+            SMA
+          </option>
         </select>
       </div>
       <div className="overflow-x-auto w-full mt-4">

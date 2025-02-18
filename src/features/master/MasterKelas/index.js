@@ -117,14 +117,20 @@ function MasterKelas() {
 
           {/* Level Filter */}
           <select
-            className="select select-bordered w-full max-w-xs"
+            className="btn  w-full max-w-xs flex items-center"
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
             aria-label="Filter by Level"
           >
-            <option value="">All Levels</option>
-            <option value="SMP">SMP</option>
-            <option value="SMA">SMA</option>
+            <option value="" className="bg-white">
+              All Levels
+            </option>
+            <option value="SMP" className="bg-white">
+              SMP
+            </option>
+            <option value="SMA" className="bg-white">
+              SMA
+            </option>
           </select>
         </div>
 
