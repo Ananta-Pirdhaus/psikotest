@@ -4,7 +4,7 @@ import LandingIntro from "./LandingIntro";
 import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
 import axios from "axios";
-import { toast } from "react-toastify"; // Import toast from react-toastify
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -98,22 +98,20 @@ function Login() {
                 />
               </div>
 
-              <div className="text-right text-primary">
-                <Link to="/forgot-password">
-                  <span className="text-sm inline-block hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
-                    Forgot Password?
-                  </span>
-                </Link>
-              </div>
-
               <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
               <button
                 type="submit"
-                className={
-                  "btn mt-2 w-full btn-primary" + (loading ? " loading" : "")
-                }
+                className={`btn mt-2 w-full btn-primary relative ${
+                  loading ? "loading" : ""
+                }`}
               >
-                Login
+                {loading ? (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full animate-spin"></div>
+                  </span>
+                ) : (
+                  "Login"
+                )}
               </button>
             </form>
           </div>

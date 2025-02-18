@@ -1,9 +1,15 @@
-function SuspenseContent(){
-    return(
-        <div className="w-full h-screen text-gray-300 dark:text-gray-200 bg-base-100">
-            Loading...
-        </div>
-    )
+import "../loading.scss";
+import React from "react";
+
+function SuspenseContent() {
+  return (
+    <div className="blur-background">
+      <div className="ring">
+        Loading
+        <div className="circle"></div>
+      </div>
+    </div>
+  );
 }
 
-export default SuspenseContent
+export default SuspenseContent;

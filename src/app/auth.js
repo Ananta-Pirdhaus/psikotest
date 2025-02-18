@@ -127,23 +127,47 @@ function RefreshTokenModal({ isOpen, onClose }) {
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // Cek jika response status 401
     if (error.response && error.response.status === 401) {
+      // Pastikan token ada sebelum mencoba refresh token
+      const token = localStorage.getItem("token");
+
+      // Jika tidak ada token, kemungkinan login gagal, langsung redirect ke login
+      if (!token) {
+        console.log("❌ No token found, login failed or token is missing.");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      // Jika token ada, coba refresh token
       try {
         console.log("🔄 Token expired, trying to refresh...");
+
+        // Mengambil response refresh token
         const refreshResponse = await axios.get("/auth/refresh");
+
+        // Cek apakah refresh token berhasil dan dapatkan token baru
         const newToken = refreshResponse.data.token;
 
-        localStorage.setItem("token", newToken);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+        if (newToken) {
+          // Simpan token baru dan perbarui header Authorization
+          localStorage.setItem("token", newToken);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
 
-        // 🚀 Ulangi request yang gagal dengan token baru
-        error.config.headers["Authorization"] = `Bearer ${newToken}`;
-        return axios(error.config);
+          // Ulangi request yang gagal dengan token baru
+          error.config.headers["Authorization"] = `Bearer ${newToken}`;
+          return axios(error.config);
+        } else {
+          throw new Error("Failed to refresh token");
+        }
       } catch (refreshError) {
         console.error("❌ Refresh token failed, redirecting to login...");
+        // Jika gagal refresh token, arahkan ke login
         window.location.href = "/login";
       }
     }
+
+    // Jika bukan status 401, lanjutkan error response seperti biasa
     return Promise.reject(error);
   }
 );
