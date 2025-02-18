@@ -53,7 +53,7 @@ function HasilQuiz() {
       <TitleCard title="Hasil Quiz" topMargin="mt-2">
         <div className="overflow-x-auto w-full">
           <table className="table w-full">
-            <thead>
+            <thead className="bg-gray-100 border-b">
               <tr>
                 <th>Nama Peserta</th>
                 <th>Kelas</th>

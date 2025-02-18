@@ -104,30 +104,28 @@ function MasterKelas() {
   return (
     <>
       <TitleCard title="Master Kelas" topMargin="mt-2">
-        <div className="mb-4 flex justify-between items-center">
-          <div className="flex space-x-4">
-            {/* Search Input */}
-            <input
-              type="text"
-              placeholder="Search by Class Name"
-              className="input input-bordered w-full max-w-xs"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search Classes"
-            />
+        <div className="mb-4 flex justify-start items-start space-x-2">
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="Search by Class Name"
+            className="input input-bordered w-full max-w-xs"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search Classes"
+          />
 
-            {/* Level Filter */}
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={selectedLevel}
-              onChange={(e) => setSelectedLevel(e.target.value)}
-              aria-label="Filter by Level"
-            >
-              <option value="">All Levels</option>
-              <option value="SMP">SMP</option>
-              <option value="SMA">SMA</option>
-            </select>
-          </div>
+          {/* Level Filter */}
+          <select
+            className="select select-bordered w-full max-w-xs"
+            value={selectedLevel}
+            onChange={(e) => setSelectedLevel(e.target.value)}
+            aria-label="Filter by Level"
+          >
+            <option value="">All Levels</option>
+            <option value="SMP">SMP</option>
+            <option value="SMA">SMA</option>
+          </select>
         </div>
 
         {status === "failed" && error && (

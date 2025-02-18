@@ -191,7 +191,7 @@ const MasterVersion = () => {
         </div>
       )}
 
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex justify-start items-start space-x-2">
         <input
           type="text"
           placeholder="Search by Name"
@@ -242,12 +242,7 @@ const MasterVersion = () => {
                     >
                       <PencilIcon className="h-5 w-5 text-blue-500" />
                     </button>
-                    <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => viewMasterDetails(item)}
-                    >
-                      <EyeIcon className="h-5 w-5 text-green-500" />
-                    </button>
+
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentMaster(item.id)}
@@ -277,7 +272,9 @@ const MasterVersion = () => {
           >
             Previous
           </button>
-          <span className="text-sm">{`Page ${currentPage} of ${totalPages}`}</span>
+          <span className="btn btn-sm">
+            Page {currentPage} of {totalPages}
+          </span>
           <button
             className="btn btn-sm"
             onClick={() => paginate(currentPage + 1)}

@@ -191,7 +191,7 @@ function MasterPendidikan() {
         </div>
       )}
 
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex justify-start items-start space-x-2">
         <input
           type="text"
           placeholder="Search by School Name"
