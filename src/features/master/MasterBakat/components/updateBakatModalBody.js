@@ -77,6 +77,8 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
     }
   };
 
+  console.log("Bakat Object:", extraObject); // Debugging line
+
   return (
     <>
       <InputText
@@ -85,6 +87,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Name"
+        defaultValue={extraObject.name || ""}
         updateFormValue={updateFormValue}
       />
 
@@ -95,6 +98,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Short Description"
         updateFormValue={updateFormValue}
+        defaultValue={extraObject.short_description || ""}
       />
 
       <InputText
@@ -104,6 +108,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Full Description"
         updateFormValue={updateFormValue}
+        defaultValue={extraObject.full_description || ""}
       />
 
       <InputText
@@ -113,6 +118,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Recommendation"
         updateFormValue={updateFormValue}
+        defaultValue={extraObject.recommendation || ""}
       />
 
       <div className="mt-4">

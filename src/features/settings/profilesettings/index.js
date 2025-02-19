@@ -68,13 +68,13 @@ function ProfileSettings() {
     setProfile({ ...profile, [updateType]: value });
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // if (errorMessage) {
-  //   return <div>{errorMessage}</div>;
-  // }
+  if (errorMessage) {
+    return <div>{errorMessage}</div>;
+  }
 
   return (
     <>

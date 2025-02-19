@@ -67,7 +67,7 @@ function UpdateVersiModalBody({ closeModal, extraObject }) {
   const currentBlockType = RichUtils.getCurrentBlockType(editorState);
 
   return (
-    <div className="max-w-xl mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md">
       {/* Toolbar */}
       <div className="flex flex-wrap gap-2 p-2 border rounded-md bg-gray-100">
         <button

@@ -49,7 +49,13 @@ function ModalLayout() {
   return (
     <>
       <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-        <div className={`modal-box ${size === "lg" ? "max-w-5xl" : ""}`}>
+        <div
+          className={`modal-box ${
+            size === "lg" || bodyType === MODAL_BODY_TYPES.PANDUAN_UPDATE
+              ? "max-w-6xl w-full sm:w-11/12 lg:w-10/12 max-h-[80vh] overflow-y-auto"
+              : ""
+          }`}
+        >
           <button
             className="btn btn-sm btn-circle absolute right-2 top-2"
             onClick={() => close()}

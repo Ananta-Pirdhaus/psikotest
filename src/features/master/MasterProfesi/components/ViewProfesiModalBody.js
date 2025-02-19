@@ -32,10 +32,7 @@ function ViewProfesiModalBody({ closeModal, extraObject }) {
           />
           <InputText
             type="text"
-            defaultValue={
-              profesiDetail.bakat?.join(", ") ||
-              "Tidak ada bakat yang terdaftar"
-            }
+            defaultValue={profesiDetail.bakat.map((b) => b.name).join(", ")}
             updateType="description"
             containerStyle="mt-4"
             labelTitle="Description"

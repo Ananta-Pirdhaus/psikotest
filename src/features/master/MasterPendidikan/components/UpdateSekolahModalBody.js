@@ -55,6 +55,7 @@ function UpdateSekolahModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue} // Passing the update function to InputText
+        defaultValue={extraObject.name || ""}
       />
 
       {/* Dropdown untuk memilih tingkat sekolah (SMA / SMP) */}
