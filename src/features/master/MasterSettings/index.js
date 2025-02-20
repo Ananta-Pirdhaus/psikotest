@@ -80,7 +80,10 @@ const MasterSettings = () => {
               </td>
               <td className="px-4 py-2">{settings?.keywords}</td>
               <td className="px-4 py-2">{settings?.author}</td>
-              <td className="px-4 py-2">{settings?.icon}</td>
+              <td className="px-4 py-2">
+                <img src={settings?.icon} alt="Icon" className="h-6 w-6" />
+              </td>
+
               <td className="px-4 py-2">
                 <div>
                   <p>
