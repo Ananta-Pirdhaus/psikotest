@@ -9,13 +9,17 @@ import {
 import { themeChange } from "theme-change";
 import { checkAuth, AuthHandler } from "./app/auth";
 import initializeApp from "./app/init";
-import { ToastContainer } from "react-toastify"; // Import ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { HelmetProvider } from "react-helmet-async";
+import DynamicHead from "./DynamicHead"; // ✅ Move this import to the top
 
 const Layout = React.lazy(() => import("./containers/Layout"));
 const Login = React.lazy(() => import("./pages/Login"));
 const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
 const Documentation = React.lazy(() => import("./pages/Documentation"));
+
+initializeApp();
 
 initializeApp();
 
@@ -33,22 +37,25 @@ function App() {
 
   return (
     <>
-      <Router>
-      <AuthHandler />
-        <ToastContainer position="top-right" autoClose={5000} />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/documentation" element={<Documentation />} />
-          <Route path="/app/*" element={<Layout />} />
-          <Route
-            path="*"
-            element={
-              <Navigate to={token ? "/app/dashboard" : "/login"} replace />
-            }
-          />
-        </Routes>
-      </Router>
+      <HelmetProvider>
+        <DynamicHead />
+        <Router>
+          <AuthHandler />
+          <ToastContainer position="top-right" autoClose={5000} />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/app/*" element={<Layout />} />
+            <Route
+              path="*"
+              element={
+                <Navigate to={token ? "/app/dashboard" : "/login"} replace />
+              }
+            />
+          </Routes>
+        </Router>
+      </HelmetProvider>
     </>
   );
 }
