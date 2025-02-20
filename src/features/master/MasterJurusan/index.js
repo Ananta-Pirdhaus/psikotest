@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import TitleCard from "../../../components/Cards/TitleCard";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon"; // Import PencilIcon for Update
+import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon"; // Import EyeIcon for View
 import { useDispatch, useSelector } from "react-redux";
 import { getJurusan, deleteJurusan } from "./jurusanSlice"; // Adjust import based on file structure
@@ -25,12 +26,13 @@ const TopSideButtons = () => {
   };
 
   return (
-    <div className="inline-block float-right space-x-2">
+    <div className="inline-block float-right space-x-2 text-white">
       <button
-        className="btn px-6 btn-sm normal-case btn-primary"
+        className="btn btn-sm normal-case btn-primary flex items-center gap-2"
         onClick={openAddNewJurusanModal}
       >
-        Add New
+        <PlusCircleIcon className="w-5 h-5 text-white" />
+        <p className="text-white">Tambah Jurusan</p>
       </button>
     </div>
   );

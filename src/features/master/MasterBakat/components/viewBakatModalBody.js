@@ -31,12 +31,13 @@ function ViewBakatModalBody({ closeModal, extraObject }) {
         <>
           <InputText
             type="text"
-            defaultValue={bakatDetail.name}
+            defaultValue={bakatDetail?.name} // Pastikan bakatDetail tidak undefined
             updateType="name"
             containerStyle="mt-4 text-black font-semibold"
             labelTitle="Name"
             disabled={true}
           />
+
           <InputText
             type="text"
             defaultValue={bakatDetail.short_description}

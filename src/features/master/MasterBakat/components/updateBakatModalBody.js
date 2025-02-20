@@ -76,39 +76,40 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
 
   const updateBakat = () => {
     if (bakatObj.name.trim() === "") {
-      return setErrorMessage("Name is required!");
+      setErrorMessage("Name is required!");
+      dispatch(showNotification({ message: "Name is required!", status: 0 }));
+      return;
     }
     if (!bakatObj.icon) {
-      return setErrorMessage("Icon is required!");
+      setErrorMessage("Icon is required!");
+      dispatch(showNotification({ message: "Icon is required!", status: 0 }));
+      return;
     }
 
     let fullDescriptionHTML = "";
     let recommendationHTML = "";
 
-    // Konversi full_description ke HTML jika ada kontennya
     if (bakatObj.full_description.getCurrentContent().hasText()) {
       fullDescriptionHTML = stateToHTML(
         bakatObj.full_description.getCurrentContent()
       );
     }
 
-    // Konversi recommendation ke HTML jika ada kontennya
     if (bakatObj.recommendation.getCurrentContent().hasText()) {
       recommendationHTML = stateToHTML(
         bakatObj.recommendation.getCurrentContent()
       );
     }
 
-    // Menyiapkan formData untuk dikirim ke backend
     let formData = new FormData();
     formData.append("id", bakatObj.id);
     formData.append("name", bakatObj.name);
     formData.append("short_description", bakatObj.short_description);
     formData.append("full_description", fullDescriptionHTML);
     formData.append("recommendation", recommendationHTML);
-    formData.append("icon", bakatObj.icon); // Pastikan ikon ada
+    formData.append("icon", bakatObj.icon);
 
-    // Log isi formData untuk debugging
+    // Debugging: Log isi formData
     console.log("Data yang dikirim ke updateBakatAsync:");
     for (let pair of formData.entries()) {
       console.log(pair[0] + ": ", pair[1]);
@@ -116,16 +117,34 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
 
     setLoading(true);
 
-    // Mengirim formData untuk memperbarui data bakat
     dispatch(updateBakatAsync(formData))
-      .then(() => {
+      .then((result) => {
+        console.log("Response dari updateBakatAsync:", result);
+
+        if (result.error) {
+          // Jika ada error, lempar error agar masuk ke .catch()
+          throw new Error(result.error.message || "Failed to update bakat.");
+        }
+
         dispatch(showNotification({ message: "Bakat Updated!", status: 1 }));
-        closeModal(); // Menutup modal setelah sukses
-        setLoading(false);
+        closeModal();
       })
       .catch((error) => {
-        setErrorMessage(error.message || "Failed to update bakat.");
-        setLoading(false); // Reset loading state jika gagal
+        console.error("Error caught in .catch():", error);
+
+        // Ambil pesan error dari response API jika ada
+        const errorMsg =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to update bakat.";
+
+        setErrorMessage(errorMsg);
+        dispatch(
+          showNotification({ message: "Failed to update bakat.", status: 0 })
+        );
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -147,6 +166,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
+        defaultValue={extraObject.name}
       />
 
       <InputText
@@ -156,6 +176,7 @@ function UpdateBakatModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Short Description"
         updateFormValue={updateFormValue}
+        defaultValue={extraObject.short_description}
       />
 
       <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md mt-4">

@@ -7,32 +7,34 @@ import { showNotification } from "../../../common/headerSlice";
 function UpdateSettingsModalBody({ closeModal, extraObject }) {
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(extraObject ? extraObject.title : "");
+  const [title, setTitle] = useState(extraObject?.title || "");
   const [description, setDescription] = useState(
-    extraObject ? extraObject.description : ""
+    extraObject?.description || ""
   );
-  const [keywords, setKeywords] = useState(
-    extraObject ? extraObject.keywords : ""
-  );
-  const [author, setAuthor] = useState(extraObject ? extraObject.author : "");
+  const [keywords, setKeywords] = useState(extraObject?.keywords || "");
+  const [author, setAuthor] = useState(extraObject?.author || "");
   const [address, setAddress] = useState(extraObject?.contact?.address || "");
   const [email, setEmail] = useState(extraObject?.contact?.email || "");
   const [phone, setPhone] = useState(extraObject?.contact?.phone || "");
+  const [icon, setIcon] = useState(extraObject?.icon || null);
+  const [iconPreview, setIconPreview] = useState(extraObject?.icon || "");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleUpdateSettings = async () => {
     setIsUpdating(true);
     try {
-      await dispatch(
-        updateSettings({
-          id: extraObject.id,
-          title,
-          description,
-          keywords,
-          author,
-          contact: { address, email, phone },
-        })
-      ).unwrap();
+      const formData = new FormData();
+      formData.append("id", extraObject?.id);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("keywords", keywords);
+      formData.append("author", author);
+      formData.append("address", address);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      if (icon) formData.append("icon", icon);
+
+      await dispatch(updateSettings(formData)).unwrap();
 
       dispatch(
         showNotification({
@@ -51,13 +53,55 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    if (updateType === "title") setTitle(value);
-    else if (updateType === "description") setDescription(value);
-    else if (updateType === "keywords") setKeywords(value);
-    else if (updateType === "author") setAuthor(value);
-    else if (updateType === "address") setAddress(value);
-    else if (updateType === "email") setEmail(value);
-    else if (updateType === "phone") setPhone(value);
+    if (updateType === "icon") {
+      const file = value[0];
+      if (file) {
+        const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+        if (!allowedTypes.includes(file.type)) {
+          dispatch(
+            showNotification({
+              message: "Format gambar tidak valid!",
+              status: 0,
+            })
+          );
+          return;
+        }
+        setIcon(file);
+        setIconPreview(URL.createObjectURL(file));
+      }
+    } else {
+      switch (updateType) {
+        case "title":
+          setTitle(value);
+          break;
+        case "description":
+          setDescription(value);
+          break;
+        case "keywords":
+          setKeywords(value);
+          break;
+        case "author":
+          setAuthor(value);
+          break;
+        case "address":
+          setAddress(value);
+          break;
+        case "email":
+          setEmail(value);
+          break;
+        case "phone":
+          setPhone(value);
+          break;
+        case "icon":
+          if (value.length > 0) {
+            setIcon(value[0]);
+            setIconPreview(URL.createObjectURL(value[0]));
+          }
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   return (
@@ -69,7 +113,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Title"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject.title || ""}
+        defaultValue={extraObject?.title}
       />
       <InputText
         type="text"
@@ -78,7 +122,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Description"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject.description || ""}
+        defaultValue={extraObject?.description}
       />
       <InputText
         type="text"
@@ -87,7 +131,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Keywords"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject.keywords || ""}
+        defaultValue={extraObject?.keywords}
       />
       <InputText
         type="text"
@@ -96,7 +140,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Author"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject.author || ""}
+        defaultValue={extraObject?.author}
       />
       <InputText
         type="text"
@@ -105,7 +149,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Address"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject?.contact?.address || ""}
+        defaultValue={extraObject?.contact?.address}
       />
       <InputText
         type="email"
@@ -114,7 +158,7 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Email"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject?.contact?.email || ""}
+        defaultValue={extraObject?.contact?.email}
       />
       <InputText
         type="text"
@@ -123,8 +167,26 @@ function UpdateSettingsModalBody({ closeModal, extraObject }) {
         containerStyle="mt-4"
         labelTitle="Phone"
         updateFormValue={updateFormValue}
-        defaultValue={extraObject?.contact?.phone || ""}
+        defaultValue={extraObject?.contact?.phone}
       />
+      <div className="mt-4">
+        <label className="block text-sm font-medium text-gray-700">Icon</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            updateFormValue({ updateType: "icon", value: e.target.files })
+          }
+          className="file-input file-input-bordered file-input-primary w-full"
+        />
+        {iconPreview && (
+          <img
+            src={iconPreview}
+            alt="Icon Preview"
+            className="mt-2 w-24 h-24 object-cover rounded-lg shadow-md"
+          />
+        )}
+      </div>
       <div className="modal-action">
         <button
           className="btn btn-ghost"

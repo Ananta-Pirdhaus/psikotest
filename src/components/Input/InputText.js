@@ -9,22 +9,21 @@ function InputText({
   placeholder,
   updateFormValue,
   updateType,
-  disabled = false, // Add a disabled prop
+  disabled = false,
 }) {
   const [value, setValue] = useState(defaultValue);
 
   const updateInputValue = (val) => {
     if (!disabled) {
-      // Only update if not disabled
       setValue(val);
       updateFormValue({ updateType, value: val });
     }
   };
 
   return (
-    <div className={`form-control w-full  ${containerStyle}`}>
+    <div className={`form-control w-full ${containerStyle}`}>
       <label className="label">
-        <span className={"label-text text-base-content " + labelStyle}>
+        <span className={`label-text text-base-content ${labelStyle}`}>
           {labelTitle}
         </span>
       </label>
@@ -33,8 +32,10 @@ function InputText({
         value={value}
         placeholder={placeholder || ""}
         onChange={(e) => updateInputValue(e.target.value)}
-        className="input input-bordered w-full bg-white text-black"
-        disabled={disabled} // Disable the input when required
+        className={`input input-bordered w-full bg-white ${
+          disabled ? "text-black cursor-not-allowed" : "text-black"
+        }`}
+        disabled={disabled}
       />
     </div>
   );

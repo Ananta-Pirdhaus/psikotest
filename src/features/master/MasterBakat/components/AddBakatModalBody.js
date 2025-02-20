@@ -69,30 +69,31 @@ function AddBakatModalBody({ closeModal }) {
 
   const saveNewBakat = () => {
     if (bakatObj.name.trim() === "") {
-      return setErrorMessage("Name is required!");
+      setErrorMessage("Name is required!");
+      dispatch(showNotification({ message: "Name is required!", status: 0 }));
+      return;
     } else if (!bakatObj.icon) {
-      return setErrorMessage("Icon is required!");
+      setErrorMessage("Icon is required!");
+      dispatch(showNotification({ message: "Icon is required!", status: 0 }));
+      return;
     }
 
     try {
       let fullDescriptionHTML = "";
       let recommendationHTML = "";
 
-      // Konversi full_description ke HTML jika ada kontennya
       if (bakatObj.full_description.getCurrentContent().hasText()) {
         fullDescriptionHTML = stateToHTML(
           bakatObj.full_description.getCurrentContent()
         );
       }
 
-      // Konversi recommendation ke HTML jika ada kontennya
       if (bakatObj.recommendation.getCurrentContent().hasText()) {
         recommendationHTML = stateToHTML(
           bakatObj.recommendation.getCurrentContent()
         );
       }
 
-      // Membentuk FormData untuk dikirim ke backend
       let formData = new FormData();
       formData.append("name", bakatObj.name);
       formData.append("short_description", bakatObj.short_description);
@@ -101,22 +102,38 @@ function AddBakatModalBody({ closeModal }) {
       formData.append("icon", bakatObj.icon);
 
       setLoading(true);
+      console.log("Sending formData:", formData);
 
       dispatch(addNewBakatAsync(formData))
-        .then(() => {
+        .then((result) => {
+          console.log("Dispatch result:", result);
+          if (result.error) {
+            throw new Error(result.error.message || "Failed to add new bakat.");
+          }
           dispatch(
             showNotification({ message: "New Bakat Added!", status: 1 })
           );
           closeModal();
-          setLoading(false);
         })
         .catch((error) => {
+          console.error("Error caught in .catch():", error);
           setErrorMessage(error.message || "Failed to add new bakat.");
+          // Pastikan error.response.data.message ada sebelum digunakan
+          const errorMsg =
+            error.response?.data?.message || "Failed to add new bakat.";
+
+          setErrorMessage(errorMsg);
+          dispatch(showNotification({ message: errorMsg, status: 0 }));
+        })
+        .finally(() => {
           setLoading(false);
         });
     } catch (error) {
-      console.error("Error processing content:", error);
+      console.error("Error in try-catch:", error);
       setErrorMessage("Error processing content.");
+      dispatch(
+        showNotification({ message: "Error processing content.", status: 0 })
+      );
     }
   };
 

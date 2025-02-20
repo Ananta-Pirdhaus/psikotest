@@ -10,6 +10,7 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
+import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 import { showNotification } from "../../common/headerSlice";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
@@ -28,12 +29,15 @@ const TopSideButtons = () => {
 
   return (
     <div className="inline-block float-right space-x-2">
-      <button
-        className="btn px-6 btn-sm normal-case btn-primary"
-        onClick={openAddNewBakatModal}
-      >
-        Add New
-      </button>
+      <div className="inline-block float-right space-x-2 text-white">
+        <button
+          className="btn btn-sm normal-case btn-primary flex items-center gap-2"
+          onClick={openAddNewBakatModal}
+        >
+          <PlusCircleIcon className="w-5 h-5 text-white" />
+          <p className="text-white">Tambah Bakat</p>
+        </button>
+      </div>
     </div>
   );
 };

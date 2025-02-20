@@ -11,6 +11,7 @@ import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import { fetchVersiPertanyaan, importVersiPertanyaan } from "./versiSlice"; // Correct import
 import { showNotification } from "../../common/headerSlice";
+import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 
 const TopSideButtons = () => {
   const dispatch = useDispatch();
@@ -25,12 +26,13 @@ const TopSideButtons = () => {
   };
 
   return (
-    <div className="inline-block float-right space-x-2">
+    <div className="inline-block float-right space-x-2 text-white">
       <button
-        className="btn px-6 btn-sm normal-case btn-primary"
+        className="btn btn-sm normal-case btn-primary flex items-center gap-2"
         onClick={openAddNewMasterModal}
       >
-        Add New
+        <PlusCircleIcon className="w-5 h-5 text-white" />
+        <p className="text-white">Tambah Versi</p>
       </button>
     </div>
   );

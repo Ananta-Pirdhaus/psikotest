@@ -9,6 +9,7 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
+import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 import { fetchSekolah, importSekolah } from "./sekolahSlice";
 import { showNotification } from "../../common/headerSlice";
 
@@ -25,12 +26,13 @@ const TopSideButtons = () => {
   };
 
   return (
-    <div className="inline-block float-right space-x-2">
+    <div className="inline-block float-right space-x-2 text-white">
       <button
-        className="btn px-6 btn-sm normal-case btn-primary"
+        className="btn btn-sm normal-case btn-primary flex items-center gap-2"
         onClick={openAddNewSekolahModal}
       >
-        Add New
+        <PlusCircleIcon className="w-5 h-5 text-white" />
+        <p className="text-white">Tambah Sekolah</p>
       </button>
     </div>
   );

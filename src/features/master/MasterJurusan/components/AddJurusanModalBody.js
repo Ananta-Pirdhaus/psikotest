@@ -54,23 +54,24 @@ function AddJurusansModalBody({ closeModal }) {
     dispatch(addJurusan(payload))
       .then((response) => {
         // Log hasil response dari action addJurusan
-        console.log("Response from addJurusan:", response);
+        console.log("Response from add Major:", response);
 
-        dispatch(
-          showNotification({ message: "New Jurusan Added!", status: 1 })
-        );
+        dispatch(showNotification({ message: "New Major Added!", status: 1 }));
         closeModal();
         setLoading(false);
       })
       .catch((error) => {
         // Log error jika ada
         console.error("Error while adding jurusan:", error);
+        dispatch(
+          showNotification({ message: "Failed to Add Major.", status: 0 })
+        );
 
         const errorDetails = error?.response?.data?.errors;
         if (errorDetails) {
           setErrorMessage(errorDetails.name?.[0] || errorDetails.bakat?.[0]);
         } else {
-          setErrorMessage(error.message || "Failed to add new jurusan.");
+          setErrorMessage(error.message || "Failed to add new Major.");
         }
         setLoading(false);
       });

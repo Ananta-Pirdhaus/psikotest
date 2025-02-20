@@ -11,6 +11,7 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon"; // Import Eye Icon
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon"; // Import Pencil Icon
+import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 
 const TopSideButtons = ({ onImport }) => {
   const dispatch = useDispatch();
@@ -25,12 +26,13 @@ const TopSideButtons = ({ onImport }) => {
   };
 
   return (
-    <div className="inline-block float-right space-x-2">
+    <div className="inline-block float-right space-x-2 text-white">
       <button
-        className="btn btn-primary btn-sm normal-case"
+        className="btn btn-sm normal-case btn-primary flex items-center gap-2"
         onClick={openAddNewProfesiModal}
       >
-        Add New
+        <PlusCircleIcon className="w-5 h-5 text-white" />
+        <p className="text-white">Tambah Profesi</p>
       </button>
     </div>
   );
