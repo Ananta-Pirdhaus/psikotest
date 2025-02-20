@@ -92,37 +92,9 @@ function ProfileSettings() {
             updateType="email"
             updateFormValue={updateFormValue}
           />
-          <TextAreaInput
-            labelTitle="About"
-            defaultValue={profile.about}
-            updateType="about"
-            updateFormValue={updateFormValue}
-          />
         </div>
         <div className="divider"></div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputText
-            labelTitle="Language"
-            defaultValue={profile.language}
-            updateType="language"
-            updateFormValue={updateFormValue}
-          />
-          <InputText
-            labelTitle="Timezone"
-            defaultValue={profile.timezone}
-            updateType="timezone"
-            updateFormValue={updateFormValue}
-          />
-          <ToogleInput
-            updateType="syncData"
-            labelTitle="Sync Data"
-            defaultValue={profile.syncData}
-            updateFormValue={updateFormValue}
-          />
-        </div>
-
-        <div className="mt-16">
+        <div className="">
           <button
             className="btn btn-primary float-right"
             onClick={updateProfile}

@@ -22,6 +22,7 @@ module.exports = Object.freeze({
     VERSI_ADD_NEW: "VERSI_ADD_NEW",
     VERSI_UPDATE_NEW: "VERSI_UPDATE_NEW",
     PANDUAN_UPDATE: "PANDUAN_UPDATE",
+    SETTINGS_UPDATE: "SETTINGS_UPDATE",
     DEFAULT: "",
   },
 

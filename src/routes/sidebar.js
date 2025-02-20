@@ -75,6 +75,11 @@ const routes = [
         icon: <MapIcon className={submenuIconClasses} />,
         name: "Master Region",
       },
+      {
+        path: "/app/master-settings",
+        icon: <Cog6ToothIcon className={submenuIconClasses} />,
+        name: "Master Settings",
+      },
     ],
   },
   {

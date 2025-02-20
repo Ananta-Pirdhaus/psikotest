@@ -24,6 +24,7 @@ import UpdateCampusModalBody from "../features/master/MasterKampus/components/Up
 import AddVersiModalBody from "../features/master/MasterVersi/components/AddVersiModalBody";
 import UpdateVersiModalBody from "../features/master/MasterVersi/components/UpdateVersiModalBody";
 import UpdatePanduanModalBody from "../features/master/MasterPanduan/components/updatePanduan";
+import UpdateSettingsModalBody from "../features/master/MasterSettings/components/updateSettings";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -136,6 +137,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.PANDUAN_UPDATE]: (
                 <UpdatePanduanModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.SETTINGS_UPDATE]: (
+                <UpdateSettingsModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
