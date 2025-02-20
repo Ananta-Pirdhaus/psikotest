@@ -24,21 +24,8 @@ const TopSideButtons = () => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    // Handle file upload logic here
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn px-6 btn-sm normal-case btn-primary"
         onClick={openAddNewKampusModal}
@@ -60,8 +47,6 @@ const Kampus = () => {
   useEffect(() => {
     dispatch(getKampus());
   }, [dispatch]);
-
-  
 
   const deleteCurrentKampus = (id) => {
     dispatch(
@@ -143,7 +128,7 @@ const Kampus = () => {
         <div className="flex justify-between items-center mb-4">
           <input
             type="text"
-            placeholder="Search by Kampus Name"
+            placeholder="Cari Berdasarkan Nama Kampus"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

@@ -11,7 +11,6 @@ import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import { showNotification } from "../../common/headerSlice";
-import * as XLSX from "xlsx";
 
 const TopSideButtons = () => {
   const dispatch = useDispatch();
@@ -25,72 +24,8 @@ const TopSideButtons = () => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const validExtensions = ["csv", "xlsx"];
-    const fileExtension = file.name.split(".").pop().toLowerCase();
-
-    if (!validExtensions.includes(fileExtension)) {
-      dispatch(
-        showNotification({
-          message: "Invalid file format. Please upload a CSV or XLSX file.",
-          type: "error",
-        })
-      );
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-          defval: "",
-        });
-
-        const formattedData = sheetData
-          .map((row) => ({
-            nama_soal: row["Nama Soal"] || "",
-            deskripsi_singkat: row["Deskripsi Singkat"] || "",
-            pilihan_jawaban: row["Pilihan Jawaban"] || "",
-            jawaban_benar: row["Jawaban Benar"] || "",
-            kategori: row["Kategori"] || "",
-          }))
-          .filter(
-            (row, index, self) =>
-              row.nama_soal &&
-              index === self.findIndex((r) => r.nama_soal === row.nama_soal)
-          );
-
-        dispatch(importSoalData(formattedData));
-      } catch (error) {
-        dispatch(
-          showNotification({
-            message: "Error processing file. Please check the format.",
-            type: "error",
-          })
-        );
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn px-6 btn-sm normal-case btn-primary"
         onClick={openAddNewSoalModal}
@@ -209,7 +144,7 @@ function MasterSoal() {
         <div className="mb-4 flex space-x-2">
           <input
             type="text"
-            placeholder="Search by Question Name or Category"
+            placeholder="Cari Berdasarkan Nama Soal atau Kategori"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

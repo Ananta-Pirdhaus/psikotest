@@ -116,7 +116,7 @@ function MasterBakat() {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search by Skill Name or Category"
+            placeholder="Cari Berdasarkan Nama atau Deskripsi Singkat"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

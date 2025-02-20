@@ -108,7 +108,7 @@ function MasterKelas() {
           {/* Search Input */}
           <input
             type="text"
-            placeholder="Search by Class Name"
+            placeholder="Cari Berdasarkan Nama Kelas"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

@@ -10,7 +10,6 @@ import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import { fetchSekolah, importSekolah } from "./sekolahSlice";
-import * as XLSX from "xlsx";
 import { showNotification } from "../../common/headerSlice";
 
 const TopSideButtons = () => {
@@ -25,73 +24,8 @@ const TopSideButtons = () => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const validExtensions = ["csv", "xlsx"];
-    const fileExtension = file.name.split(".").pop().toLowerCase();
-
-    if (!validExtensions.includes(fileExtension)) {
-      dispatch(
-        showNotification({
-          message: "Invalid file format. Please upload a CSV or XLSX file.",
-          type: "error",
-        })
-      );
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-          defval: "",
-        });
-
-        const formattedData = sheetData
-          .map((row) => ({
-            nama_sekolah: row["Nama Sekolah"] || "",
-            deskripsi_singkat: row["Deskripsi Singkat"] || "",
-            deskripsi_lengkap: row["Deskripsi Lengkap"] || "",
-            alamat: row["Alamat"] || "",
-            icon: row["Icon"] || "",
-          }))
-          .filter(
-            (row, index, self) =>
-              row.nama_sekolah &&
-              index ===
-                self.findIndex((r) => r.nama_sekolah === row.nama_sekolah)
-          );
-
-        dispatch(importSekolah(formattedData));
-      } catch (error) {
-        dispatch(
-          showNotification({
-            message: "Error processing file. Please check the format.",
-            type: "error",
-          })
-        );
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn px-6 btn-sm normal-case btn-primary"
         onClick={openAddNewSekolahModal}
@@ -194,7 +128,7 @@ function MasterPendidikan() {
       <div className="mb-4 flex justify-start items-start space-x-2">
         <input
           type="text"
-          placeholder="Search by School Name"
+          placeholder="Cari Berdasarkan Nama Sekolah"
           className="input input-bordered w-full max-w-xs bg-white"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -231,7 +165,7 @@ function MasterPendidikan() {
             <tr>
               <th className="px-4 py-2 text-left">Nama Sekolah</th>
               <th className="px-4 py-2 text-left">Tingkat</th>
-              <th className="px-4 py-2 text-center">Actions</th>
+              <th className="px-4 py-2 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>

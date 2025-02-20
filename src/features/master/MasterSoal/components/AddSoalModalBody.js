@@ -90,7 +90,7 @@ function AddSoalModalBody({ closeModal }) {
     versions?.map((version) => ({
       value: version.value,
       label: version.label,
-      status: version.status
+      status: version.status,
     })) || [];
 
   console.log("Version Options:", versionOptions); // Tambahkan log di sini
@@ -101,6 +101,31 @@ function AddSoalModalBody({ closeModal }) {
       options: [...prevState.options, { answer: "", bakat: "" }],
     }));
   };
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      borderColor: state.isFocused ? "green" : provided.borderColor, // Border hijau saat fokus
+      boxShadow: state.isFocused ? "0 0 0 1px green" : "none", // Efek glow hijau saat fokus
+      "&:hover": {
+        borderColor: "green", // Border hijau saat hover
+      },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "green" : "white", // Warna hijau saat dipilih
+      color: state.isSelected ? "white" : "black", // Warna teks kontras
+      "&:hover": {
+        backgroundColor: "#a3e635", // Warna hijau muda saat hover
+        color: "black",
+      },
+    }),
+  };
+
+  const options = [
+    { value: "Single", label: "SINGLE" },
+    { value: "Multiple", label: "MULTIPLE" },
+  ];
 
   return (
     <>
@@ -118,26 +143,26 @@ function AddSoalModalBody({ closeModal }) {
               value: selectedOption?.value || "",
             })
           }
+          styles={customStyles} // Terapkan gaya hijau di sini
           className="mt-2"
           placeholder="Select Version"
         />
       </div>
-
       {/* Input untuk Tipe Soal */}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700">Type</label>
-        <select
-          value={soalObj.type || "Single"}
-          onChange={(e) =>
-            updateFormValue({ updateType: "type", value: e.target.value })
+        <Select
+          value={
+            options.find((opt) => opt.value === soalObj.type) || options[0]
           }
-          className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="Single">SINGLE</option>
-          <option value="Multiple">MULTIPLE</option>
-        </select>
+          onChange={(selectedOption) =>
+            updateFormValue({ updateType: "type", value: selectedOption.value })
+          }
+          options={options}
+          styles={customStyles}
+          className="mt-2"
+        />
       </div>
-
       {/* Input untuk Pertanyaan */}
       <InputText
         type="text"
@@ -147,7 +172,6 @@ function AddSoalModalBody({ closeModal }) {
         labelTitle="Question"
         updateFormValue={updateFormValue}
       />
-
       {/* Input untuk Opsi Jawaban */}
       {soalObj.options.map((option, index) => (
         <div key={index} className="mt-4">
@@ -178,12 +202,12 @@ function AddSoalModalBody({ closeModal }) {
                 index,
               })
             }
+            styles={customStyles} // Terapkan gaya hijau
             className="mt-2"
             placeholder="Select Bakat"
           />
         </div>
       ))}
-
       {/* Tambahkan tombol untuk menambah opsi jawaban jika tipe soal MULTIPLE */}
       {soalObj.type === "Multiple" && (
         <button
@@ -195,9 +219,7 @@ function AddSoalModalBody({ closeModal }) {
           Add Option
         </button>
       )}
-
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-
       {/* Tombol Aksi */}
       <div className="modal-action">
         <button className="btn btn-ghost" onClick={() => closeModal()}>

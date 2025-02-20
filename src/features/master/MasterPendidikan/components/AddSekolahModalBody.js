@@ -82,7 +82,7 @@ function AddSekolahModalBody({ closeModal }) {
         defaultValue={sekolahObj.name}
         updateType="name"
         containerStyle="mt-4"
-        labelTitle="School Name"
+        labelTitle="Nama Sekolah"
         updateFormValue={updateFormValue}
       />
 
@@ -93,7 +93,7 @@ function AddSekolahModalBody({ closeModal }) {
           onChange={(e) =>
             updateFormValue({ updateType: "level", value: e.target.value })
           }
-          className="select select-bordered w-full"
+          className="select select-bordered w-full bg-white"
         >
           <option value="SMP">SMP</option>
           <option value="SMA">SMA</option>

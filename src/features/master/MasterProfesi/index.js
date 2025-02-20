@@ -11,7 +11,6 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon"; // Import Eye Icon
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon"; // Import Pencil Icon
-import * as XLSX from "xlsx";
 
 const TopSideButtons = ({ onImport }) => {
   const dispatch = useDispatch();
@@ -25,51 +24,8 @@ const TopSideButtons = ({ onImport }) => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const csvData = e.target.result;
-        const workbook = XLSX.read(csvData, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-          header: 1,
-          defval: "",
-        });
-
-        const formattedData = sheetData
-          .map((row) => ({
-            id: row[0], // Ensure this matches the ID structure
-            name: row[1] ? row[1].toLowerCase() : "",
-            bakat: row[2] ? row[2].split(",") : [], // Assuming "bakat" is a comma-separated string in the CSV
-          }))
-          .filter((row, index, self) => {
-            return (
-              row.name && index === self.findIndex((r) => r.name === row.name)
-            );
-          });
-
-        onImport(formattedData);
-        dispatch(importProfesiData(formattedData));
-      };
-
-      reader.readAsArrayBuffer(file);
-    }
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn btn-secondary btn-sm normal-case">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn btn-primary btn-sm normal-case"
         onClick={openAddNewProfesiModal}
@@ -174,7 +130,7 @@ function Profesi() {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search by Profesi Name"
+            placeholder="Cari Berdasarkan Nama Profesi"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

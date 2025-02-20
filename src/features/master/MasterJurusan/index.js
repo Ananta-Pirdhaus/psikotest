@@ -24,21 +24,8 @@ const TopSideButtons = () => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    // Handle file upload logic
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn px-6 btn-sm normal-case btn-primary"
         onClick={openAddNewJurusanModal}
@@ -134,7 +121,7 @@ function Jurusan() {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search by Jurusan Name"
+            placeholder="Cari Berdasarkan Nama Jurusan"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
