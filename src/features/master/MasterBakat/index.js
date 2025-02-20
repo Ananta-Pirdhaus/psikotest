@@ -11,7 +11,8 @@ import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import { showNotification } from "../../common/headerSlice";
-import * as XLSX from "xlsx";
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 
 const TopSideButtons = () => {
   const dispatch = useDispatch();
@@ -25,72 +26,8 @@ const TopSideButtons = () => {
     );
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const validExtensions = ["csv", "xlsx"];
-    const fileExtension = file.name.split(".").pop().toLowerCase();
-
-    if (!validExtensions.includes(fileExtension)) {
-      dispatch(
-        showNotification({
-          message: "Invalid file format. Please upload a CSV or XLSX file.",
-          type: "error",
-        })
-      );
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-          defval: "",
-        });
-
-        const formattedData = sheetData
-          .map((row) => ({
-            nama_bakat: row["Nama Bakat"] || "",
-            deskripsi_singkat: row["Deskripsi Singkat"] || "",
-            deskripsi_lengkap: row["Deskripsi Lengkap"] || "",
-            saran_pengembangan: row["Saran Pengembangan"] || "",
-            icon: row["Icon"] || "",
-          }))
-          .filter(
-            (row, index, self) =>
-              row.nama_bakat &&
-              index === self.findIndex((r) => r.nama_bakat === row.nama_bakat)
-          );
-
-        dispatch(importBakatData(formattedData));
-      } catch (error) {
-        dispatch(
-          showNotification({
-            message: "Error processing file. Please check the format.",
-            type: "error",
-          })
-        );
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
   return (
     <div className="inline-block float-right space-x-2">
-      <label className="btn px-6 btn-sm normal-case btn-secondary cursor-pointer">
-        Import CSV/Excel
-        <input
-          type="file"
-          accept=".csv, .xlsx"
-          className="hidden"
-          onChange={handleFileUpload}
-        />
-      </label>
       <button
         className="btn px-6 btn-sm normal-case btn-primary"
         onClick={openAddNewBakatModal}
@@ -218,8 +155,13 @@ function MasterBakat() {
                     <td className="px-4 py-2">
                       {s.short_description || "No description available"}
                     </td>
-                    <td className="px-4 py-2">{s.full_description}</td>
-                    <td className="px-4 py-2">{s.recommendation}</td>
+
+                    <td className="px-4 py-2">
+                      {parse(DOMPurify.sanitize(s.full_description))}
+                    </td>
+                    <td className="px-4 py-2">
+                      {parse(DOMPurify.sanitize(s.recommendation))}
+                    </td>
                     <td className="px-4 py-2">
                       {s.icon ? (
                         <img

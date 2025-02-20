@@ -41,11 +41,19 @@ export const addNewBakatAsync = createAsyncThunk(
 );
 
 // Fungsi untuk memperbarui data bakat
-export const updateBakat = createAsyncThunk(
-  "bakat/updateBakat",
-  async ({ id, updatedData }, thunkAPI) => {
+export const updateBakatAsync = createAsyncThunk(
+  "bakat/updateBakatAsync",
+  async (formData, thunkAPI) => {
     try {
-      const response = await axios.post(`bakat/${id}`, updatedData);
+      const response = await axios.post(
+        `bakat/${formData.get("id")}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Pastikan backend menerima FormData
+          },
+        }
+      );
       return response.data.data; // Mengembalikan data yang diperbarui
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -109,14 +117,7 @@ const bakatSlice = createSlice({
         state.bakat.push(action.payload);
       }
     },
-    updateBakatInState(state, action) {
-      const index = state.bakat.findIndex(
-        (item) => item.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.bakat[index] = action.payload; // Update bakat yang sesuai
-      }
-    },
+
     deleteBakatFromState(state, action) {
       state.bakat = state.bakat.filter((item) => item.id !== action.payload);
     },
@@ -150,18 +151,19 @@ const bakatSlice = createSlice({
       })
 
       // Update Bakat
-      .addCase(updateBakat.pending, (state) => {
+      .addCase(updateBakatAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(updateBakat.fulfilled, (state, action) => {
+      .addCase(updateBakatAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.bakat = state.bakat.map((bakat) =>
           bakat.id === action.payload.id ? action.payload : bakat
         ); // Update bakat yang sesuai dengan ID
+        state.error = null;
       })
-      .addCase(updateBakat.rejected, (state, action) => {
+      .addCase(updateBakatAsync.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload;
+        state.error = action.payload; // Simpan error jika request gagal
       })
 
       // Show Detail Bakat
@@ -198,7 +200,6 @@ export const {
   getBakatContent,
   importBakatData,
   addNewBakat,
-  updateBakatInState,
   deleteBakatFromState,
 } = bakatSlice.actions;
 

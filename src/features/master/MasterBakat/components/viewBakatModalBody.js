@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import InputText from "../../../../components/Input/InputText";
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 
 function ViewBakatModalBody({ closeModal, extraObject }) {
   // If extraObject is passed correctly, use its data
@@ -31,7 +33,7 @@ function ViewBakatModalBody({ closeModal, extraObject }) {
             type="text"
             defaultValue={bakatDetail.name}
             updateType="name"
-            containerStyle="mt-4"
+            containerStyle="mt-4 text-black font-semibold"
             labelTitle="Name"
             disabled={true}
           />
@@ -39,26 +41,31 @@ function ViewBakatModalBody({ closeModal, extraObject }) {
             type="text"
             defaultValue={bakatDetail.short_description}
             updateType="short_description"
-            containerStyle="mt-4"
+            containerStyle="mt-4 text-black font-semibold"
             labelTitle="Short Description"
             disabled={true}
           />
-          <InputText
-            type="text"
-            defaultValue={bakatDetail.full_description}
-            updateType="full_description"
-            containerStyle="mt-4"
-            labelTitle="Full Description"
-            disabled={true}
-          />
-          <InputText
-            type="text"
-            defaultValue={bakatDetail.recommendation}
-            updateType="recommendation"
-            containerStyle="mt-4"
-            labelTitle="Recommendation"
-            disabled={true}
-          />
+
+          <div className="mt-4">
+            <label className="font-semibold">Full Description:</label>
+            <div
+              className="input input-bordered w-full bg-white text-black py-2 min-h-[40px] h-auto"
+              disabled
+            >
+              {parse(DOMPurify.sanitize(bakatDetail.full_description))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="font-semibold">Recommendation:</label>
+            <div
+              className="input input-bordered w-full bg-white text-black py-2 min-h-[40px] h-auto"
+              disabled
+            >
+              {parse(DOMPurify.sanitize(bakatDetail.recommendation))}
+            </div>
+          </div>
+
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               Icon
