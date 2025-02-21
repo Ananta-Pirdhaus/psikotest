@@ -40,12 +40,17 @@ function HasilQuiz() {
   };
 
   // Fungsi navigasi berdasarkan jenis status
+  const BASE_URL =
+    process.env.NODE_ENV === "production"
+      ? "https://careertheexplorer.com"
+      : "http://localhost:5173";
+
   const goToSurvey = (id) => {
-    window.open(`http://localhost:5173/survey/${id}`, "_blank");
+    window.open(`${BASE_URL}/survey/${id}`, "_blank");
   };
 
   const goToResult = (id) => {
-    window.open(`http://localhost:5173/hasil-quiz/${id}`, "_blank");
+    window.open(`${BASE_URL}/hasil-quiz/${id}`, "_blank");
   };
 
   return (
