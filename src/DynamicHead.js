@@ -37,6 +37,10 @@ const DynamicHead = () => {
       .catch((error) => console.error("Error fetching meta:", error));
   }, []);
 
+  useEffect(() => {
+    console.log("Updated metaData:", metaData);
+  }, [metaData]);
+
   return (
     <Helmet>
       {/* Title & Description */}
