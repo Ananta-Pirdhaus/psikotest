@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
-const DynamicHead = () => {
+const DynamicHead = (noIndex = false) => {
   const [metaData, setMetaData] = useState({
     title: "Dashboard Career The Explorer",
     description: "Loading...",
@@ -46,6 +46,8 @@ const DynamicHead = () => {
       {/* Title & Description */}
       <title>{metaData.title}</title>
       <meta name="description" content={metaData.description} />
+
+      {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
       {/* Favicon */}
       {metaData.icon && <link rel="icon" href={metaData.icon} />}

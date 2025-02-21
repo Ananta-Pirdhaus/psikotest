@@ -71,6 +71,7 @@ export const updateSoalAsync = createAsyncThunk(
   async ({ id, updatedSoal }, thunkAPI) => {
     try {
       const response = await axios.put(`pertanyaan/${id}`, updatedSoal);
+      thunkAPI.dispatch(fetchSoal());
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(

@@ -69,7 +69,7 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
 
     setLoading(true);
     console.log("Data yang dikirim:", soalObj);
-    dispatch(updateSoalAsync(soalObj))
+    dispatch(updateSoalAsync({ id: soalObj.id, updatedSoal: soalObj }))
       .then((result) => {
         console.log("Result dari dispatch:", result);
         dispatch(showNotification({ message: "Updated Soal!", status: 1 }));

@@ -43,9 +43,30 @@ function App() {
           <AuthHandler />
           <ToastContainer position="top-right" autoClose={5000} />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/documentation" element={<Documentation />} />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <DynamicHead noIndex /> <Login />
+                </>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <>
+                  <DynamicHead noIndex /> <ForgotPassword />
+                </>
+              }
+            />
+            <Route
+              path="/documentation"
+              element={
+                <>
+                  <DynamicHead /> <Documentation />
+                </>
+              }
+            />
             <Route path="/app/*" element={<Layout />} />
             <Route
               path="*"
