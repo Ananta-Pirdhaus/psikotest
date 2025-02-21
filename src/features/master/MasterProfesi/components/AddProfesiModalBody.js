@@ -100,6 +100,7 @@ function AddProfesiModalBody({ closeModal }) {
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Name"
+        placeholder={"Nama Profesi"}
         updateFormValue={updateFormValue}
       />
 

@@ -120,6 +120,7 @@ function AddKampusModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
+        placeholder={"Nama Kampus"}
       />
 
       <InputText
@@ -130,6 +131,7 @@ function AddKampusModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Rank"
         updateFormValue={updateFormValue}
+        placeholder={"Ranking Kampus"}
       />
 
       {/* Dropdown for selecting jurusan using react-select */}
@@ -164,6 +166,7 @@ function AddKampusModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Status"
         updateFormValue={updateFormValue}
+        placeholder={"Status Kampus"}
       />
 
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>

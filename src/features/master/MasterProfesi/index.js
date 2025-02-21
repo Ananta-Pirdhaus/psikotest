@@ -170,13 +170,13 @@ function Profesi() {
                     >
                       <PencilIcon className="w-5 text-blue-500" />
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-square btn-ghost"
                       onClick={() => viewProfesi(p.id, p)}
                       aria-label="View Profesi Record"
                     >
                       <EyeIcon className="w-5 text-green-500" />
-                    </button>
+                    </button> */}
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentProfesi(p.id)}

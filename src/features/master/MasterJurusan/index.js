@@ -160,13 +160,13 @@ function Jurusan() {
                     >
                       <PencilIcon className="w-5 text-blue-500" />
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-square btn-ghost"
                       onClick={() => viewJurusan(j.id, j)}
                       aria-label="View Jurusan Record"
                     >
                       <EyeIcon className="w-5 text-green-500" />
-                    </button>
+                    </button> */}
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentJurusan(j.id)}

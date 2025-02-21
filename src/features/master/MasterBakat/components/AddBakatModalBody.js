@@ -146,6 +146,7 @@ function AddBakatModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
+        placeholder={"Nama Bakat"}
       />
 
       <InputText
@@ -155,6 +156,7 @@ function AddBakatModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Short Description"
         updateFormValue={updateFormValue}
+        placeholder={"Deskripsi Singkat Bakat"}
       />
 
       {/* Rich Text Editor untuk Full Description */}
@@ -222,6 +224,7 @@ function AddBakatModalBody({ closeModal }) {
           <Editor
             editorState={bakatObj.full_description}
             onChange={(state) => handleEditorChange("full_description", state)}
+            placeholder="Full Deskripsi Bakat"
           />
         </div>
       </div>
@@ -289,6 +292,7 @@ function AddBakatModalBody({ closeModal }) {
           <Editor
             editorState={bakatObj.recommendation}
             onChange={(state) => handleEditorChange("recommendation", state)}
+            placeholder="Rekomendasi Bakat"
           />
         </div>
       </div>

@@ -57,7 +57,10 @@ function ModalLayout() {
             bodyType === MODAL_BODY_TYPES.PANDUAN_UPDATE ||
             bodyType === MODAL_BODY_TYPES.SKILL_ADD_NEW ||
             bodyType === MODAL_BODY_TYPES.SKILL_UPDATE ||
-            bodyType === MODAL_BODY_TYPES.SKILL_VIEW
+            bodyType === MODAL_BODY_TYPES.SKILL_VIEW ||
+            bodyType === MODAL_BODY_TYPES.KAMPUS_ADD_NEW ||
+            bodyType === MODAL_BODY_TYPES.KAMPUS_VIEW ||
+            bodyType === MODAL_BODY_TYPES.KAMPUS_UPDATE
               ? "max-w-6xl w-full sm:w-11/12 lg:w-10/12 max-h-[80vh] overflow-y-auto"
               : ""
           }`}

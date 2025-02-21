@@ -42,7 +42,6 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
     }
   }, [extraObject]);
 
-
   // Handling changes in input fields
   const updateFormValue = ({ updateType, value }) => {
     setKampusDetail((prev) => ({
@@ -91,15 +90,18 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
     value: jurusan.value, // Assuming 'value' is available in the data
   }));
 
-  console.log("Test: ", jurusanSelectOptions.filter(
-    (option) => kampusDetail.jurusan.some((j) => j.id === option.value) // Match based on jurusan ID
-  ));
+  console.log(
+    "Test: ",
+    jurusanSelectOptions.filter(
+      (option) => kampusDetail.jurusan.some((j) => j.id === option.value) // Match based on jurusan ID
+    )
+  );
 
   return (
     <>
       {kampusDetail ? (
         <>
-          <p className="text-gray-700">Kampus ID: {kampusId}</p>
+          {/* <p className="text-gray-700">Kampus ID: {kampusId}</p> */}
           <InputText
             labelTitle="Name"
             type="text"
@@ -141,15 +143,25 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
             />
           </div>
 
-          <InputText
-            type="text"
-            value={kampusDetail.status || "Active"} // Ensure it's always defined
-            defaultValue={kampusDetail.status || "Active"} // Add defaultValue for initial value
-            updateType="status"
-            containerStyle="mt-4"
-            labelTitle="Status"
-            updateFormValue={updateFormValue}
-          />
+          <div className="mt-4 flex items-center gap-2">
+            <span>Status:</span>
+            <button
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                kampusDetail.status === "Active"
+                  ? "bg-green-200 text-green-800"
+                  : "bg-red-200 text-red-800"
+              }`}
+              onClick={() =>
+                updateFormValue({
+                  updateType: "status",
+                  value:
+                    kampusDetail.status === "Active" ? "Inactive" : "Active",
+                })
+              }
+            >
+              {kampusDetail.status}
+            </button>
+          </div>
 
           {/* Show error message if no jurusan is selected */}
           {errorMessage && (
@@ -157,15 +169,15 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
           )}
 
           <div className="modal-action">
+            <button className="btn btn-secondary" onClick={closeModal}>
+              Close
+            </button>
             <button
               className="btn btn-primary"
               onClick={handleUpdate}
               disabled={loading}
             >
               {loading ? "Updating..." : "Update"}
-            </button>
-            <button className="btn btn-secondary" onClick={closeModal}>
-              Close
             </button>
           </div>
         </>

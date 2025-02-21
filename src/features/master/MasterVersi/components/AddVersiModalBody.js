@@ -67,6 +67,7 @@ function AddVersiModalBody({ closeModal }) {
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Version Name"
+        placeholder={"Nama Versi"}
         updateFormValue={updateFormValue}
       />
 

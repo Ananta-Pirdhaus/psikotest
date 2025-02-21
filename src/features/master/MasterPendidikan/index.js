@@ -184,13 +184,13 @@ function MasterPendidikan() {
                     >
                       <PencilIcon className="h-5 w-5 text-blue-500" />
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-square btn-ghost"
                       onClick={() => viewSekolahDetails(p)}
                       title="Lihat Detail Sekolah"
                     >
                       <EyeIcon className="h-5 w-5 text-green-500" />
-                    </button>
+                    </button> */}
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentSekolah(p.id)}

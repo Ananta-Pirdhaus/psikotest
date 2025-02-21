@@ -151,7 +151,7 @@ function AddSoalModalBody({ closeModal }) {
           }
           styles={customStyles} // Terapkan gaya hijau di sini
           className="mt-2"
-          placeholder="Select Version"
+          placeholder="Pilih Versi"
         />
       </div>
       {/* Input untuk Tipe Soal */}
@@ -167,6 +167,7 @@ function AddSoalModalBody({ closeModal }) {
           options={options}
           styles={customStyles}
           className="mt-2"
+          placeholder="Pilih Tipe Soal"
         />
       </div>
       {/* Input untuk Pertanyaan */}
@@ -177,6 +178,7 @@ function AddSoalModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Question"
         updateFormValue={updateFormValue}
+        placeholder={"Pertanyaan"}
       />
       {/* Input untuk Opsi Jawaban */}
       {soalObj.options.map((option, index) => (

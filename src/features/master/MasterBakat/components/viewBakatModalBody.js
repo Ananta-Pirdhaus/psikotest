@@ -81,12 +81,6 @@ function ViewBakatModalBody({ closeModal, extraObject }) {
       ) : (
         <div>No data available</div>
       )}
-
-      <div className="modal-action">
-        <button className="btn btn-ghost" onClick={() => closeModal()}>
-          Close
-        </button>
-      </div>
     </>
   );
 }

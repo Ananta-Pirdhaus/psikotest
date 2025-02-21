@@ -112,6 +112,7 @@ function AddJurusansModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
+        placeholder={"Nama Jurusan"}
       />
 
       {/* Dropdown for selecting bakat using react-select */}

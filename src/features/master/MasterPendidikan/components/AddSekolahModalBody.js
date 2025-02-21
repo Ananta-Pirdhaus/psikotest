@@ -83,6 +83,7 @@ function AddSekolahModalBody({ closeModal }) {
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Nama Sekolah"
+        placeholder={"Nama Sekolah"}
         updateFormValue={updateFormValue}
       />
 
