@@ -25,6 +25,7 @@ import AddVersiModalBody from "../features/master/MasterVersi/components/AddVers
 import UpdateVersiModalBody from "../features/master/MasterVersi/components/UpdateVersiModalBody";
 import UpdatePanduanModalBody from "../features/master/MasterPanduan/components/updatePanduan";
 import UpdateSettingsModalBody from "../features/master/MasterSettings/components/updateSettings";
+import UpdateSoalModalBody from "../features/master/MasterSoal/components/updateSoalModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -128,6 +129,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.SOAL_ADD_NEW]: (
                 <AddSoalModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.SOAL_UPDATE]: (
+                <UpdateSoalModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.VERSI_ADD_NEW]: (
                 <AddVersiModalBody {...modalBodyProps} />

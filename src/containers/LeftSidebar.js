@@ -6,9 +6,7 @@ import { useDispatch } from "react-redux";
 
 function LeftSidebar() {
   const location = useLocation();
-
   const dispatch = useDispatch();
-
   const close = (e) => {
     document.getElementById("left-sidebar-drawer").click();
   };
@@ -31,7 +29,7 @@ function LeftSidebar() {
               src="/logo192.png"
               alt="DashWind Logo"
             />
-            DashWind
+            Dashboard CTE
           </Link>{" "}
         </li>
         {routes.map((route, k) => {

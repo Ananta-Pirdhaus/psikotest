@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
-import { addNewSoalAsync, fetchBakat, getVersion } from "../soalSlice";
+import { fetchBakat, getVersion, updateSoalAsync } from "../soalSlice";
 import Select from "react-select";
-import PlusIcon from "@heroicons/react/24/outline/PlusIcon"; // Import Plus icon
+import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 
 const INITIAL_SOAL_OBJ = {
-  versi: "", // Akan diganti dengan versi id yang dipilih
-  type: "Single", // Default type
+  versi: "",
+  type: "Single",
   question: "",
   options: [
     { answer: "", bakat: "" },
@@ -17,22 +17,28 @@ const INITIAL_SOAL_OBJ = {
   ],
 };
 
-function AddSoalModalBody({ closeModal }) {
+const typeOptions = [
+  { value: "Single", label: "Single" },
+  { value: "Multiple", label: "Multiple" },
+];
+
+function UpdateSoalModalBody({ closeModal, extraObject }) {
   const dispatch = useDispatch();
   const bakatOptions = useSelector((state) => state.soal.selectBakatOptions);
-  const versions = useSelector((state) => state.soal.version); // Ambil versi dari Redux store
+  const versions = useSelector((state) => state.soal.version);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [soalObj, setSoalObj] = useState(INITIAL_SOAL_OBJ);
+  const [soalObj, setSoalObj] = useState({
+    ...INITIAL_SOAL_OBJ,
+    ...extraObject,
+  });
 
-  // Fetch bakatOptions jika belum tersedia
   useEffect(() => {
     if (!bakatOptions || bakatOptions.length === 0) {
       dispatch(fetchBakat());
     }
   }, [bakatOptions, dispatch]);
 
-  // Fetch versi jika belum tersedia
   useEffect(() => {
     if (!versions || versions.length === 0) {
       dispatch(getVersion());
@@ -44,8 +50,16 @@ function AddSoalModalBody({ closeModal }) {
       setErrorMessage("Version is required!");
       return;
     }
+    if (!soalObj.type) {
+      setErrorMessage("Type is required!");
+      return;
+    }
     if (soalObj.question.trim() === "") {
       setErrorMessage("Question is required!");
+      return;
+    }
+    if (!soalObj.options || soalObj.options.length === 0) {
+      setErrorMessage("At least one option is required!");
       return;
     }
     if (soalObj.options.some((option) => option.answer.trim() === "")) {
@@ -54,30 +68,21 @@ function AddSoalModalBody({ closeModal }) {
     }
 
     setLoading(true);
-
-    dispatch(addNewSoalAsync(soalObj))
+    console.log("Data yang dikirim:", soalObj);
+    dispatch(updateSoalAsync(soalObj))
       .then((result) => {
         console.log("Result dari dispatch:", result);
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
-        dispatch(showNotification({ message: "New Soal Added!", status: 1 }));
+        dispatch(showNotification({ message: "Updated Soal!", status: 1 }));
         closeModal();
-        setLoading(false);
       })
       .catch((error) => {
-        dispatch(
-          showNotification({ message: `Error: ${error.message}`, status: 0 })
-        );
-        console.error("Error adding soal:", error.message || error);
-        setErrorMessage(error.message || "Failed to add soal.");
-        setLoading(false);
-      });
+        setErrorMessage(error.message || "Failed to update soal.");
+      })
+      .finally(() => setLoading(false));
   };
 
   const updateFormValue = ({ updateType, value, index }) => {
     setErrorMessage("");
-
     if (updateType === "options") {
       const updatedOptions = [...soalObj.options];
       updatedOptions[index] = { ...updatedOptions[index], ...value };
@@ -91,15 +96,11 @@ function AddSoalModalBody({ closeModal }) {
     value: bakat.value,
     label: bakat.label,
   }));
-
   const versionOptions =
     versions?.map((version) => ({
       value: version.value,
       label: version.label,
-      status: version.status,
     })) || [];
-
-  console.log("Version Options:", versionOptions); // Tambahkan log di sini
 
   const addOption = () => {
     setSoalObj((prevState) => ({
@@ -108,82 +109,56 @@ function AddSoalModalBody({ closeModal }) {
     }));
   };
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      borderColor: state.isFocused ? "green" : provided.borderColor, // Border hijau saat fokus
-      boxShadow: state.isFocused ? "0 0 0 1px green" : "none", // Efek glow hijau saat fokus
-      "&:hover": {
-        borderColor: "green", // Border hijau saat hover
-      },
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "green" : "white", // Warna hijau saat dipilih
-      color: state.isSelected ? "white" : "black", // Warna teks kontras
-      "&:hover": {
-        backgroundColor: "#a3e635", // Warna hijau muda saat hover
-        color: "black",
-      },
-    }),
-  };
-
-  const options = [
-    { value: "Single", label: "SINGLE" },
-    { value: "Multiple", label: "MULTIPLE" },
-  ];
-
   return (
     <>
-      {/* Input untuk Versi */}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700">Versi</label>
         <Select
           options={versionOptions}
-          value={
+          defaultValue={
             versionOptions.find((opt) => opt.value === soalObj.versi) || null
           }
-          onChange={(selectedOption) =>
+          onChange={(selectedOption) => {
+            console.log("Selected version:", selectedOption);
             updateFormValue({
               updateType: "versi",
               value: selectedOption?.value || "",
-            })
-          }
-          styles={customStyles} // Terapkan gaya hijau di sini
+            });
+          }}
           className="mt-2"
           placeholder="Select Version"
         />
       </div>
-      {/* Input untuk Tipe Soal */}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700">Type</label>
         <Select
-          value={
-            options.find((opt) => opt.value === soalObj.type) || options[0]
+          options={typeOptions}
+          defaultValue={
+            typeOptions.find((opt) => opt.value === soalObj.type) || null
           }
           onChange={(selectedOption) =>
-            updateFormValue({ updateType: "type", value: selectedOption.value })
+            updateFormValue({
+              updateType: "type",
+              value: selectedOption?.value || "",
+            })
           }
-          options={options}
-          styles={customStyles}
           className="mt-2"
+          placeholder="Select Type"
         />
       </div>
-      {/* Input untuk Pertanyaan */}
       <InputText
         type="text"
-        value={soalObj.question || ""}
+        defaultValue={soalObj.question || ""}
         updateType="question"
         containerStyle="mt-4"
         labelTitle="Question"
         updateFormValue={updateFormValue}
       />
-      {/* Input untuk Opsi Jawaban */}
       {soalObj.options.map((option, index) => (
         <div key={index} className="mt-4">
           <InputText
             type="text"
-            value={option.answer || ""}
+            defaultValue={option.answer || ""}
             labelTitle={`Option ${index + 1} Answer`}
             updateType="options"
             containerStyle="mt-2"
@@ -197,7 +172,7 @@ function AddSoalModalBody({ closeModal }) {
           />
           <Select
             options={bakatSelectOptions}
-            value={
+            defaultValue={
               bakatSelectOptions.find((opt) => opt.value === option.bakat) ||
               null
             }
@@ -208,13 +183,11 @@ function AddSoalModalBody({ closeModal }) {
                 index,
               })
             }
-            styles={customStyles} // Terapkan gaya hijau
             className="mt-2"
             placeholder="Select Bakat"
           />
         </div>
       ))}
-      {/* Tambahkan tombol untuk menambah opsi jawaban jika tipe soal MULTIPLE */}
       {soalObj.type === "Multiple" && (
         <button
           type="button"
@@ -226,9 +199,8 @@ function AddSoalModalBody({ closeModal }) {
         </button>
       )}
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-      {/* Tombol Aksi */}
       <div className="modal-action">
-        <button className="btn btn-ghost" onClick={() => closeModal()}>
+        <button className="btn btn-ghost" onClick={closeModal}>
           Cancel
         </button>
         <button
@@ -243,4 +215,4 @@ function AddSoalModalBody({ closeModal }) {
   );
 }
 
-export default AddSoalModalBody;
+export default UpdateSoalModalBody;

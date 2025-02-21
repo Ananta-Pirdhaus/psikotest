@@ -79,7 +79,7 @@ function MasterSoal() {
     dispatch(fetchBakat()); // Fetch bakat data
   }, [dispatch]);
 
-  const deleteCurrentSoal = (index) => {
+  const deleteCurrentSoal = (id) => {
     dispatch(
       openModal({
         title: "Confirmation",
@@ -87,7 +87,7 @@ function MasterSoal() {
         extraObject: {
           message: "Are you sure you want to delete this question record?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.SOAL_DELETE,
-          index,
+          id, // Kirim ID soal, bukan index
         },
       })
     );
@@ -255,15 +255,9 @@ function MasterSoal() {
                     </button>
                     <button
                       className="btn btn-sm btn-danger"
-                      onClick={() => deleteCurrentSoal(index)}
+                      onClick={() => deleteCurrentSoal(s.id)}
                     >
                       <TrashIcon className="h-5 w-5" />
-                    </button>
-                    <button
-                      className="btn btn-sm btn-info"
-                      onClick={() => viewSoalDetails(s)}
-                    >
-                      <EyeIcon className="h-5 w-5" />
                     </button>
                   </td>
                 </tr>

@@ -65,6 +65,21 @@ export const addNewSoalAsync = createAsyncThunk(
     }
   }
 );
+
+export const updateSoalAsync = createAsyncThunk(
+  "soal/updateSoalAsync",
+  async ({ id, updatedSoal }, thunkAPI) => {
+    try {
+      const response = await axios.put(`pertanyaan/${id}`, updatedSoal);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat memperbarui soal"
+      );
+    }
+  }
+);
+
 // Function to get version (GET method)
 export const getVersion = createAsyncThunk(
   "bakat/getVersion",
@@ -75,6 +90,20 @@ export const getVersion = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "An error occurred"
+      );
+    }
+  }
+);
+
+export const deleteSoalAsync = createAsyncThunk(
+  "soal/deleteSoalAsync",
+  async (id, thunkAPI) => {
+    try {
+      await axios.delete(`pertanyaan/${id}`);
+      return id; // Return the deleted question ID
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat menghapus soal"
       );
     }
   }
@@ -162,6 +191,37 @@ const soalSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
+      // Update Soal
+      .addCase(updateSoalAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateSoalAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        const index = state.soal.findIndex(
+          (soal) => soal.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.soal[index] = action.payload;
+        }
+      })
+      .addCase(updateSoalAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Delete Soal
+      .addCase(deleteSoalAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteSoalAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.soal = state.soal.filter((soal) => soal.id !== action.payload); // Remove deleted question
+      })
+      .addCase(deleteSoalAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
       // Get Version (versi-pertanyaan)
       .addCase(getVersion.pending, (state) => {
         state.status = "loading";

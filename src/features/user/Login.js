@@ -99,19 +99,8 @@ function Login() {
               </div>
 
               <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
-              <button
-                type="submit"
-                className={`btn mt-2 w-full btn-primary relative ${
-                  loading ? "loading" : ""
-                }`}
-              >
-                {loading ? (
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full animate-spin"></div>
-                  </span>
-                ) : (
-                  "Login"
-                )}
+              <button type="submit" className="btn mt-2 w-full btn-primary">
+                Submit
               </button>
             </form>
           </div>
