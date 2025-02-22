@@ -3,8 +3,6 @@ import { useDispatch } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { showNotification } from "../../common/headerSlice";
 import InputText from "../../../components/Input/InputText";
-import TextAreaInput from "../../../components/Input/TextAreaInput";
-import ToogleInput from "../../../components/Input/ToogleInput";
 import axios from "axios";
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
@@ -14,12 +12,10 @@ function ProfileSettings() {
 
   // State to hold profile data
   const [profile, setProfile] = useState({
+    id: "",
     name: "",
     email: "",
-    about: "", // Add any other fields if necessary
-    language: "English", // Default values
-    timezone: "IST", // Default timezone
-    syncData: true, // Default syncData value
+    password: "",
   });
 
   // State for loading and error handling
@@ -39,16 +35,14 @@ function ProfileSettings() {
         .then((response) => {
           const userData = response.data.data;
           setProfile({
+            id: userData.id || "", // Store user ID
             name: userData.name || "",
             email: userData.email || "",
-            about: "", // Adjust if you have an 'about' field in the response
-            language: "English", // Default value for language
-            timezone: "IST", // Default value for timezone
-            syncData: true, // Default syncData value
+            password: "", // Password field should be empty by default
           });
           setLoading(false);
         })
-        .catch((error) => {
+        .catch(() => {
           setErrorMessage("Error fetching profile data");
           setLoading(false);
         });
@@ -58,10 +52,24 @@ function ProfileSettings() {
     }
   }, []);
 
-  // Call API to update profile settings changes
+  // Call API to update profile settings
   const updateProfile = () => {
-    dispatch(showNotification({ message: "Profile Updated", status: 1 }));
-    // Optionally, call an API to update the profile here
+    if (!profile.id) {
+      dispatch(showNotification({ message: "User ID not found", status: 0 }));
+      return;
+    }
+    axios
+      .put(`user/${profile.id}`, {
+        name: profile.name,
+        email: profile.email,
+        password: profile.password,
+      })
+      .then(() => {
+        dispatch(showNotification({ message: "Profile Updated", status: 1 }));
+      })
+      .catch(() => {
+        dispatch(showNotification({ message: "Update Failed", status: 0 }));
+      });
   };
 
   const updateFormValue = ({ updateType, value }) => {
@@ -91,6 +99,14 @@ function ProfileSettings() {
             defaultValue={profile.email}
             updateType="email"
             updateFormValue={updateFormValue}
+          />
+          <InputText
+            labelTitle="Password"
+            type="password"
+            defaultValue=""
+            updateType="password"
+            updateFormValue={updateFormValue}
+            placeholder={"Enter new password"}
           />
         </div>
         <div className="divider"></div>

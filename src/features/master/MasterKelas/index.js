@@ -116,7 +116,7 @@ function MasterKelas() {
           />
 
           {/* Level Filter */}
-          <select
+          {/* <select
             className="btn  w-full max-w-xs flex items-center"
             value={selectedLevel}
             onChange={(e) => setSelectedLevel(e.target.value)}
@@ -131,7 +131,7 @@ function MasterKelas() {
             <option value="SMA" className="bg-white">
               SMA
             </option>
-          </select>
+          </select> */}
         </div>
 
         {status === "failed" && error && (

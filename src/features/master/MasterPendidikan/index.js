@@ -8,10 +8,8 @@ import {
 } from "../../../utils/globalConstantUtil";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
-import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
-import { fetchSekolah, importSekolah } from "./sekolahSlice";
-import { showNotification } from "../../common/headerSlice";
+import { fetchSekolah } from "./sekolahSlice";
 
 const TopSideButtons = () => {
   const dispatch = useDispatch();
@@ -48,7 +46,9 @@ function MasterPendidikan() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchSekolah({ level: selectedLevel, page: currentPage }));
+    dispatch(
+      fetchSekolah({ level: selectedLevel || undefined, page: currentPage })
+    );
   }, [dispatch, selectedLevel, currentPage]);
 
   const deleteCurrentSekolah = (id) => {
@@ -75,24 +75,16 @@ function MasterPendidikan() {
     );
   };
 
-  const viewSekolahDetails = (sekolah) => {
-    console.log("Viewing school details:", sekolah);
-    dispatch(
-      openModal({
-        title: "School Details",
-        bodyType: MODAL_BODY_TYPES.SEKOLAH_VIEW_DETAIL,
-        extraObject: sekolah,
-      })
-    );
-  };
-
   const filteredSekolah = useMemo(() => {
     if (!sekolah) return [];
     return sekolah.filter((p) => {
-      const name = String(p.name || "").toLowerCase();
-      const level = String(p.level || "").toLowerCase();
+      const name = (p.name || "").toLowerCase();
+      const level = (p.level || "").toLowerCase();
       const query = searchQuery.toLowerCase();
-      return name.includes(query) || (selectedLevel && level === selectedLevel);
+      return (
+        name.includes(query) &&
+        (!selectedLevel || level === selectedLevel.toLowerCase())
+      );
     });
   }, [sekolah, searchQuery, selectedLevel]);
 
@@ -109,7 +101,9 @@ function MasterPendidikan() {
   const paginate = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
-      dispatch(fetchSekolah({ level: selectedLevel, page: pageNumber }));
+      dispatch(
+        fetchSekolah({ level: selectedLevel || undefined, page: pageNumber })
+      );
     }
   };
 
@@ -136,29 +130,14 @@ function MasterPendidikan() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <select
-          className="btn  w-full max-w-xs flex items-center"
+          className="btn w-full max-w-xs"
           value={selectedLevel}
           onChange={(e) => setSelectedLevel(e.target.value)}
           aria-label="Filter by Level"
         >
-          <option
-            value=""
-            className="bg-white text-start flex items-start justify-start"
-          >
-            All Levels
-          </option>
-          <option
-            value="SMP"
-            className="bg-white text-start flex items-start justify-start"
-          >
-            SMP
-          </option>
-          <option
-            value="SMA"
-            className="bg-white text-start flex items-start justify-start"
-          >
-            SMA
-          </option>
+          <option value="">All Levels</option>
+          <option value="SMP">SMP</option>
+          <option value="SMA">SMA</option>
         </select>
       </div>
       <div className="overflow-x-auto w-full mt-4">
@@ -171,30 +150,21 @@ function MasterPendidikan() {
             </tr>
           </thead>
           <tbody>
-            {sekolah?.length > 0 ? (
-              currentSekolah.map((p, index) => (
-                <tr key={p.id || index} className="border-b hover:bg-gray-50">
+            {currentSekolah.length > 0 ? (
+              currentSekolah.map((p) => (
+                <tr key={p.id} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-2">{p.name}</td>
                   <td className="px-4 py-2">{p.level}</td>
                   <td className="px-4 py-2 text-center">
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => updateSekolahDetails(p)}
-                      title="Update Sekolah"
                     >
                       <PencilIcon className="h-5 w-5 text-blue-500" />
                     </button>
-                    {/* <button
-                      className="btn btn-square btn-ghost"
-                      onClick={() => viewSekolahDetails(p)}
-                      title="Lihat Detail Sekolah"
-                    >
-                      <EyeIcon className="h-5 w-5 text-green-500" />
-                    </button> */}
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentSekolah(p.id)}
-                      title="Hapus Sekolah"
                     >
                       <TrashIcon className="h-5 w-5 text-red-500" />
                     </button>
@@ -210,29 +180,6 @@ function MasterPendidikan() {
             )}
           </tbody>
         </table>
-      </div>
-      <div className="flex justify-center mt-4">
-        <div className="btn-group space-x-2">
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            aria-label="Previous Page"
-          >
-            Previous
-          </button>
-          <span className="btn btn-sm">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            aria-label="Next Page"
-          >
-            Next
-          </button>
-        </div>
       </div>
     </TitleCard>
   );

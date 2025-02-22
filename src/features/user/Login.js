@@ -84,7 +84,8 @@ function Login() {
                   defaultValue={loginObj.emailId}
                   updateType="emailId"
                   containerStyle="mt-4"
-                  labelTitle="Email Id"
+                  labelTitle="Email"
+                  placeholder={"Email"}
                   updateFormValue={updateFormValue}
                 />
 
@@ -94,6 +95,7 @@ function Login() {
                   updateType="password"
                   containerStyle="mt-4"
                   labelTitle="Password"
+                  placeholder={"Password"}
                   updateFormValue={updateFormValue}
                 />
               </div>

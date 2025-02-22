@@ -67,16 +67,27 @@ function ViewBakatModalBody({ closeModal, extraObject }) {
             </div>
           </div>
 
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Icon
-            </label>
-            <img
-              src={getIconUrl(bakatDetail.icon)} // Use the getIconUrl function to handle icon safely
-              alt="Icon"
-              className="w-24 h-24 object-cover"
+          {bakatDetail.icon ? (
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Icon
+              </label>
+              <img
+                src={getIconUrl(bakatDetail.icon)}
+                alt="Icon"
+                className="w-24 h-24 object-cover"
+              />
+            </div>
+          ) : (
+            <InputText
+              type="text"
+              defaultValue="Icon"
+              updateType="icon"
+              containerStyle="mt-4 text-black font-semibold"
+              labelTitle="Icon tidak ditemukan"
+              disabled={true}
             />
-          </div>
+          )}
         </>
       ) : (
         <div>No data available</div>

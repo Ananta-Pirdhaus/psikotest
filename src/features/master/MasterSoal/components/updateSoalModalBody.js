@@ -115,9 +115,7 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
         <label className="block text-sm font-medium text-gray-700">Versi</label>
         <Select
           options={versionOptions}
-          defaultValue={
-            versionOptions.find((opt) => opt.value === soalObj.versi) || null
-          }
+          defaultValue={soalObj.versi || ""}
           onChange={(selectedOption) => {
             console.log("Selected version:", selectedOption);
             updateFormValue({
@@ -173,13 +171,16 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
           <Select
             options={bakatSelectOptions}
             defaultValue={
-              bakatSelectOptions.find((opt) => opt.value === option.bakat) ||
+              bakatSelectOptions.find((opt) => opt.value === option.bakat_id) ||
               null
             }
             onChange={(selectedOption) =>
               updateFormValue({
                 updateType: "options",
-                value: { bakat: selectedOption?.value || "" },
+                value: {
+                  bakat: selectedOption?.value || "",
+                  bakat_id: selectedOption?.value || null,
+                },
                 index,
               })
             }

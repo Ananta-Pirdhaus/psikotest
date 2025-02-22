@@ -29,6 +29,7 @@ const MasterProfesi = lazy(() => import("../pages/protected/MasterProfesi"));
 const MasterBakat = lazy(() => import("../pages/protected/MasterBakat"));
 const MasterKelas = lazy(() => import("../pages/protected/MasterKelas"));
 const MasterSoal = lazy(() => import("../pages/protected/MasterSoal"));
+const MasterUser = lazy(() => import("../pages/protected/MasterUser"));
 const MasterVersi = lazy(() => import("../pages/protected/MasterVersi"));
 const MasterPanduan = lazy(() => import("../pages/protected/MasterPanduan"));
 const MasterSettings = lazy(() => import("../pages/protected/MasterSetting"));
@@ -44,7 +45,7 @@ const routes = [
     component: Welcome, // view rendered
   },
   {
-    path: "/user",
+    path: "/peserta",
     component: Leads,
   },
   {
@@ -127,6 +128,10 @@ const routes = [
   {
     path: "/master-soal",
     component: MasterSoal,
+  },
+  {
+    path: "/master-user",
+    component: MasterUser,
   },
   {
     path: "/master-versi",

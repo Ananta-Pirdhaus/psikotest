@@ -1,5 +1,3 @@
-
-
 function UserChannels({}) {
   return (
     <div className="flex justify-center  bg-base-200">
@@ -17,9 +15,6 @@ function UserChannels({}) {
           efisiensi, pastikan setiap aspek berjalan optimal, dan buat keputusan
           berdasarkan data yang akurat.
         </p>
-        <button className="btn btn-primary mt-6 px-6 py-3 rounded-lg text-white">
-          Masuk ke Dashboard
-        </button>
       </div>
     </div>
   );

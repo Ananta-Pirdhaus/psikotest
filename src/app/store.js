@@ -14,6 +14,7 @@ import MasterSoal from "../features/master/MasterSoal/soalSlice";
 import MasterVersion from "../features/master/MasterVersi/versiSlice";
 import MasterPanduan from "../features/master/MasterPanduan/panduanSlice";
 import MasterSettings from "../features/master/MasterSettings/settingSlice"; // Tambahkan ini
+import MasterUser from "../features/master/MasterUsers/userSlice"; // Tambahkan ini
 import HasilQuiz from "../features/hasil/HasilQuiz/hasilQuizSlice"; // Tambahkan ini
 
 const combinedReducer = {
@@ -32,6 +33,7 @@ const combinedReducer = {
   versi: MasterVersion, // Tambahkan reducer ini
   panduan: MasterPanduan, // Tambahkan reducer ini
   settings: MasterSettings, // Tambahkan reducer ini
+  users: MasterUser, // Tambahkan reducer ini
   hasilQuiz: HasilQuiz, // Tambahkan reducer ini
 };
 

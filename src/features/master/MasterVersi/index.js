@@ -9,7 +9,7 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
-import { fetchVersiPertanyaan, importVersiPertanyaan } from "./versiSlice"; // Correct import
+import { fetchVersiPertanyaan, importVersiPertanyaan } from "./versiSlice";
 import { showNotification } from "../../common/headerSlice";
 import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 
@@ -39,36 +39,30 @@ const TopSideButtons = () => {
 };
 
 const MasterVersion = () => {
-  const { versi, error, status, message } = useSelector(
-    (state) => state.versi // Mengambil data dari state versi
-  );
+  const { versi, error, status, message } = useSelector((state) => state.versi);
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setselectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Mengambil data versi pertanyaan saat komponen dimuat
   useEffect(() => {
-    dispatch(fetchVersiPertanyaan(currentPage))
-      .then((response) => {
-        // console.log("Response from fetchVersiPertanyaan:", response);
-      })
-      .catch((error) => {
-        console.error("Error fetching versi pertanyaan:", error);
-      });
+    dispatch(fetchVersiPertanyaan(currentPage)).catch((error) => {
+      console.error("Error fetching versi pertanyaan:", error);
+    });
   }, [dispatch, currentPage]);
 
-  // Filter data berdasarkan query pencarian
   const filteredMasterData = useMemo(() => {
-    if (!versi || !versi.length) return []; // Pastikan data versi ada
+    if (!versi || !versi.length) return [];
     return versi.filter((item) => {
       const name = String(item.name || "").toLowerCase();
       const query = searchQuery.toLowerCase();
-      return name.includes(query); // Filter berdasarkan nama
+      const statusMatch = selectedStatus
+        ? item.status === selectedStatus
+        : true;
+      return name.includes(query) && statusMatch;
     });
-  }, [versi, searchQuery]);
+  }, [versi, searchQuery, selectedStatus]);
 
-  // Pagination
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -85,8 +79,6 @@ const MasterVersion = () => {
   };
 
   const updateMasterDetails = (item) => {
-    console.log("Update Master Details:", item);
-    // Implementasikan logika untuk update data
     dispatch(
       openModal({
         title: "Update Versi Pertanyaan",
@@ -96,20 +88,15 @@ const MasterVersion = () => {
     );
   };
 
-  const viewMasterDetails = (item) => {
-    console.log("View Master Details:", item);
-    // Implementasikan logika untuk melihat data lebih lanjut
-  };
-
   const deleteCurrentMaster = (id) => {
     dispatch(
       openModal({
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this versi?`,
+          message: "Are you sure you want to delete this versi?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.VERSI_DELETE,
-          id, // Kirim ID peserta
+          id,
         },
       })
     );
@@ -142,7 +129,7 @@ const MasterVersion = () => {
           value={selectedStatus}
           onChange={(e) => setselectedStatus(e.target.value)}
         >
-          <option value="">All Categories</option>
+          <option value="">All Status</option>
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
         </select>
@@ -180,7 +167,6 @@ const MasterVersion = () => {
                     >
                       <PencilIcon className="h-5 w-5 text-blue-500" />
                     </button>
-
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentMaster(item.id)}
@@ -199,28 +185,6 @@ const MasterVersion = () => {
             )}
           </tbody>
         </table>
-      </div>
-
-      <div className="flex justify-center mt-4">
-        <div className="btn-group space-x-2">
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span className="btn btn-sm">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-sm"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
       </div>
     </TitleCard>
   );

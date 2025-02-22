@@ -31,9 +31,9 @@ const routes = [
     name: "Dashboard",
   },
   {
-    path: "/app/user",
+    path: "/app/peserta",
     icon: <UsersIcon className={iconClasses} />,
-    name: "User",
+    name: "Peserta",
   },
   {
     path: "",
@@ -41,9 +41,14 @@ const routes = [
     name: "Master",
     submenu: [
       {
-        path: "/app/master-pendidikan",
+        path: "/app/master-bakat",
+        icon: <BoltIcon className={submenuIconClasses} />,
+        name: "Master Bakat",
+      },
+      {
+        path: "/app/master-jurusan",
         icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Pendidikan",
+        name: "Master Jurusan",
       },
       {
         path: "/app/master-kelas",
@@ -51,19 +56,14 @@ const routes = [
         name: "Master Kelas",
       },
       {
-        path: "/app/master-bakat",
-        icon: <BoltIcon className={submenuIconClasses} />,
-        name: "Master Bakat",
-      },
-      {
         path: "/app/master-kampus",
         icon: <BuildingLibraryIcon className={submenuIconClasses} />,
-        name: "Master Kampus",
+        name: "Master Perguruan Tinggi",
       },
       {
-        path: "/app/master-jurusan",
+        path: "/app/master-pendidikan",
         icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Jurusan",
+        name: "Master Pendidikan",
       },
       {
         path: "/app/master-profesi",
@@ -79,6 +79,11 @@ const routes = [
         path: "/app/master-settings",
         icon: <Cog6ToothIcon className={submenuIconClasses} />,
         name: "Master Settings",
+      },
+      {
+        path: "/app/master-user",
+        icon: <UsersIcon className={submenuIconClasses} />,
+        name: "Master User",
       },
     ],
   },
@@ -117,18 +122,18 @@ const routes = [
     ],
   },
 
-  {
-    path: "",
-    icon: <WrenchScrewdriverIcon className={`${iconClasses} inline`} />,
-    name: "Settings",
-    submenu: [
-      {
-        path: "/app/settings-profile",
-        icon: <UserIcon className={submenuIconClasses} />,
-        name: "Profile",
-      },
-    ],
-  }
+  // {
+  //   path: "",
+  //   icon: <WrenchScrewdriverIcon className={`${iconClasses} inline`} />,
+  //   name: "Settings",
+  //   submenu: [
+  //     {
+  //       path: "/app/settings-profile",
+  //       icon: <UserIcon className={submenuIconClasses} />,
+  //       name: "Profile",
+  //     },
+  //   ],
+  // },
   // {
   //   path: "",
   //   icon: <DocumentTextIcon className={`${iconClasses} inline`} />,

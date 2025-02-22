@@ -1,140 +1,97 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
 import { addKampus, getJurusan } from "../kampuSlice";
-import Select from "react-select"; // Import react-select
+import Select from "react-select";
 
 const INITIAL_KAMPUS_OBJ = {
   name: "",
-  rank: 1, // Default rank, can be modified
-  jurusan: [], // Array for selected "jurusan" (departments)
-  status: "Active", // Array for selected "jurusan" (departments)
+  rank: 1,
+  jurusan: [],
+  status: "Active",
 };
 
 function AddKampusModalBody({ closeModal }) {
   const dispatch = useDispatch();
-
-  // Get "jurusanOptions" from Redux store
-  const jurusanOptions = useSelector(
-    (state) => state.kampus.selectJurusanOptions
-  );
+  const jurusanOptions =
+    useSelector((state) => state.kampus.selectJurusanOptions) || [];
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [kampusObj, setKampusObj] = useState(INITIAL_KAMPUS_OBJ);
-  const [newKampusObj, setNewKampusObj] = useState(null); // New state for validated object
 
-  // Fetch "jurusan" options if not available in Redux store
   useEffect(() => {
-    if (!jurusanOptions || jurusanOptions.length === 0) {
+    if (jurusanOptions.length === 0) {
       dispatch(getJurusan());
     }
-  }, [jurusanOptions, dispatch]);
+  }, [jurusanOptions.length, dispatch]);
+
+  const updateFormValue = useCallback(({ updateType, value }) => {
+    setErrorMessage("");
+    setKampusObj((prev) => ({ ...prev, [updateType]: value }));
+  }, []);
 
   const saveNewKampus = () => {
-    // Log tracking nilai kampusObj sebelum penyimpanan
-    console.log("Kampus Object before save:", kampusObj);
-
-    // Validate kampusObj and prepare newKampusObj
-    if (kampusObj.name.trim() === "") {
+    if (!kampusObj.name.trim()) {
       setErrorMessage("Name is required!");
       return;
-    } else if (kampusObj.jurusan.length === 0) {
+    }
+    if (kampusObj.jurusan.length === 0) {
       setErrorMessage("At least one Jurusan is required!");
       return;
-    } else if (isNaN(kampusObj.rank) || kampusObj.rank <= 0) {
+    }
+    if (isNaN(kampusObj.rank) || kampusObj.rank <= 0) {
       setErrorMessage("Rank must be a positive integer!");
       return;
     }
 
-    // Create the validated newKampusObj
     const validatedKampusObj = {
-      name: kampusObj.name,
-      rank: parseInt(kampusObj.rank), // Ensure rank is an integer
-      jurusan: kampusObj.jurusan, // Array of selected jurusan IDs
-      status: kampusObj.status, // Array of selected jurusan IDs
+      ...kampusObj,
+      rank: parseInt(kampusObj.rank),
     };
 
-    // Update the newKampusObj state with the validated data
-    setNewKampusObj(validatedKampusObj);
-
-    // Log tracking nilai payload sebelum dikirimkan
-    console.log("Validated Payload before sending:", validatedKampusObj);
-
     setLoading(true);
-
-    // Menggunakan axios atau fetch untuk mengirim data raw (JSON)
     dispatch(addKampus(validatedKampusObj))
-      .then((response) => {
-        // Log hasil response dari action addKampus
-        console.log("Response from addKampus:", response);
-
+      .then(() => {
         dispatch(showNotification({ message: "New Kampus Added!", status: 1 }));
         closeModal();
-        setLoading(false);
       })
       .catch((error) => {
-        // Log error jika ada
-        console.error("Error while adding kampus:", error);
-
-        const errorDetails = error?.response?.data?.errors;
-        if (errorDetails) {
-          setErrorMessage(errorDetails.name?.[0] || errorDetails.jurusan?.[0]);
-        } else {
-          setErrorMessage(error.message || "Failed to add new kampus.");
-        }
-        setLoading(false);
-      });
+        setErrorMessage(
+          error.response?.data?.errors?.name?.[0] || "Failed to add new kampus."
+        );
+      })
+      .finally(() => setLoading(false));
   };
 
-  const updateFormValue = ({ updateType, value }) => {
-    console.log(`Updating ${updateType} with value:`, value); // Log perubahan input
-    setErrorMessage(""); // Reset error message
-    setKampusObj({ ...kampusObj, [updateType]: value });
-  };
-
-  // Render loading message while jurusanOptions is not available
-  // if (!jurusanOptions || jurusanOptions.length === 0) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // If there is an error message for jurusan, display it
-  if (errorMessage === "Jurusan tidak tersedia") {
-    return <div className="text-red-500 mt-4">Jurusan tidak tersedia</div>;
-  }
-
-  // Prepare options for react-select
-  const jurusanSelectOptions = jurusanOptions.map((jurusan) => ({
-    value: jurusan.value,
-    label: jurusan.label,
+  const jurusanSelectOptions = jurusanOptions.map(({ value, label }) => ({
+    value,
+    label,
   }));
 
   return (
     <>
       <InputText
         type="text"
-        value={kampusObj.name || ""} // Ensure it's always defined
-        defaultValue={kampusObj.name || ""} // Add defaultValue for initial value
+        value={kampusObj.name}
         updateType="name"
         containerStyle="mt-4"
         labelTitle="Name"
         updateFormValue={updateFormValue}
-        placeholder={"Nama Kampus"}
+        placeholder="Nama Kampus"
       />
 
       <InputText
         type="number"
-        value={kampusObj.rank || 1} // Ensure it's always defined
-        defaultValue={kampusObj.rank || 1} // Add defaultValue for initial value
+        value={kampusObj.rank}
         updateType="rank"
         containerStyle="mt-4"
         labelTitle="Rank"
         updateFormValue={updateFormValue}
-        placeholder={"Ranking Kampus"}
+        placeholder="Ranking Kampus"
       />
 
-      {/* Dropdown for selecting jurusan using react-select */}
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700">
           Jurusan
@@ -142,15 +99,13 @@ function AddKampusModalBody({ closeModal }) {
         <Select
           isMulti
           options={jurusanSelectOptions}
-          value={jurusanSelectOptions.filter((option) =>
-            kampusObj.jurusan.includes(option.value)
+          value={jurusanSelectOptions.filter((opt) =>
+            (kampusObj.jurusan || []).includes(opt.value)
           )}
-          onChange={(selectedOptions) =>
+          onChange={(selected) =>
             updateFormValue({
               updateType: "jurusan",
-              value: selectedOptions
-                ? selectedOptions.map((option) => option.value)
-                : [], // Ensure jurusan is always an array
+              value: selected.map((opt) => opt.value),
             })
           }
           className="w-full"
@@ -158,21 +113,29 @@ function AddKampusModalBody({ closeModal }) {
         />
       </div>
 
-      <InputText
-        type="text"
-        value={kampusObj.status || "Active"} // Ensure it's always defined
-        defaultValue={kampusObj.status || "Active"} // Add defaultValue for initial value
-        updateType="status"
-        containerStyle="mt-4"
-        labelTitle="Status"
-        updateFormValue={updateFormValue}
-        placeholder={"Status Kampus"}
-      />
+      <div className="mt-4 flex items-center gap-2">
+        <span>Status:</span>
+        <button
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            kampusObj.status === "Active"
+              ? "bg-green-200 text-green-800"
+              : "bg-red-200 text-red-800"
+          }`}
+          onClick={() =>
+            updateFormValue({
+              updateType: "status",
+              value: kampusObj.status === "Active" ? "Inactive" : "Active",
+            })
+          }
+        >
+          {kampusObj.status}
+        </button>
+      </div>
 
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
 
       <div className="modal-action">
-        <button className="btn btn-ghost" onClick={() => closeModal()}>
+        <button className="btn btn-ghost" onClick={closeModal}>
           Cancel
         </button>
         <button

@@ -25,7 +25,7 @@ function Leads() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this User?`,
+          message: `Are you sure you want to delete this peserta?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.LEAD_DELETE,
           id, // Kirim ID peserta
         },

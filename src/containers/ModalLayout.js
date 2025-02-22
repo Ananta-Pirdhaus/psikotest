@@ -26,6 +26,7 @@ import UpdateVersiModalBody from "../features/master/MasterVersi/components/Upda
 import UpdatePanduanModalBody from "../features/master/MasterPanduan/components/updatePanduan";
 import UpdateSettingsModalBody from "../features/master/MasterSettings/components/updateSettings";
 import UpdateSoalModalBody from "../features/master/MasterSoal/components/updateSoalModalBody";
+import AddUsersModalBody from "../features/master/MasterUsers/components/AddUsersModalBody";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -60,7 +61,9 @@ function ModalLayout() {
             bodyType === MODAL_BODY_TYPES.SKILL_VIEW ||
             bodyType === MODAL_BODY_TYPES.KAMPUS_ADD_NEW ||
             bodyType === MODAL_BODY_TYPES.KAMPUS_VIEW ||
-            bodyType === MODAL_BODY_TYPES.KAMPUS_UPDATE
+            bodyType === MODAL_BODY_TYPES.KAMPUS_UPDATE ||
+            bodyType === MODAL_BODY_TYPES.SOAL_ADD_NEW ||
+            bodyType === MODAL_BODY_TYPES.SOAL_UPDATE
               ? "max-w-6xl w-full sm:w-11/12 lg:w-10/12 max-h-[80vh] overflow-y-auto"
               : ""
           }`}
@@ -147,6 +150,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.SETTINGS_UPDATE]: (
                 <UpdateSettingsModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.USER_ADD_NEW]: (
+                <AddUsersModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]

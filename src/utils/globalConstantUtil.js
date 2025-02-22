@@ -24,6 +24,7 @@ module.exports = Object.freeze({
     VERSI_UPDATE_NEW: "VERSI_UPDATE_NEW",
     PANDUAN_UPDATE: "PANDUAN_UPDATE",
     SETTINGS_UPDATE: "SETTINGS_UPDATE",
+    USER_ADD_NEW: "USER_ADD_NEW",
     DEFAULT: "",
   },
 
@@ -42,5 +43,6 @@ module.exports = Object.freeze({
     SKILL_DELETE: "SKILL_DELETE",
     VERSI_DELETE: "VERSI_DELETE",
     SOAL_DELETE: "SOAL_DELETE",
+    USER_DELETE: "USER_DELETE",
   },
 });

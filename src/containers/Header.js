@@ -8,10 +8,16 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
 import UserCircleIcon from "@heroicons/react/24/outline/UserCircleIcon";
+import { useNavigate } from "react-router-dom";
+import {
+  UserIcon,
+  ArrowLeftOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 
 import { NavLink, Routes, Link, useLocation } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
   const dispatch = useDispatch();
   const { noOfNotifications, pageTitle } = useSelector((state) => state.header);
   const [currentTheme, setCurrentTheme] = useState(
@@ -46,6 +52,10 @@ function Header() {
   function logoutUser() {
     localStorage.clear();
     window.location.href = "/";
+  }
+
+  function goToProfile() {
+    navigate("/app/settings-profile"); // Arahkan ke halaman profile
   }
 
   return (
@@ -103,7 +113,14 @@ function Header() {
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li>
-                <a onClick={logoutUser}>Logout</a>
+                <a onClick={goToProfile}>
+                  <UserIcon className="w-5 h-5" /> Profile
+                </a>
+              </li>
+              <li>
+                <a onClick={logoutUser}>
+                  <ArrowLeftOnRectangleIcon className="w-5 h-5" /> Logout
+                </a>
               </li>
             </ul>
           </div>

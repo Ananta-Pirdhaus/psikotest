@@ -9,6 +9,7 @@ import { deleteProfesi } from "../../master/MasterProfesi/profesiSlice";
 import { deleteBakat } from "../../master/MasterBakat/bakatSlice";
 import { deleteVersiPertanyaan } from "../../master/MasterVersi/versiSlice";
 import { deleteSoalAsync } from "../../master/MasterSoal/soalSlice";
+import { deleteUser } from "../../master/MasterUsers/userSlice";
 import { showNotification } from "../headerSlice";
 
 function ConfirmationModalBody({ extraObject, closeModal }) {
@@ -41,9 +42,11 @@ function ConfirmationModalBody({ extraObject, closeModal }) {
       } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.VERSI_DELETE) {
         await dispatch(deleteVersiPertanyaan(id)).unwrap();
         dispatch(showNotification({ message: "Versi Deleted!", status: 1 }));
-      }
-      else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.SOAL_DELETE) {
+      } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.SOAL_DELETE) {
         await dispatch(deleteSoalAsync(id)).unwrap();
+        dispatch(showNotification({ message: "Soal Deleted!", status: 1 }));
+      } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.USER_DELETE) {
+        await dispatch(deleteUser(id)).unwrap();
         dispatch(showNotification({ message: "Soal Deleted!", status: 1 }));
       }
 

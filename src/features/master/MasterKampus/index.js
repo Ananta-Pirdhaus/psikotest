@@ -6,7 +6,7 @@ import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import PlusCircleIcon from "@heroicons/react/24/outline/PlusCircleIcon";
 import { useDispatch, useSelector } from "react-redux";
-import { getKampus, deleteKampus } from "./kampuSlice"; // Adjust import path
+import { getKampus } from "./kampuSlice"; // Adjust import path
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,
@@ -101,36 +101,20 @@ const Kampus = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentKampus = filteredKampus.slice(indexOfFirstItem, indexOfLastItem);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   const totalPages = Math.ceil(filteredKampus.length / itemsPerPage);
-
-  const toggleSortOrder = () => {
-    setSortOrder((prevOrder) =>
-      prevOrder === "ascending" ? "descending" : "ascending"
-    );
-  };
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>{error}</div>;
-  // }
 
   return (
     <>
       <TitleCard
-        title="Master Kampus"
+        title="Master Perguruan Tinggi"
         topMargin="mt-2"
         TopSideButtons={<TopSideButtons />}
       >
         <div className="flex justify-between items-center mb-4">
           <input
             type="text"
-            placeholder="Cari Berdasarkan Nama Kampus"
+            placeholder="Cari Berdasarkan Nama Perguruan Tinggi"
             className="input input-bordered w-full max-w-xs bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,7 +122,7 @@ const Kampus = () => {
           />
 
           {/* Sorting Button */}
-          <button
+          {/* <button
             className="btn btn-sm flex items-center"
             onClick={toggleSortOrder}
           >
@@ -179,7 +163,7 @@ const Kampus = () => {
                 <span>Urutkan dari bawah</span>
               </>
             )}
-          </button>
+          </button> */}
         </div>
 
         <div className="overflow-x-auto w-full mt-4">
@@ -189,6 +173,7 @@ const Kampus = () => {
                 <th className="px-4 py-2 text-left">Nama Kampus</th>
                 <th className="px-4 py-2 text-left">Ranking</th>
                 <th className="px-4 py-2 text-left">Jurusan</th>
+                <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-center">Aksi</th>
               </tr>
             </thead>
@@ -204,6 +189,17 @@ const Kampus = () => {
                     {k.jurusan && k.jurusan.length > 0
                       ? k.jurusan.map((j) => j.name).join(", ")
                       : "N/A"}
+                  </td>
+                  <td className="px-4 py-2">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        k.status === "Active"
+                          ? "bg-green-200 text-green-800"
+                          : "bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {k.status}
+                    </span>
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button

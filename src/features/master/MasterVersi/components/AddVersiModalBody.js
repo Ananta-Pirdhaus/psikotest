@@ -3,11 +3,11 @@ import { useDispatch } from "react-redux";
 import InputText from "../../../../components/Input/InputText";
 import ErrorText from "../../../../components/Typography/ErrorText";
 import { showNotification } from "../../../common/headerSlice";
-import { addVersiPertanyaan } from "../versiSlice"; // Action untuk menambahkan versi pertanyaan
+import { addVersiPertanyaan } from "../versiSlice";
 
 const INITIAL_VERSI_OBJ = {
   name: "",
-  status: "Active", // Default status adalah "Active"
+  status: "Active",
 };
 
 function AddVersiModalBody({ closeModal }) {
@@ -17,7 +17,6 @@ function AddVersiModalBody({ closeModal }) {
   const [versiObj, setVersiObj] = useState(INITIAL_VERSI_OBJ);
 
   const saveNewVersi = async () => {
-    // Validasi input
     if (versiObj.name.trim() === "") {
       return setErrorMessage("Name is required!");
     } else if (!["Active", "Inactive"].includes(versiObj.status)) {
@@ -42,7 +41,7 @@ function AddVersiModalBody({ closeModal }) {
         dispatch(
           showNotification({ message: "New Version Added!", status: 1 })
         );
-        setVersiObj(INITIAL_VERSI_OBJ); // Reset form
+        setVersiObj(INITIAL_VERSI_OBJ);
         closeModal();
       }
     } catch (error) {
@@ -55,7 +54,7 @@ function AddVersiModalBody({ closeModal }) {
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    setErrorMessage(""); // Reset error message
+    setErrorMessage("");
     setVersiObj((prev) => ({ ...prev, [updateType]: value }));
   };
 
@@ -71,20 +70,23 @@ function AddVersiModalBody({ closeModal }) {
         updateFormValue={updateFormValue}
       />
 
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Status
-        </label>
-        <select
-          value={versiObj.status}
-          onChange={(e) =>
-            updateFormValue({ updateType: "status", value: e.target.value })
+      <div className="mt-4 flex items-center gap-2">
+        <span>Status:</span>
+        <button
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            versiObj.status === "Active"
+              ? "bg-green-200 text-green-800"
+              : "bg-red-200 text-red-800"
+          }`}
+          onClick={() =>
+            setVersiObj((prev) => ({
+              ...prev,
+              status: prev.status === "Active" ? "Inactive" : "Active",
+            }))
           }
-          className="select select-bordered w-full"
         >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
+          {versiObj.status}
+        </button>
       </div>
 
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
