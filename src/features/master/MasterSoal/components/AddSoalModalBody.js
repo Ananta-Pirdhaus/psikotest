@@ -135,41 +135,52 @@ function AddSoalModalBody({ closeModal }) {
 
   return (
     <>
-      {/* Input untuk Versi */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Versi</label>
-        <Select
-          options={versionOptions}
-          value={
-            versionOptions.find((opt) => opt.value === soalObj.versi) || null
-          }
-          onChange={(selectedOption) =>
-            updateFormValue({
-              updateType: "versi",
-              value: selectedOption?.value || "",
-            })
-          }
-          styles={customStyles} // Terapkan gaya hijau di sini
-          className="mt-2"
-          placeholder="Pilih Versi"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Input untuk Versi */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Versi
+          </label>
+          <Select
+            options={versionOptions}
+            value={
+              versionOptions.find((opt) => opt.value === soalObj.versi) || null
+            }
+            onChange={(selectedOption) =>
+              updateFormValue({
+                updateType: "versi",
+                value: selectedOption?.value || "",
+              })
+            }
+            styles={customStyles}
+            className="mt-2"
+            placeholder="Pilih Versi"
+          />
+        </div>
+
+        {/* Input untuk Tipe Soal */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Type
+          </label>
+          <Select
+            value={
+              options.find((opt) => opt.value === soalObj.type) || options[0]
+            }
+            onChange={(selectedOption) =>
+              updateFormValue({
+                updateType: "type",
+                value: selectedOption.value,
+              })
+            }
+            options={options}
+            styles={customStyles}
+            className="mt-2"
+            placeholder="Pilih Tipe Soal"
+          />
+        </div>
       </div>
-      {/* Input untuk Tipe Soal */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Type</label>
-        <Select
-          value={
-            options.find((opt) => opt.value === soalObj.type) || options[0]
-          }
-          onChange={(selectedOption) =>
-            updateFormValue({ updateType: "type", value: selectedOption.value })
-          }
-          options={options}
-          styles={customStyles}
-          className="mt-2"
-          placeholder="Pilih Tipe Soal"
-        />
-      </div>
+
       {/* Input untuk Pertanyaan */}
       <InputText
         type="text"
@@ -178,44 +189,48 @@ function AddSoalModalBody({ closeModal }) {
         containerStyle="mt-4"
         labelTitle="Question"
         updateFormValue={updateFormValue}
-        placeholder={"Pertanyaan"}
+        placeholder="Pertanyaan"
       />
+
       {/* Input untuk Opsi Jawaban */}
-      {soalObj.options.map((option, index) => (
-        <div key={index} className="mt-4">
-          <InputText
-            type="text"
-            value={option.answer || ""}
-            labelTitle={`Option ${index + 1} Answer`}
-            updateType="options"
-            containerStyle="mt-2"
-            updateFormValue={({ value }) =>
-              updateFormValue({
-                updateType: "options",
-                value: { answer: value },
-                index,
-              })
-            }
-          />
-          <Select
-            options={bakatSelectOptions}
-            value={
-              bakatSelectOptions.find((opt) => opt.value === option.bakat) ||
-              null
-            }
-            onChange={(selectedOption) =>
-              updateFormValue({
-                updateType: "options",
-                value: { bakat: selectedOption?.value || "" },
-                index,
-              })
-            }
-            styles={customStyles} // Terapkan gaya hijau
-            className="mt-2"
-            placeholder="Select Bakat"
-          />
-        </div>
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {soalObj.options.map((option, index) => (
+          <div key={index} className="flex flex-col gap-2">
+            <InputText
+              type="text"
+              value={option.answer || ""}
+              labelTitle={`Option ${index + 1} Answer`}
+              updateType="options"
+              containerStyle="mt-2"
+              updateFormValue={({ value }) =>
+                updateFormValue({
+                  updateType: "options",
+                  value: { answer: value },
+                  index,
+                })
+              }
+            />
+            <Select
+              options={bakatSelectOptions}
+              value={
+                bakatSelectOptions.find((opt) => opt.value === option.bakat) ||
+                null
+              }
+              onChange={(selectedOption) =>
+                updateFormValue({
+                  updateType: "options",
+                  value: { bakat: selectedOption?.value || "" },
+                  index,
+                })
+              }
+              styles={customStyles}
+              className="mt-2"
+              placeholder="Select Bakat"
+            />
+          </div>
+        ))}
+      </div>
+
       {/* Tambahkan tombol untuk menambah opsi jawaban jika tipe soal MULTIPLE */}
       {soalObj.type === "Multiple" && (
         <button
@@ -227,10 +242,12 @@ function AddSoalModalBody({ closeModal }) {
           Add Option
         </button>
       )}
+
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
+
       {/* Tombol Aksi */}
-      <div className="modal-action">
-        <button className="btn btn-ghost" onClick={() => closeModal()}>
+      <div className="modal-action flex justify-end gap-4">
+        <button className="btn btn-ghost" onClick={closeModal}>
           Cancel
         </button>
         <button

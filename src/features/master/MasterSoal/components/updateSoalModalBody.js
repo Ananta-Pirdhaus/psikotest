@@ -111,39 +111,50 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
 
   return (
     <>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Versi</label>
-        <Select
-          options={versionOptions}
-          defaultValue={soalObj.versi || ""}
-          onChange={(selectedOption) => {
-            console.log("Selected version:", selectedOption);
-            updateFormValue({
-              updateType: "versi",
-              value: selectedOption?.value || "",
-            });
-          }}
-          className="mt-2"
-          placeholder="Select Version"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Input untuk Versi */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Versi
+          </label>
+          <Select
+            options={versionOptions}
+            defaultValue={soalObj.versi || ""}
+            onChange={(selectedOption) => {
+              console.log("Selected version:", selectedOption);
+              updateFormValue({
+                updateType: "versi",
+                value: selectedOption?.value || "",
+              });
+            }}
+            className="mt-2"
+            placeholder="Select Version"
+          />
+        </div>
+
+        {/* Input untuk Tipe Soal */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Type
+          </label>
+          <Select
+            options={typeOptions}
+            defaultValue={
+              typeOptions.find((opt) => opt.value === soalObj.type) || null
+            }
+            onChange={(selectedOption) =>
+              updateFormValue({
+                updateType: "type",
+                value: selectedOption?.value || "",
+              })
+            }
+            className="mt-2"
+            placeholder="Select Type"
+          />
+        </div>
       </div>
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Type</label>
-        <Select
-          options={typeOptions}
-          defaultValue={
-            typeOptions.find((opt) => opt.value === soalObj.type) || null
-          }
-          onChange={(selectedOption) =>
-            updateFormValue({
-              updateType: "type",
-              value: selectedOption?.value || "",
-            })
-          }
-          className="mt-2"
-          placeholder="Select Type"
-        />
-      </div>
+
+      {/* Input untuk Pertanyaan */}
       <InputText
         type="text"
         defaultValue={soalObj.question || ""}
@@ -152,43 +163,50 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
         labelTitle="Question"
         updateFormValue={updateFormValue}
       />
-      {soalObj.options.map((option, index) => (
-        <div key={index} className="mt-4">
-          <InputText
-            type="text"
-            defaultValue={option.answer || ""}
-            labelTitle={`Option ${index + 1} Answer`}
-            updateType="options"
-            containerStyle="mt-2"
-            updateFormValue={({ value }) =>
-              updateFormValue({
-                updateType: "options",
-                value: { answer: value },
-                index,
-              })
-            }
-          />
-          <Select
-            options={bakatSelectOptions}
-            defaultValue={
-              bakatSelectOptions.find((opt) => opt.value === option.bakat_id) ||
-              null
-            }
-            onChange={(selectedOption) =>
-              updateFormValue({
-                updateType: "options",
-                value: {
-                  bakat: selectedOption?.value || "",
-                  bakat_id: selectedOption?.value || null,
-                },
-                index,
-              })
-            }
-            className="mt-2"
-            placeholder="Select Bakat"
-          />
-        </div>
-      ))}
+
+      {/* Input untuk Opsi Jawaban */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {soalObj.options.map((option, index) => (
+          <div key={index} className="flex flex-col gap-2">
+            <InputText
+              type="text"
+              defaultValue={option.answer || ""}
+              labelTitle={`Option ${index + 1} Answer`}
+              updateType="options"
+              containerStyle="mt-2"
+              updateFormValue={({ value }) =>
+                updateFormValue({
+                  updateType: "options",
+                  value: { answer: value },
+                  index,
+                })
+              }
+            />
+            <Select
+              options={bakatSelectOptions}
+              defaultValue={
+                bakatSelectOptions.find(
+                  (opt) => opt.value === option.bakat_id
+                ) || null
+              }
+              onChange={(selectedOption) =>
+                updateFormValue({
+                  updateType: "options",
+                  value: {
+                    bakat: selectedOption?.value || "",
+                    bakat_id: selectedOption?.value || null,
+                  },
+                  index,
+                })
+              }
+              className="mt-2"
+              placeholder="Select Bakat"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Tambahkan tombol untuk menambah opsi jawaban jika tipe soal MULTIPLE */}
       {soalObj.type === "Multiple" && (
         <button
           type="button"
@@ -199,8 +217,11 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
           Add Option
         </button>
       )}
+
       <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-      <div className="modal-action">
+
+      {/* Tombol Aksi */}
+      <div className="modal-action flex justify-end gap-4">
         <button className="btn btn-ghost" onClick={closeModal}>
           Cancel
         </button>

@@ -13,7 +13,6 @@ if (token) {
 // Thunk untuk mendapatkan data sesi
 export const getSesiContent = createAsyncThunk("/sesi/content", async () => {
   const response = await axios.get("/sesi?page=2");
-  console.log("Data Sesi:", response.data);
   return response.data;
 });
 
@@ -22,13 +21,8 @@ export const deleteSesiById = createAsyncThunk(
   "/sesi/delete",
   async (idSesi, thunkAPI) => {
     try {
-      console.log("ID Sesi yang akan dihapus:", idSesi);
-
       await axios.delete(`/sesi/${idSesi}`);
-
-      // Panggil ulang getSesiContent setelah penghapusan berhasil
       await thunkAPI.dispatch(getSesiContent());
-
       return idSesi;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -37,11 +31,32 @@ export const deleteSesiById = createAsyncThunk(
     }
   }
 );
+
+// Thunk untuk mengambil hasil jawaban
+export const fetchResultAnswer = createAsyncThunk(
+  "/jawaban/fetch",
+  async (idSession) => {
+    const response = await axios.get(`/jawaban/${idSession}`);
+    return response.data;
+  }
+);
+
+// Thunk untuk mengambil hasil survei
+export const fetchResultSurvei = createAsyncThunk(
+  "/jawaban-survei/fetch",
+  async (idSession) => {
+    const response = await axios.get(`/jawaban-survei/${idSession}`);
+    return response.data;
+  }
+);
+
 export const hasilQuizSlice = createSlice({
   name: "hasilQuiz",
   initialState: {
     isLoading: false,
     sesi: [],
+    resultAnswer: null,
+    resultSurvei: null,
     error: null,
   },
   reducers: {
@@ -66,11 +81,34 @@ export const hasilQuizSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteSesiById.fulfilled, (state, action) => {
-        const idSesi = action.payload;
-        state.sesi = state.sesi.filter((sesi) => sesi.id !== idSesi);
+        state.quizResults = state.sesi.filter(
+          (sesi) => sesi.id !== action.payload
+        );
         state.isLoading = false;
       })
       .addCase(deleteSesiById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchResultAnswer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchResultAnswer.fulfilled, (state, action) => {
+        state.resultAnswer = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchResultAnswer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchResultSurvei.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchResultSurvei.fulfilled, (state, action) => {
+        state.resultSurvei = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchResultSurvei.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

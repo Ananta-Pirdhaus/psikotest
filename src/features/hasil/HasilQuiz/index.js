@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
 import { getSesiContent } from "./hasilQuizSlice";
@@ -13,12 +13,11 @@ import {
   TrashIcon,
   EyeIcon,
   ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline"; // Import ikon tambahan
+} from "@heroicons/react/24/outline";
 
 function HasilQuiz() {
   const { quizResults } = useSelector((state) => state.hasilQuiz);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Inisialisasi navigate
 
   useEffect(() => {
     dispatch(getSesiContent());
@@ -39,18 +38,24 @@ function HasilQuiz() {
     );
   };
 
-  // Fungsi navigasi berdasarkan jenis status
-  const BASE_URL =
-    process.env.NODE_ENV === "production"
-      ? "https://careertheexplorer.com"
-      : "http://localhost:5173";
-
-  const goToSurvey = (id) => {
-    window.open(`${BASE_URL}/survey/${id}`, "_blank");
+  const viewResultQuiz = (id) => {
+    dispatch(
+      openModal({
+        title: "Result Quiz",
+        bodyType: MODAL_BODY_TYPES.RESULT_QUIZ,
+        extraObject: id,
+      })
+    );
   };
 
-  const goToResult = (id) => {
-    window.open(`${BASE_URL}/hasil-quiz/${id}`, "_blank");
+  const viewResultSurvei = (id) => {
+    dispatch(
+      openModal({
+        title: "Result Survei",
+        bodyType: MODAL_BODY_TYPES.RESULT_SURVEI,
+        extraObject: id,
+      })
+    );
   };
 
   return (
@@ -62,8 +67,10 @@ function HasilQuiz() {
               <tr>
                 <th>Nama Peserta</th>
                 <th>Kelas</th>
+                <th>Sekolah</th>
                 <th>Versi</th>
                 <th>Status</th>
+                <th>Tanggal Dibuat</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -73,23 +80,27 @@ function HasilQuiz() {
                   <tr key={result.id}>
                     <td>{result.participant.name}</td>
                     <td>{result.participant.class}</td>
+                    <td>{result.participant.school}</td>
                     <td>{result.version.name}</td>
                     <td>{result.status}</td>
+                    <td>
+                      {moment(result.created_at).format("DD-MM-YYYY HH:mm")}
+                    </td>
                     <td className="flex gap-2">
-                      {/* Ikon Survei */}
+                      {/* Ikon Lihat Survei */}
                       <button
                         className="btn btn-square btn-ghost"
-                        onClick={() => goToSurvey(result.id)}
+                        onClick={() => viewResultSurvei(result.id)}
                         title="Lihat Survei"
                       >
                         <ClipboardDocumentListIcon className="w-5 text-blue-500" />
                       </button>
 
-                      {/* Ikon Hasil */}
+                      {/* Ikon Lihat Hasil Quiz */}
                       <button
                         className="btn btn-square btn-ghost"
-                        onClick={() => goToResult(result.id)}
-                        title="Lihat Hasil"
+                        onClick={() => viewResultQuiz(result.id)}
+                        title="Lihat Hasil Quiz"
                       >
                         <EyeIcon className="w-5 text-green-500" />
                       </button>
@@ -107,7 +118,7 @@ function HasilQuiz() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center">
+                  <td colSpan="7" className="text-center">
                     No results available.
                   </td>
                 </tr>

@@ -27,6 +27,8 @@ import UpdatePanduanModalBody from "../features/master/MasterPanduan/components/
 import UpdateSettingsModalBody from "../features/master/MasterSettings/components/updateSettings";
 import UpdateSoalModalBody from "../features/master/MasterSoal/components/updateSoalModalBody";
 import AddUsersModalBody from "../features/master/MasterUsers/components/AddUsersModalBody";
+import ViewResultQuiz from "../features/hasil/HasilQuiz/components/viewResultQuiz";
+import ViewResultSurvei from "../features/hasil/HasilQuiz/components/viewResultSurvei";
 
 function ModalLayout() {
   const { isOpen, bodyType, size, extraObject, title } = useSelector(
@@ -63,7 +65,9 @@ function ModalLayout() {
             bodyType === MODAL_BODY_TYPES.KAMPUS_VIEW ||
             bodyType === MODAL_BODY_TYPES.KAMPUS_UPDATE ||
             bodyType === MODAL_BODY_TYPES.SOAL_ADD_NEW ||
-            bodyType === MODAL_BODY_TYPES.SOAL_UPDATE
+            bodyType === MODAL_BODY_TYPES.SOAL_UPDATE ||
+            bodyType === MODAL_BODY_TYPES.RESULT_SURVEI ||
+            bodyType === MODAL_BODY_TYPES.RESULT_QUIZ
               ? "max-w-6xl w-full sm:w-11/12 lg:w-10/12 max-h-[80vh] overflow-y-auto"
               : ""
           }`}
@@ -153,6 +157,12 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.USER_ADD_NEW]: (
                 <AddUsersModalBody {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.RESULT_QUIZ]: (
+                <ViewResultQuiz {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.RESULT_SURVEI]: (
+                <ViewResultSurvei {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
