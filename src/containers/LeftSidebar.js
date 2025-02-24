@@ -41,7 +41,7 @@ function LeftSidebar() {
           <Link to={"/app/dashboard"}>
             {icon ? (
               <img
-                className="mask w-full h-13 object-cover"
+                className="mask w-full h-auto"
                 src={icon}
                 alt="Dashboard Logo"
               />
