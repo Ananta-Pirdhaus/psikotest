@@ -103,10 +103,10 @@ function ProfileSettings() {
           <InputText
             labelTitle="Password"
             type="password"
-            defaultValue=""
             updateType="password"
+            containerStyle="mt-4"
+            placeholder={"Password"}
             updateFormValue={updateFormValue}
-            placeholder={"Enter new password"}
           />
         </div>
         <div className="divider"></div>

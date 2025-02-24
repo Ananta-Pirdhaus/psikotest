@@ -121,7 +121,6 @@ const MasterUser = () => {
                     >
                       <PencilIcon className="w-5 text-blue-500" />
                     </button>
-
                     <button
                       className="btn btn-square btn-ghost"
                       onClick={() => deleteCurrentUser(user.id)}
@@ -134,6 +133,30 @@ const MasterUser = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        {/* DaisyUI Pagination */}
+        <div className="flex justify-center mt-4">
+          <div className="btn-group space-x-2">
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              aria-label="Previous Page"
+            >
+              Previous
+            </button>
+            <span className="btn btn-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              aria-label="Next Page"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </TitleCard>
     </>

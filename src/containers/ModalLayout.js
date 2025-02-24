@@ -27,6 +27,7 @@ import UpdatePanduanModalBody from "../features/master/MasterPanduan/components/
 import UpdateSettingsModalBody from "../features/master/MasterSettings/components/updateSettings";
 import UpdateSoalModalBody from "../features/master/MasterSoal/components/updateSoalModalBody";
 import AddUsersModalBody from "../features/master/MasterUsers/components/AddUsersModalBody";
+import UpdateUsersModalBody from "../features/master/MasterUsers/components/UpdateUsersModalBody";
 import ViewResultQuiz from "../features/hasil/HasilQuiz/components/viewResultQuiz";
 import ViewResultSurvei from "../features/hasil/HasilQuiz/components/viewResultSurvei";
 
@@ -163,6 +164,9 @@ function ModalLayout() {
               ),
               [MODAL_BODY_TYPES.RESULT_SURVEI]: (
                 <ViewResultSurvei {...modalBodyProps} />
+              ),
+              [MODAL_BODY_TYPES.USER_UPDATE]: (
+                <UpdateUsersModalBody {...modalBodyProps} />
               ),
               [MODAL_BODY_TYPES.DEFAULT]: <div></div>,
             }[bodyType]
