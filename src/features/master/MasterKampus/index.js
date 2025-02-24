@@ -19,7 +19,7 @@ const TopSideButtons = () => {
   const openAddNewKampusModal = () => {
     dispatch(
       openModal({
-        title: "Add New Kampus",
+        title: "Tambahkan Perguruan Tinggi Baru",
         bodyType: MODAL_BODY_TYPES.KAMPUS_ADD_NEW,
       })
     );
@@ -56,7 +56,7 @@ const Kampus = () => {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this campus?`,
+          message: `Apakah anda ingin menghapus perguruan tinggi ini?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.CAMPUS_DELETE,
           id, // Kirim ID peserta
         },
@@ -67,7 +67,7 @@ const Kampus = () => {
   const updateKampus = (id, kampusDetail) => {
     dispatch(
       openModal({
-        title: "Update Kampus",
+        title: "Ubah Perguruan Tinggi",
         bodyType: MODAL_BODY_TYPES.KAMPUS_UPDATE,
         extraObject: { id, kampusDetail },
       })
@@ -79,7 +79,7 @@ const Kampus = () => {
     console.log("data yang dipanggil: ", kampusDetail);
     dispatch(
       openModal({
-        title: "Kampus Details",
+        title: "Detail Perguruan Tinggi",
         bodyType: MODAL_BODY_TYPES.KAMPUS_VIEW,
         extraObject: { id, kampusDetail },
       })
@@ -171,7 +171,6 @@ const Kampus = () => {
             <thead className="bg-gray-100 border-b">
               <tr>
                 <th className="px-4 py-2 text-left">Nama Kampus</th>
-                <th className="px-4 py-2 text-left">Ranking</th>
                 <th className="px-4 py-2 text-left">Jurusan</th>
                 <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-center">Aksi</th>
@@ -184,7 +183,6 @@ const Kampus = () => {
                   className="border-b hover:bg-gray-50 transition duration-200"
                 >
                   <td className="px-4 py-2">{k.name}</td>
-                  <td className="px-4 py-2">{k.rank}</td>
                   <td className="px-4 py-2">
                     {k.jurusan && k.jurusan.length > 0
                       ? k.jurusan.map((j) => j.name).join(", ")

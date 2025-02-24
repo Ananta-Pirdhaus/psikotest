@@ -68,7 +68,8 @@ function ModalLayout() {
             bodyType === MODAL_BODY_TYPES.SOAL_ADD_NEW ||
             bodyType === MODAL_BODY_TYPES.SOAL_UPDATE ||
             bodyType === MODAL_BODY_TYPES.RESULT_SURVEI ||
-            bodyType === MODAL_BODY_TYPES.RESULT_QUIZ
+            bodyType === MODAL_BODY_TYPES.RESULT_QUIZ ||
+            bodyType === MODAL_BODY_TYPES.SETTINGS_UPDATE
               ? "max-w-6xl w-full sm:w-11/12 lg:w-10/12 max-h-[80vh] overflow-y-auto"
               : ""
           }`}

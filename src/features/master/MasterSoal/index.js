@@ -19,7 +19,7 @@ const TopSideButtons = () => {
   const openAddNewSoalModal = () => {
     dispatch(
       openModal({
-        title: "Add New Question",
+        title: "Tambahkan Pertanyaan Baru",
         bodyType: MODAL_BODY_TYPES.SOAL_ADD_NEW,
       })
     );
@@ -85,7 +85,7 @@ function MasterSoal() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: "Are you sure you want to delete this question record?",
+          message: "Apakah anda ingin menghapus pertanyaan ini?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.SOAL_DELETE,
           id, // Kirim ID soal, bukan index
         },
@@ -96,7 +96,7 @@ function MasterSoal() {
   const updateSoalDetails = (soal) => {
     dispatch(
       openModal({
-        title: "Update Question",
+        title: "Ubah Pertanyaan",
         bodyType: MODAL_BODY_TYPES.SOAL_UPDATE,
         extraObject: soal,
       })
@@ -106,7 +106,7 @@ function MasterSoal() {
   const viewSoalDetails = (soal) => {
     dispatch(
       openModal({
-        title: "Question Details",
+        title: "Detail Pertanyaan",
         bodyType: MODAL_BODY_TYPES.SOAL_VIEW,
         extraObject: soal,
       })

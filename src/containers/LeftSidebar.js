@@ -21,17 +21,16 @@ function LeftSidebar() {
         >
           <XMarkIcon className="h-5 inline-block w-5" />
         </button>
-
         <li className="mb-2 font-semibold text-xl">
           <Link to={"/app/dashboard"}>
             <img
-              className="mask mask-squircle w-10"
+              className="mask mask-squircle w-14"
               src="/logo192.png"
               alt="DashWind Logo"
             />
-            Dashboard CTE
-          </Link>{" "}
+          </Link>
         </li>
+
         {routes.map((route, k) => {
           return (
             <li className="" key={k}>

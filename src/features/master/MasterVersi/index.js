@@ -129,9 +129,9 @@ const MasterVersion = () => {
           value={selectedStatus}
           onChange={(e) => setselectedStatus(e.target.value)}
         >
-          <option value="">All Status</option>
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="">Semua Status</option>
+          <option value="Active">Aktif</option>
+          <option value="Inactive">Tidak Aktif</option>
         </select>
       </div>
 

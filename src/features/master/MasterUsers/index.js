@@ -19,7 +19,7 @@ const TopSideButtons = () => {
   const openAddNewUserModal = () => {
     dispatch(
       openModal({
-        title: "Add New User",
+        title: "Tambahkan User Baru",
         bodyType: MODAL_BODY_TYPES.USER_ADD_NEW,
       })
     );
@@ -56,7 +56,7 @@ const MasterUser = () => {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this user?`,
+          message: `Apakah anda ingin menghapus user ini?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.USER_DELETE,
           id,
         },
@@ -67,7 +67,7 @@ const MasterUser = () => {
   const updateUser = (id, userDetails) => {
     dispatch(
       openModal({
-        title: "Update User",
+        title: "Ubah User",
         bodyType: MODAL_BODY_TYPES.USER_UPDATE,
         extraObject: { id, userDetails },
       })

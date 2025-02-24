@@ -17,7 +17,7 @@ const TopSideButtons = () => {
   const openAddNewSekolahModal = () => {
     dispatch(
       openModal({
-        title: "Add New School",
+        title: "Tambahkan Sekolah Baru",
         bodyType: MODAL_BODY_TYPES.SEKOLAH_ADD_NEW,
       })
     );
@@ -57,7 +57,7 @@ function MasterPendidikan() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: "Are you sure you want to delete this school record?",
+          message: "Apakah anda ingin menghapus sekolah ini?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.SEKOLAH_DELETE,
           id,
         },
@@ -68,7 +68,7 @@ function MasterPendidikan() {
   const updateSekolahDetails = (sekolah) => {
     dispatch(
       openModal({
-        title: "Update School",
+        title: "Ubah Sekolah",
         bodyType: MODAL_BODY_TYPES.UPDATE_SEKOLAH,
         extraObject: sekolah,
       })
@@ -135,7 +135,7 @@ function MasterPendidikan() {
           onChange={(e) => setSelectedLevel(e.target.value)}
           aria-label="Filter by Level"
         >
-          <option value="">All Levels</option>
+          <option value="">Semua Tingkat</option>
           <option value="SMP">SMP</option>
           <option value="SMA">SMA</option>
         </select>

@@ -8,7 +8,6 @@ import Select from "react-select";
 
 const INITIAL_KAMPUS_OBJ = {
   name: "",
-  rank: 1,
   jurusan: [],
   status: "Active",
 };
@@ -41,10 +40,7 @@ function AddKampusModalBody({ closeModal }) {
       setErrorMessage("At least one Jurusan is required!");
       return;
     }
-    if (isNaN(kampusObj.rank) || kampusObj.rank <= 0) {
-      setErrorMessage("Rank must be a positive integer!");
-      return;
-    }
+  
 
     const validatedKampusObj = {
       ...kampusObj,
@@ -80,16 +76,6 @@ function AddKampusModalBody({ closeModal }) {
         labelTitle="Name"
         updateFormValue={updateFormValue}
         placeholder="Nama Kampus"
-      />
-
-      <InputText
-        type="number"
-        value={kampusObj.rank}
-        updateType="rank"
-        containerStyle="mt-4"
-        labelTitle="Rank"
-        updateFormValue={updateFormValue}
-        placeholder="Ranking Kampus"
       />
 
       <div className="mt-4">

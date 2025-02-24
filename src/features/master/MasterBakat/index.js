@@ -21,7 +21,7 @@ const TopSideButtons = () => {
   const openAddNewBakatModal = () => {
     dispatch(
       openModal({
-        title: "Add New Skill",
+        title: "Tambahkan Bakat Baru",
         bodyType: MODAL_BODY_TYPES.SKILL_ADD_NEW,
       })
     );
@@ -59,7 +59,7 @@ function MasterBakat() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: "Are you sure you want to delete this skill record?",
+          message: "Apakah anda ingin menghapus bakat ini?",
           type: CONFIRMATION_MODAL_CLOSE_TYPES.SKILL_DELETE,
           id,
         },
@@ -70,7 +70,7 @@ function MasterBakat() {
   const updateBakatDetails = (bakat) => {
     dispatch(
       openModal({
-        title: "Update Skill",
+        title: "Ubah Bakat",
         bodyType: MODAL_BODY_TYPES.SKILL_UPDATE,
         extraObject: bakat, // Mengirim seluruh objek bakat termasuk ID
       })
@@ -80,7 +80,7 @@ function MasterBakat() {
   const viewBakatDetails = (bakat) => {
     dispatch(
       openModal({
-        title: "Skill Details",
+        title: "Detail Bakat",
         bodyType: MODAL_BODY_TYPES.SKILL_VIEW,
         extraObject: bakat, // Mengirim seluruh objek bakat termasuk ID
       })

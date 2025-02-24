@@ -19,7 +19,7 @@ const TopSideButtons = () => {
   const openAddNewJurusanModal = () => {
     dispatch(
       openModal({
-        title: "Add New Jurusan",
+        title: "Tambahkan Jurusan Baru",
         bodyType: MODAL_BODY_TYPES.JURUSAN_ADD_NEW,
       })
     );
@@ -55,7 +55,7 @@ function Jurusan() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this jurusan?`,
+          message: `Apakah anda ingin menghapus jurusan ini?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.JURUSAN_DELETE,
           id, // Kirim ID peserta
         },
@@ -68,7 +68,7 @@ function Jurusan() {
     console.log("Jurusan Details: ", jurusanDetail); // Log the jurusan details
     dispatch(
       openModal({
-        title: "Update Jurusan",
+        title: "Ubah Jurusan",
         bodyType: MODAL_BODY_TYPES.JURUSAN_UPDATE,
         extraObject: { id, jurusanDetail }, // Perbaikan pada struktur objek
       })

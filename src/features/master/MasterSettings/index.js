@@ -19,12 +19,6 @@ const MasterSettings = () => {
   }, [currentPage, dispatch]);
 
   const handleUpdateSettings = (settingsData) => {
-    if (!settingsData) {
-      console.warn("Data settings tidak tersedia untuk diperbarui");
-      return;
-    }
-
-    console.log("Data settings yang dikirim:", settingsData);
     dispatch(
       openModal({
         title: "Update Master Settings",
@@ -65,8 +59,10 @@ const MasterSettings = () => {
               <th className="px-4 py-2 text-left">Description</th>
               <th className="px-4 py-2 text-left">Keywords</th>
               <th className="px-4 py-2 text-left">Author</th>
+              <th className="px-4 py-2 text-left">Favicon</th>
               <th className="px-4 py-2 text-left">Icon</th>
               <th className="px-4 py-2 text-left">Contact</th>
+              <th className="px-4 py-2 text-left">SEO</th>
               <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
@@ -81,9 +77,11 @@ const MasterSettings = () => {
               <td className="px-4 py-2">{settings?.keywords}</td>
               <td className="px-4 py-2">{settings?.author}</td>
               <td className="px-4 py-2">
+                <img src={settings?.favicon} alt="Icon" className="h-6 w-6" />
+              </td>
+              <td className="px-4 py-2">
                 <img src={settings?.icon} alt="Icon" className="h-6 w-6" />
               </td>
-
               <td className="px-4 py-2">
                 <div>
                   <p>
@@ -95,6 +93,18 @@ const MasterSettings = () => {
                   <p>
                     <strong>Address:</strong>{" "}
                     {settings?.contact?.address || "-"}
+                  </p>
+                </div>
+              </td>
+              <td className="px-4 py-2">
+                <div>
+                  <p>
+                    <strong>google_analytics:</strong>{" "}
+                    {settings?.seo?.google_analytics || "-"}
+                  </p>
+                  <p>
+                    <strong>bing_webmaster:</strong>{" "}
+                    {settings?.seo?.bing_webmaster || "-"}
                   </p>
                 </div>
               </td>

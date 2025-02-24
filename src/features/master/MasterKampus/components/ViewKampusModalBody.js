@@ -27,14 +27,6 @@ function ViewKampusModalBody({ closeModal, extraObject }) {
             labelTitle="Name"
             disabled={true} // Disabled for view-only
           />
-          <InputText
-            type="text"
-            defaultValue={kampusDetail.rank || "rank not available"}
-            updateType="rank"
-            containerStyle="mt-4"
-            labelTitle="Rank"
-            disabled={true} // Disabled for view-only
-          />
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700">
               Jurusan

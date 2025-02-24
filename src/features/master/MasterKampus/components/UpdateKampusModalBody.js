@@ -7,7 +7,6 @@ import { showNotification } from "../../../common/headerSlice";
 
 const INITIAL_KAMPUS_OBJ = {
   name: "",
-  rank: 1, // Default rank, can be modified
   jurusan: [], // Array for selected "jurusan" (departments)
   status: "Active", // Array for selected "jurusan" (departments)
 };
@@ -108,15 +107,6 @@ function UpdateCampusModalBody({ closeModal, extraObject }) {
             defaultValue={kampusDetail.name || "Name not available"}
             containerStyle="mt-4"
             updateType="name"
-            updateFormValue={updateFormValue}
-          />
-
-          <InputText
-            labelTitle="Rank"
-            type="text"
-            defaultValue={kampusDetail.rank || "Rank not available"}
-            containerStyle="mt-4"
-            updateType="rank"
             updateFormValue={updateFormValue}
           />
 

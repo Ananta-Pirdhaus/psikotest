@@ -10,7 +10,6 @@ function UpdateUserModalBody({ closeModal, extraObject }) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userObj, setUserObj] = useState(extraObject.userDetails);
-
   const updateFormValue = useCallback(({ updateType, value }) => {
     setErrorMessage("");
     setUserObj((prev) => ({ ...prev, [updateType]: value }));

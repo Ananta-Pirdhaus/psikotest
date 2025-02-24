@@ -19,7 +19,7 @@ const TopSideButtons = ({ onImport }) => {
   const openAddNewProfesiModal = () => {
     dispatch(
       openModal({
-        title: "Add New Profesi",
+        title: "Tambahkan Profesi Baru",
         bodyType: MODAL_BODY_TYPES.ADD_PROFESI_NEW,
       })
     );
@@ -68,7 +68,7 @@ function Profesi() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Are you sure you want to delete this profesi record?`,
+          message: `Apakah anda ingin menghapus sekolah ini?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.PROFESI_DELETE,
           id, // Kirim ID peserta
         },
@@ -93,7 +93,7 @@ function Profesi() {
     console.log("Update Profesi:", id);
     dispatch(
       openModal({
-        title: "Update Profesi",
+        title: "Ubah Profesi",
         bodyType: MODAL_BODY_TYPES.UPDATE_PROFESI,
         extraObject: { id, profesi }, // Kirim seluruh data profesi
       })
@@ -147,7 +147,7 @@ function Profesi() {
                 <th className="px-4 py-2 text-left">Profesi Name</th>
                 <th className="px-4 py-2 text-left">Bakat</th>
 
-                <th className="px-4 py-2 text-center">Actions</th>
+                <th className="px-4 py-2 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
