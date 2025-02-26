@@ -13,6 +13,7 @@ import {
   TrashIcon,
   EyeIcon,
   ClipboardDocumentListIcon,
+  LinkIcon,
 } from "@heroicons/react/24/outline";
 
 function HasilQuiz() {
@@ -41,7 +42,7 @@ function HasilQuiz() {
   const viewResultQuiz = (id) => {
     dispatch(
       openModal({
-        title: "Result Quiz",
+        title: "Hasil Quiz Peserta",
         bodyType: MODAL_BODY_TYPES.RESULT_QUIZ,
         extraObject: id,
       })
@@ -51,7 +52,7 @@ function HasilQuiz() {
   const viewResultSurvei = (id) => {
     dispatch(
       openModal({
-        title: "Result Survei",
+        title: "Hasil Survei Peserta",
         bodyType: MODAL_BODY_TYPES.RESULT_SURVEI,
         extraObject: id,
       })
@@ -104,6 +105,17 @@ function HasilQuiz() {
                       >
                         <EyeIcon className="w-5 text-green-500" />
                       </button>
+
+                      {/* Ikon Lihat Report */}
+                      <a
+                        href={`https://careertheexplorer.com/hasil-quiz/${result.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-square btn-ghost"
+                        title="Lihat Report"
+                      >
+                        <LinkIcon className="w-5 text-purple-500" />
+                      </a>
 
                       {/* Ikon Hapus */}
                       <button

@@ -72,11 +72,19 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
     dispatch(updateSoalAsync({ id: soalObj.id, updatedSoal: soalObj }))
       .then((result) => {
         console.log("Result dari dispatch:", result);
+
+        if (result.error) {
+          throw new Error(result.error.message || "Failed to update soal.");
+        }
+
         dispatch(showNotification({ message: "Updated Soal!", status: 1 }));
         closeModal();
       })
       .catch((error) => {
         setErrorMessage(error.message || "Failed to update soal.");
+        dispatch(
+          showNotification({ message: `Error: ${error.message}`, status: 0 })
+        );
       })
       .finally(() => setLoading(false));
   };

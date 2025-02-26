@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { openModal } from "../../common/modalSlice";
-import { deleteSoal, fetchSoal, importSoalData, fetchBakat } from "./soalSlice";
+import { getVersion, fetchSoal, fetchBakat } from "./soalSlice";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,
@@ -98,32 +98,17 @@ function MasterSoal() {
       openModal({
         title: "Ubah Pertanyaan",
         bodyType: MODAL_BODY_TYPES.SOAL_UPDATE,
-        extraObject: soal,
+        extraObject: {
+          ...soal,
+          versi: soal.versi_id, // Pastikan versi dikirim sebagai ID
+          options: soal.options.map((option) => ({
+            ...option,
+            bakat: option.bakat_id, // Pastikan bakat dikirim sebagai ID
+          })),
+        },
       })
     );
   };
-
-  const viewSoalDetails = (soal) => {
-    dispatch(
-      openModal({
-        title: "Detail Pertanyaan",
-        bodyType: MODAL_BODY_TYPES.SOAL_VIEW,
-        extraObject: soal,
-      })
-    );
-  };
-
-  // const filteredSoal = useMemo(() => {
-  //   return soal.filter((s) => {
-  //     const questionName = String(s.question || "").toLowerCase();
-  //     const category = String(s.kategori || "").toLowerCase();
-
-  //     return (
-  //       questionName.includes(searchQuery.toLowerCase()) ||
-  //       category.includes(searchQuery.toLowerCase())
-  //     );
-  //   });
-  // }, [soal, searchQuery]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

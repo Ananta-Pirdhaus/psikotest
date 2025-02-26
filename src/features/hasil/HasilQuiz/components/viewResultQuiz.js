@@ -5,6 +5,7 @@ import { fetchResultAnswer } from "../hasilQuizSlice";
 function ViewQuizResult({ closeModal, extraObject }) {
   const dispatch = useDispatch();
   const [resultDetail, setResultDetail] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { resultAnswer } = useSelector((state) => state.hasilQuiz);
 
   // State untuk pagination
@@ -26,11 +27,16 @@ function ViewQuizResult({ closeModal, extraObject }) {
     }
   }, [dispatch, extraObject]);
 
+  // Filter hasil berdasarkan pencarian
+  const filteredData = resultDetail.filter((item) =>
+    item.question.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Hitung total halaman
-  const totalPages = Math.ceil(resultDetail.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Ambil data sesuai halaman saat ini
-  const currentData = resultDetail.slice(
+  const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -41,6 +47,17 @@ function ViewQuizResult({ closeModal, extraObject }) {
 
   return (
     <>
+      {/* Search Input */}
+      <div className="flex justify-center mt-4">
+        <input
+          type="text"
+          placeholder="Cari Pertanyaan..."
+          className="p-2 border border-gray-300 rounded-lg w-full max-w-md"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       {currentData.length > 0 ? (
         currentData.map((item, index) => (
           <div key={item.id || index} className="mt-4">

@@ -31,9 +31,43 @@ const routes = [
     name: "Dashboard",
   },
   {
-    path: "/app/peserta",
-    icon: <UsersIcon className={iconClasses} />,
-    name: "Peserta",
+    path: "",
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
+    name: "Hasil",
+    submenu: [
+      {
+        path: "/app/hasil-quiz",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Hasil Quiz",
+      },
+      {
+        path: "/app/peserta",
+        icon: <UsersIcon className={submenuIconClasses} />,
+        name: "Peserta",
+      },
+    ],
+  },
+  {
+    path: "",
+    icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
+    name: "Setting Quiz",
+    submenu: [
+      {
+        path: "/app/master-versi",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Versi",
+      },
+      {
+        path: "/app/master-panduan",
+        icon: <DocumentTextIcon className={submenuIconClasses} />,
+        name: "Master Panduan",
+      },
+      {
+        path: "/app/master-soal",
+        icon: <BookOpenIcon className={iconClasses} />,
+        name: "Master Soal",
+      },
+    ],
   },
   {
     path: "",
@@ -84,40 +118,6 @@ const routes = [
         path: "/app/master-user",
         icon: <UsersIcon className={submenuIconClasses} />,
         name: "Master User",
-      },
-    ],
-  },
-  {
-    path: "",
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />,
-    name: "Hasil",
-    submenu: [
-      {
-        path: "/app/hasil-quiz",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Result Quiz",
-      },
-    ],
-  },
-  {
-    path: "",
-    icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
-    name: "Setting Quiz",
-    submenu: [
-      {
-        path: "/app/master-versi",
-        icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Versi",
-      },
-      {
-        path: "/app/master-panduan",
-        icon: <DocumentTextIcon className={submenuIconClasses} />,
-        name: "Master Panduan",
-      },
-      {
-        path: "/app/master-soal",
-        icon: <BookOpenIcon className={iconClasses} />,
-        name: "Master Soal",
       },
     ],
   },
