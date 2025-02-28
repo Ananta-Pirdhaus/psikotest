@@ -68,7 +68,7 @@ function Profesi() {
         title: "Confirmation",
         bodyType: MODAL_BODY_TYPES.CONFIRMATION,
         extraObject: {
-          message: `Apakah anda ingin menghapus sekolah ini?`,
+          message: `Apakah anda ingin menghapus profesi ini?`,
           type: CONFIRMATION_MODAL_CLOSE_TYPES.PROFESI_DELETE,
           id, // Kirim ID peserta
         },
