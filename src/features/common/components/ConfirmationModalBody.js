@@ -1,7 +1,10 @@
 import { useDispatch } from "react-redux";
 import { CONFIRMATION_MODAL_CLOSE_TYPES } from "../../../utils/globalConstantUtil";
 import { deletePesertaById } from "../../leads/leadSlice";
-import { deleteSesiById } from "../../hasil/HasilQuiz/hasilQuizSlice";
+import {
+  deleteSesiById,
+  resetQuiz,
+} from "../../hasil/HasilQuiz/hasilQuizSlice";
 import { deleteSekolah } from "../../master/MasterPendidikan/sekolahSlice";
 import { deleteKampus } from "../../master/MasterKampus/kampuSlice";
 import { deleteJurusan } from "../../master/MasterJurusan/jurusanSlice";
@@ -47,7 +50,10 @@ function ConfirmationModalBody({ extraObject, closeModal }) {
         dispatch(showNotification({ message: "Soal Deleted!", status: 1 }));
       } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.USER_DELETE) {
         await dispatch(deleteUser(id)).unwrap();
-        dispatch(showNotification({ message: "Soal Deleted!", status: 1 }));
+        dispatch(showNotification({ message: "User Deleted!", status: 1 }));
+      } else if (type === CONFIRMATION_MODAL_CLOSE_TYPES.RESET_QUIZ) {
+        await dispatch(resetQuiz()).unwrap();
+        dispatch(showNotification({ message: "Quiz Reset!", status: 1 }));
       }
 
       closeModal();

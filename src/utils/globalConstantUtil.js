@@ -47,5 +47,6 @@ module.exports = Object.freeze({
     VERSI_DELETE: "VERSI_DELETE",
     SOAL_DELETE: "SOAL_DELETE",
     USER_DELETE: "USER_DELETE",
+    RESET_QUIZ: "RESET_QUIZ",
   },
 });

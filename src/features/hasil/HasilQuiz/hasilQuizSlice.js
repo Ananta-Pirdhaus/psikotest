@@ -32,6 +32,22 @@ export const deleteSesiById = createAsyncThunk(
   }
 );
 
+// Thunk untuk mereset hasil quiz
+export const resetQuiz = createAsyncThunk(
+  "/quiz/reset",
+  async (idSession, thunkAPI) => {
+    try {
+      await axios.get(`reset-quiz`);
+      const updatedSesi = await thunkAPI.dispatch(getSesiContent()).unwrap();
+      return updatedSesi;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Terjadi kesalahan"
+      );
+    }
+  }
+);
+
 // Thunk untuk mengambil hasil jawaban
 export const fetchResultAnswer = createAsyncThunk(
   "/jawaban/fetch",
@@ -81,11 +97,10 @@ export const hasilQuizSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteSesiById.fulfilled, (state, action) => {
-        state.quizResults = state.sesi.filter(
-          (sesi) => sesi.id !== action.payload
-        );
+        state.sesi = state.sesi.filter((sesi) => sesi.id !== action.payload);
         state.isLoading = false;
       })
+
       .addCase(deleteSesiById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;

@@ -14,7 +14,39 @@ import {
   EyeIcon,
   ClipboardDocumentListIcon,
   LinkIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
+
+const TopSideButtons = () => {
+  const dispatch = useDispatch();
+
+  const openResetQuiz = () => {
+    dispatch(
+      openModal({
+        title: "Reset Quiz",
+        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+        extraObject: {
+          message: `Are you sure you want to reset this quiz?`,
+          type: CONFIRMATION_MODAL_CLOSE_TYPES.RESET_QUIZ,
+        },
+      })
+    );
+  };
+
+  return (
+    <div className="inline-block float-right space-x-2">
+      <div className="inline-block float-right space-x-2 text-white">
+        <button
+          className="btn btn-sm normal-case bg-red-500 flex items-center gap-2"
+          onClick={openResetQuiz}
+        >
+          <XCircleIcon className="w-5 h-5 text-white" />
+          <p className="text-white">Reset Quiz</p>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 function HasilQuiz() {
   const { quizResults } = useSelector((state) => state.hasilQuiz);
@@ -61,7 +93,11 @@ function HasilQuiz() {
 
   return (
     <>
-      <TitleCard title="Hasil Quiz" topMargin="mt-2">
+      <TitleCard
+        title="Hasil Quiz"
+        topMargin="mt-2"
+        TopSideButtons={<TopSideButtons />}
+      >
         <div className="overflow-x-auto w-full">
           <table className="table w-full">
             <thead className="bg-gray-100 border-b">
