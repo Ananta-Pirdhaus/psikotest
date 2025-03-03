@@ -69,14 +69,9 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
 
     setLoading(true);
     console.log("Data yang dikirim:", soalObj);
-    dispatch(updateSoalAsync({ id: soalObj.id, updatedSoal: soalObj }))
+    dispatch(updateSoalAsync({ updatedSoal: soalObj }))
       .then((result) => {
         console.log("Result dari dispatch:", result);
-
-        if (result.error) {
-          throw new Error(result.error.message || "Failed to update soal.");
-        }
-
         dispatch(showNotification({ message: "Updated Soal!", status: 1 }));
         closeModal();
       })
