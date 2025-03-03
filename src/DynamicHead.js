@@ -50,7 +50,7 @@ const DynamicHead = (noIndex = false) => {
       {noIndex && <meta name="robots" content="noindex, nofollow" />}
 
       {/* Favicon */}
-      {metaData.icon && <link rel="icon" href={metaData.icon} />}
+      {metaData.favicon && <link rel="icon" href={metaData.favicon} />}
 
       {/* Author Metadata */}
       <meta name="author" content={metaData.author} />

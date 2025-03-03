@@ -46,6 +46,8 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
   }, [versions, dispatch]);
 
   const saveNewSoal = () => {
+    console.log("Validasi soalObj:", soalObj);
+
     if (!soalObj.versi) {
       setErrorMessage("Version is required!");
       return;
@@ -54,7 +56,7 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
       setErrorMessage("Type is required!");
       return;
     }
-    if (soalObj.question.trim() === "") {
+    if (!soalObj.question || soalObj.question.trim() === "") {
       setErrorMessage("Question is required!");
       return;
     }
@@ -62,26 +64,41 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
       setErrorMessage("At least one option is required!");
       return;
     }
-    if (soalObj.options.some((option) => option.answer.trim() === "")) {
+    if (
+      soalObj.options.some(
+        (option) => !option.answer || option.answer.trim() === ""
+      )
+    ) {
       setErrorMessage("All options must have answers!");
       return;
     }
 
     setLoading(true);
-    console.log("Data yang dikirim:", soalObj);
+    console.log("Dispatching updateSoalAsync...");
+
     dispatch(updateSoalAsync({ updatedSoal: soalObj }))
       .then((result) => {
         console.log("Result dari dispatch:", result);
+
+        if (!result || result.error) {
+          console.error("Error ditemukan di result:", result);
+          throw new Error(result?.error?.message || "Failed to update soal.");
+        }
+
         dispatch(showNotification({ message: "Updated Soal!", status: 1 }));
         closeModal();
       })
       .catch((error) => {
+        console.error("Error di catch:", error);
         setErrorMessage(error.message || "Failed to update soal.");
         dispatch(
           showNotification({ message: `Error: ${error.message}`, status: 0 })
         );
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        console.log("Selesai proses update soal.");
+      });
   };
 
   const updateFormValue = ({ updateType, value, index }) => {

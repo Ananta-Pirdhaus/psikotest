@@ -68,10 +68,13 @@ export const addNewSoalAsync = createAsyncThunk(
 
 export const updateSoalAsync = createAsyncThunk(
   "soal/updateSoalAsync",
-  async ({ id, updatedSoal }, thunkAPI) => {
+  async ({ updatedSoal }, thunkAPI) => {
     try {
+      const { id } = updatedSoal; // Ambil id dari updatedSoal
+      if (!id) throw new Error("ID soal tidak ditemukan");
+
       const response = await axios.put(`pertanyaan/${id}`, updatedSoal);
-      thunkAPI.dispatch(fetchSoal());
+      thunkAPI.dispatch(fetchSoal()); // Refresh data setelah update
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -198,13 +201,29 @@ const soalSlice = createSlice({
       })
       .addCase(updateSoalAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
+
+        if (!action.payload || !action.payload.id) {
+          console.error(
+            "Error: Payload dari updateSoalAsync tidak valid!",
+            action
+          );
+          return;
+        }
+
         const index = state.soal.findIndex(
           (soal) => soal.id === action.payload.id
         );
+
         if (index !== -1) {
           state.soal[index] = action.payload;
+        } else {
+          console.warn(
+            "Warning: Soal dengan ID ini tidak ditemukan!",
+            action.payload
+          );
         }
       })
+
       .addCase(updateSoalAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
