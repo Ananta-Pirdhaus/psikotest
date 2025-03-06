@@ -58,19 +58,40 @@ function AddSoalModalBody({ closeModal }) {
     dispatch(addNewSoalAsync(soalObj))
       .then((result) => {
         console.log("Result dari dispatch:", result);
+
+        // Periksa jika ada error di payload
         if (result.error) {
-          throw new Error(result.error.message);
+          let errorMessage = "Terjadi kesalahan."; // Pesan default
+
+          if (
+            result.payload &&
+            result.payload.errors &&
+            result.payload.errors.question
+          ) {
+            errorMessage = result.payload.errors.question[0]; // Ambil error spesifik dari payload
+          }
+
+          // Tampilkan notifikasi error
+          dispatch(
+            showNotification({ message: `Error: ${errorMessage}`, status: 0 })
+          );
+          console.error("Error adding soal:", errorMessage);
+          setErrorMessage(errorMessage);
+          setLoading(false);
+          return; // Hentikan eksekusi lebih lanjut
         }
+
+        // Jika berhasil, tampilkan notifikasi sukses
         dispatch(showNotification({ message: "New Soal Added!", status: 1 }));
         closeModal();
         setLoading(false);
       })
       .catch((error) => {
         dispatch(
-          showNotification({ message: `Error: ${error.message}`, status: 0 })
+          showNotification({ message: "Error: Terjadi kesalahan.", status: 0 })
         );
-        console.error("Error adding soal:", error.message || error);
-        setErrorMessage(error.message || "Failed to add soal.");
+        console.error("Unexpected error:", error);
+        setErrorMessage("Terjadi kesalahan.");
         setLoading(false);
       });
   };

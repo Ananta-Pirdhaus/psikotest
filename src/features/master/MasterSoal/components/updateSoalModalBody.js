@@ -82,7 +82,14 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
 
         if (!result || result.error) {
           console.error("Error ditemukan di result:", result);
-          throw new Error(result?.error?.message || "Failed to update soal.");
+
+          // Ambil error dari payload.message jika ada, jika tidak gunakan error.message atau pesan default
+          const errorMessage =
+            result?.payload?.message ||
+            result?.error?.message ||
+            "Failed to update soal.";
+
+          throw new Error(errorMessage);
         }
 
         dispatch(showNotification({ message: "Updated Soal!", status: 1 }));
@@ -90,7 +97,11 @@ function UpdateSoalModalBody({ closeModal, extraObject }) {
       })
       .catch((error) => {
         console.error("Error di catch:", error);
+
+        // Set pesan error di state
         setErrorMessage(error.message || "Failed to update soal.");
+
+        // Kirim notifikasi error
         dispatch(
           showNotification({ message: `Error: ${error.message}`, status: 0 })
         );
