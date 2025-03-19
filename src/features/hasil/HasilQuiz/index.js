@@ -74,7 +74,7 @@ function HasilQuiz() {
   const viewResultQuiz = (id) => {
     dispatch(
       openModal({
-        title: "Hasil Quiz Peserta",
+        title: "Hasil Test Peserta",
         bodyType: MODAL_BODY_TYPES.RESULT_QUIZ,
         extraObject: id,
       })
@@ -137,7 +137,7 @@ function HasilQuiz() {
                       <button
                         className="btn btn-square btn-ghost"
                         onClick={() => viewResultQuiz(result.id)}
-                        title="Lihat Hasil Quiz"
+                        title="Lihat Test Quiz"
                       >
                         <EyeIcon className="w-5 text-green-500" />
                       </button>

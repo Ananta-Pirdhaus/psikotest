@@ -43,7 +43,7 @@ function UserChannels({}) {
       url: "/app/master-bakat",
     },
     {
-      title: "Peserta Quiz",
+      title: "Peserta Test",
       icon: UsersIcon,
       url: "/app/peserta",
     },

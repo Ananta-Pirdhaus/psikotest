@@ -50,7 +50,7 @@ const routes = [
   {
     path: "",
     icon: <AdjustmentsHorizontalIcon className={`${iconClasses} inline`} />,
-    name: "Setting Quiz",
+    name: "Setting Test",
     submenu: [
       {
         path: "/app/master-versi",
